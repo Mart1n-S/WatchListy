@@ -41,17 +41,18 @@ async function request<T>(input: RequestInfo, init?: RequestInit & { timeoutMs?:
             credentials: "same-origin",
         });
         return handle<T>(res);
-    } catch (e: any) {
-        if (e.name === "AbortError") {
+    } catch (e: unknown) {
+        if (e instanceof DOMException && e.name === "AbortError") {
             const err: ApiError = { message: "La requête a expiré.", code: "TIMEOUT" };
             throw err;
         }
-        // Erreurs réseau (offline, DNS, etc.)
+
         const err: ApiError = { message: "Impossible de contacter le serveur.", code: "NETWORK_ERROR" };
         throw err;
     } finally {
         clearTimeout(id);
     }
+
 }
 
 export async function login(input: LoginInput) {

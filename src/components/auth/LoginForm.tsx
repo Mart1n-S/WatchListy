@@ -68,12 +68,20 @@ export default function LoginForm() {
     //   TODO: provisoire a ajuster quand l’auth sera en place
       window.location.href = "/dashboard"; // provisoire
     } catch (err: unknown) {
-      const { message, fieldErrors: fe } = (err as any) ?? {};
-      if (fe) setFieldErrors(fe);
-      setFormError(message ?? "Une erreur est survenue. Veuillez réessayer.");
+      const apiError = err as Partial<{
+        message: string;
+        fieldErrors: Record<string, string>;
+      }>;
+
+      if (apiError.fieldErrors) {
+        setFieldErrors(apiError.fieldErrors);
+      }
+
+      setFormError(apiError.message ?? "Une erreur est survenue. Veuillez réessayer.");
     } finally {
       setIsLoading(false);
     }
+
   };
 
   return (

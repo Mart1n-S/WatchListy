@@ -1,37 +1,44 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
+const montserrat = Montserrat({
   subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-montserrat",
 });
 
 export const metadata: Metadata = {
-  title: "WatchListy",
-  description: "L’application idéale pour suivre vos films et séries préférés.",
+  title: {
+    default: "WatchListy | Gestion intelligente de vos films",
+    template: "%s | WatchListy",
+  },
+  description:
+    "Organisez, suivez et découvrez vos films et séries préférés avec WatchListy. La solution ultime pour les cinéphiles.",
+  keywords: ["films", "séries", "watchlist", "cinéma", "organisation", "suivi"],
+  authors: [{ name: "WatchListy Team" }],
+  creator: "WatchListy",
+  icons: {
+    icon: [{ url: "/watchlisty-icon.svg", sizes: "16x16", type: "image/svg+xml" }],
+  },
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="fr">
+    <html lang="fr" className="dark">
+      <head>
+        <meta name="color-scheme" content="dark" />
+      </head>
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased flex flex-col min-h-screen`}
+        className={`${montserrat.className} antialiased min-h-dvh bg-gray-900 text-gray-100`}
       >
-        <Header />
-        <main className="flex-grow">{children}</main>
-        <Footer />
+        <div className="flex flex-col min-h-dvh">
+          <Header />
+          <main className="flex-grow pt-20">{children}</main>
+          <Footer />
+        </div>
       </body>
     </html>
   );

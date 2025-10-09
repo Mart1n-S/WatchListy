@@ -31,14 +31,14 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       <head>
         <meta name="color-scheme" content="dark" />
       </head>
-      <body
-        className={`${montserrat.className} antialiased min-h-dvh bg-gray-900 text-gray-100`}
-      >
-        <div className="flex flex-col min-h-dvh">
-          <Header />
-          <main className="flex-grow pt-20">{children}</main>
-          <Footer />
-        </div>
+      <body className={`${montserrat.className} antialiased min-h-dvh bg-gray-900 text-gray-100`}>
+        <Header />
+
+        <main id="content" className="flex-grow pt-20">
+          {children}
+        </main>
+
+        <Footer />
       </body>
     </html>
   );

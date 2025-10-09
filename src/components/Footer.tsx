@@ -6,7 +6,7 @@ export default function Footer() {
   return (
     <footer className="w-full mt-auto bg-gray-900/50 border-t border-gray-800">
       <div className="max-w-7xl mx-auto px-6 py-12">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-10">
+        <div className="grid grid-cols-1 gap-10 mb-10">
           {/* Section Marque */}
           <div>
             <h3 className="text-xl font-bold mb-4 flex items-center">
@@ -51,7 +51,7 @@ export default function Footer() {
             <ul className="space-y-2">
               {[
                 { name: "Accueil", href: "/" },
-                { name: "Fonctionnalités", href: "/features" },
+                { name: "Fonctionnalités", href: "/#features" },
                 { name: "À propos", href: "/about" },
               ].map((item) => (
                 <li key={item.name}>
@@ -71,11 +71,10 @@ export default function Footer() {
             <h4 className="font-semibold mb-4 text-gray-50">Légal</h4>
             <ul className="space-y-2">
               {[
-                { name: "Conditions d'utilisation", href: "/terms" },
-                { name: "Politique de confidentialité", href: "/privacy" },
-                { name: "Politique de cookies", href: "/cookies" },
-                { name: "Gestion des données", href: "/data" },
-                { name: "Accessibilité", href: "/accessibility" },
+                { name: "Conditions d'utilisation", href: "/legal/terms" },
+                { name: "Politique de confidentialité", href: "/legal/privacy" },
+                { name: "Politique de cookies", href: "/legal/cookies" },
+                { name: "Accessibilité", href: "/legal/accessibility" },
               ].map((item) => (
                 <li key={item.name}>
                   <Link
@@ -88,9 +87,6 @@ export default function Footer() {
               ))}
             </ul>
           </div>
-
-          {/* (Optionnel) une 4e colonne libre ou supprime md:grid-cols-4 si tu n’en as pas besoin */}
-          <div className="hidden md:block" />
         </div>
 
         {/* Newsletter */}
@@ -116,14 +112,25 @@ export default function Footer() {
 
         {/* Copyright */}
         <div className="pt-8 border-t border-gray-800 text-center text-gray-400 text-sm">
-          <p>© {new Date().getFullYear()} WatchListy. Tous droits réservés.</p>
+          <p>© {new Date().getFullYear()} <span className="font-semibold">WatchListy</span>. Tous droits réservés.</p>
+
           <p className="mt-2">
-            Made with ❤️ by{" "}
-            <Link href="#" className="text-blue-400 hover:underline">
-              l’équipe WatchListy
-            </Link>
+            Made with ❤️ by l’équipe WatchListy
+          </p>
+
+          <p className="mt-2 text-xs text-gray-400">
+            Ce produit utilise l’API TMDB, mais n’est ni approuvé ni certifié par TMDB. Données et images fournies par
+            <a
+              href="https://www.themoviedb.org"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="ml-1 text-sky-400 hover:underline"
+            >
+              The Movie Database (TMDB)
+            </a>.
           </p>
         </div>
+
       </div>
     </footer>
   );

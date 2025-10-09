@@ -3,6 +3,7 @@ import { Montserrat } from "next/font/google";
 import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import AuthProvider from "@/app/providers";
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -25,20 +26,28 @@ export const metadata: Metadata = {
   },
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default function RootLayout({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
   return (
     <html lang="fr" className="dark">
       <head>
         <meta name="color-scheme" content="dark" />
       </head>
-      <body className={`${montserrat.className} antialiased min-h-dvh bg-gray-900 text-gray-100`}>
-        <Header />
+      <body
+        className={`${montserrat.className} antialiased min-h-dvh bg-gray-900 text-gray-100`}
+      >
+          <AuthProvider>
+            <Header />
 
-        <main id="content" className="flex-grow pt-10">
-          {children}
-        </main>
+            <main id="content" className="flex-grow pt-10">
+              {children}
+            </main>
 
-        <Footer />
+            <Footer />
+          </AuthProvider>
       </body>
     </html>
   );

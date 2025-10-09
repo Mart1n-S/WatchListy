@@ -3,7 +3,8 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { HiEye, HiEyeOff, HiMail, HiLockClosed } from "react-icons/hi";
-import { login } from "../../lib/apiClient"; // garde ton import actuel
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { LoginSchema, type LoginInput } from "../../lib/validators/auth";
 
 type FieldErrors = Partial<Record<keyof LoginInput, string>>;
@@ -12,7 +13,6 @@ export default function LoginForm() {
   const [values, setValues] = useState<LoginInput>({
     email: "",
     password: "",
-    remember: false,
   });
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
@@ -24,6 +24,8 @@ export default function LoginForm() {
   // refs utiles pour focus sur le 1er champ invalide
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
+
+  const router = useRouter();
 
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
@@ -47,7 +49,6 @@ export default function LoginForm() {
     const toValidate: LoginInput = {
       email: values.email.trim(),
       password: values.password.trim(),
-      remember: values.remember ?? false,
     };
 
     const parsed = LoginSchema.safeParse(toValidate);
@@ -64,9 +65,18 @@ export default function LoginForm() {
     }
 
     try {
-      await login(parsed.data);
-    //   TODO: provisoire a ajuster quand l’auth sera en place
-      window.location.href = "/dashboard"; // provisoire
+      const result = await signIn("credentials", {
+        email: parsed.data.email,
+        password: parsed.data.password,
+        redirect: false,
+      });
+
+      if (result?.error) {
+        setFormError(result.error);
+      } else {
+        // Redirection vers la page de profil si l'authentification réussit
+        router.push("/profile");
+      }
     } catch (err: unknown) {
       const apiError = err as Partial<{
         message: string;
@@ -81,7 +91,6 @@ export default function LoginForm() {
     } finally {
       setIsLoading(false);
     }
-
   };
 
   return (
@@ -169,19 +178,7 @@ export default function LoginForm() {
         </div>
 
         {/* Options */}
-        <div className="flex items-center justify-between">
-          <label className="inline-flex items-center gap-2">
-            <input
-              id="remember"
-              name="remember"
-              type="checkbox"
-              checked={values.remember}
-              onChange={onChange}
-              className="h-4 w-4 text-indigo-500 focus:ring-indigo-400 border-gray-700 rounded bg-gray-800"
-            />
-            <span className="text-sm text-gray-300">Se souvenir de moi</span>
-          </label>
-
+        <div className="flex items-center justify-end">
           <Link
             href="/forgot-password"
             className="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors"

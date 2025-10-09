@@ -5,8 +5,16 @@ export const metadata = {
 import Image from "next/image";
 import LoginForm from "@/components/auth/LoginForm";
 import BackgroundCinematic from "@/components/ui/BackgroundCinematic";
+import { auth } from "../../../auth";
+import { redirect } from "next/navigation";
 
-export default function LoginPage() {
+export default async function LoginPage() {
+  // Rediriger l'utilisateur vers le profil s'il est déjà connecté
+  const session = await auth();
+  if (session?.user) {
+    redirect("/profile");
+  }
+
   return (
     <div className="relative min-h-[calc(100dvh-5rem)] flex items-center justify-center px-4 py-10">
       <BackgroundCinematic />

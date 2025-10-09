@@ -20,9 +20,7 @@ export default function Header() {
   };
 
   const navItems = [
-    { name: "Accueil", href: "/" },
-    { name: "Découvrir", href: "/discover" },
-    { name: "Communauté", href: "/community" },
+    { name: "Accueil", href: "/" }
   ];
 
   return (
@@ -116,7 +114,7 @@ export default function Header() {
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="md:hidden fixed inset-0 h-dvh min-h-screen w-screen block bg-gray-900/60 backdrop-blur-sm z-[95]"
+              className="md:hidden fixed inset-0 h-dvh min-h-screen w-screen block bg-gray-900/60 z-[95]"
               onClick={() => setIsOpen(false)}
               aria-label="Fermer le menu"
             />
@@ -135,9 +133,15 @@ export default function Header() {
               <div className="p-6 min-h-full flex flex-col">
                 <div className="flex justify-between items-center mb-8">
                   <Link href="/" className="flex items-center space-x-2" onClick={() => setIsOpen(false)}>
-                    <div className="w-8 h-8 rounded-lg bg-gradient-to-r from-blue-600 to-emerald-500 flex items-center justify-center">
-                      <FiFilm className="text-white" />
-                    </div>
+                    <Image
+                      src="/watchlisty-icon.svg"
+                      alt=""
+                      width={32}
+                      height={32}
+                      priority
+                      sizes="32px"
+                      className="h-8 w-8"
+                    />
                     <span className="text-xl font-bold bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">
                       WatchListy
                     </span>

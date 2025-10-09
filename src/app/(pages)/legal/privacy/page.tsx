@@ -8,6 +8,8 @@ export const metadata: Metadata = {
     "Politique de confidentialité de WatchListy : quelles données nous collectons, pourquoi, comment nous les protégeons, et quels sont vos droits.",
 };
 
+const CONTACT_EMAIL = process.env.CONTACT_EMAIL || "contact@example.com";
+
 export default function PrivacyPage() {
   return (
     <div className="relative">
@@ -33,7 +35,7 @@ export default function PrivacyPage() {
             <p className="mt-2 text-sm">
               Le responsable du traitement des données est : <strong>WatchListy</strong>.
               <br />
-              Contact : <a href="mailto:contact@watchlisty.com" className="text-sky-400 hover:text-sky-300 underline">contact@watchlisty.com</a>
+              Contact : <a href={`mailto:${CONTACT_EMAIL}`} className="text-sky-400 hover:text-sky-300 underline">{CONTACT_EMAIL}</a>
             </p>
           </section>
 
@@ -132,7 +134,7 @@ export default function PrivacyPage() {
               <li>Droit de retirer votre consentement (lorsque applicable) sans affecter la licéité des traitements antérieurs.</li>
             </ul>
             <p className="mt-2 text-sm">
-              Pour exercer vos droits, contactez-nous : <a href="mailto:contact@watchlisty.com" className="text-sky-400 hover:text-sky-300 underline">contact@watchlisty.com</a>.
+              Pour exercer vos droits, contactez-nous : <a href={`mailto:${CONTACT_EMAIL}`} className="text-sky-400 hover:text-sky-300 underline">{CONTACT_EMAIL}</a>.
               Vous pouvez aussi déposer une plainte auprès de l’autorité de contrôle (en France : la CNIL).
             </p>
           </section>
@@ -152,7 +154,7 @@ export default function PrivacyPage() {
             <p className="mt-2 text-sm">
               Pour toute question relative à la protection des données, écrivez à :
               <br />
-              <a href="mailto:contact@watchlisty.com" className="text-sky-400 hover:text-sky-300 underline">contact@watchlisty.com</a>
+              <a href={`mailto:${CONTACT_EMAIL}`} className="text-sky-400 hover:text-sky-300 underline">{CONTACT_EMAIL}</a>
             </p>
           </section>
 

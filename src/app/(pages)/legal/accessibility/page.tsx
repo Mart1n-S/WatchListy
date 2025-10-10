@@ -10,7 +10,7 @@ export const metadata: Metadata = {
 
 export default function AccessibilityPage() {
   return (
-    <main className="relative">
+    <div className="relative">
       <BackgroundCinematic />
       <section className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-16">
         <header>
@@ -135,6 +135,6 @@ export default function AccessibilityPage() {
           </p>
         </div>
       </section>
-    </main>
+    </div>
   );
 }

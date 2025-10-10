@@ -2,86 +2,183 @@
 
 import { useRef, useState } from "react";
 import Link from "next/link";
+import { signIn } from "next-auth/react";
+import { useRouter } from "next/navigation";
 import { HiEye, HiEyeOff, HiMail, HiLockClosed } from "react-icons/hi";
-import { login } from "../../lib/apiClient"; // garde ton import actuel
 import { LoginSchema, type LoginInput } from "../../lib/validators/auth";
 
+/**
+ * Type pour les erreurs de champ de formulaire
+ * Permet d'associer chaque champ (email, password) à un message d'erreur
+ */
 type FieldErrors = Partial<Record<keyof LoginInput, string>>;
 
+/**
+ * Composant LoginForm - Formulaire de connexion utilisateur
+ * 
+ * Ce composant gère l'authentification des utilisateurs via NextAuth.js
+ * avec validation des champs, gestion d'erreurs et expérience utilisateur optimisée
+ * 
+ */
 export default function LoginForm() {
+  const router = useRouter();
+  
+  /**
+   * État des valeurs du formulaire
+   * Contient les données saisies par l'utilisateur
+   */
   const [values, setValues] = useState<LoginInput>({
     email: "",
     password: "",
-    remember: false,
   });
+  
+  /**
+   * État pour afficher/masquer le mot de passe
+   * Améliore l'UX en permettant à l'utilisateur de vérifier sa saisie
+   */
   const [showPassword, setShowPassword] = useState(false);
+  
+  /**
+   * État de chargement pendant la soumission du formulaire
+   * Utilisé pour désactiver le bouton et afficher un indicateur de progression
+   */
   const [isLoading, setIsLoading] = useState(false);
 
-  // Erreurs
+  /**
+   * État des erreurs de validation par champ
+   * Stocke les messages d'erreur spécifiques à chaque input
+   */
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
+  
+  /**
+   * État des erreurs générales du formulaire
+   * Utilisé pour les erreurs d'authentification (mauvais identifiants, etc.)
+   */
   const [formError, setFormError] = useState<string | null>(null);
 
-  // refs utiles pour focus sur le 1er champ invalide
+  /**
+   * Références pour les champs de formulaire
+   * Permet de focus automatiquement sur le premier champ en erreur
+   */
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
 
+  /**
+   * Gestionnaire de changement pour les inputs du formulaire
+   * Met à jour les valeurs et efface les erreurs associées au champ modifié
+   * 
+   * @param e - Événement de changement d'input
+   */
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, checked } = e.target;
+    
+    // Met à jour la valeur du champ modifié
     setValues((v) => ({ ...v, [name]: type === "checkbox" ? checked : value }));
-    setFieldErrors((fe) => ({ ...fe, [name]: undefined })); // clear l'erreur du champ en édition
+    
+    // Efface l'erreur du champ en cours de modification
+    setFieldErrors((fe) => ({ ...fe, [name]: undefined }));
+    
+    // Efface les erreurs générales du formulaire
     setFormError(null);
   };
 
+  /**
+   * Focus sur le premier champ contenant une erreur
+   * Améliore l'accessibilité et l'expérience utilisateur
+   * 
+   * @param errs - Objet contenant les erreurs de champ
+   */
   const focusFirstError = (errs: FieldErrors) => {
     if (errs.email) emailRef.current?.focus();
     else if (errs.password) passwordRef.current?.focus();
   };
 
+  /**
+   * Gestionnaire de soumission du formulaire
+   * Valide les données, tente l'authentification et gère les erreurs
+   * 
+   * @param e - Événement de soumission du formulaire
+   */
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    
+    // Réinitialisation des états
     setIsLoading(true);
     setFormError(null);
     setFieldErrors({});
 
-    // on trim avant la validation
+    /**
+     * Nettoyage des données : suppression des espaces superflus
+     * Important pour éviter les erreurs de validation dues aux espaces
+     */
     const toValidate: LoginInput = {
       email: values.email.trim(),
       password: values.password.trim(),
-      remember: values.remember ?? false,
     };
 
+    /**
+     * Validation des données avec Zod
+     * Vérifie que les champs requis sont remplis et valides
+     */
     const parsed = LoginSchema.safeParse(toValidate);
     if (!parsed.success) {
+      // Transformation des erreurs Zod en format utilisable par l'UI
       const errs: FieldErrors = {};
       parsed.error.issues.forEach((i) => {
         const k = i.path[0] as keyof LoginInput;
         errs[k] = i.message;
       });
+      
       setFieldErrors(errs);
       focusFirstError(errs);
       setIsLoading(false);
       return;
     }
 
+    /**
+     * Tentative d'authentification avec NextAuth
+     */
     try {
-      await login(parsed.data);
-    //   TODO: provisoire a ajuster quand l’auth sera en place
-      window.location.href = "/dashboard"; // provisoire
-    } catch (err: unknown) {
-      const apiError = err as Partial<{
-        message: string;
-        fieldErrors: Record<string, string>;
-      }>;
+      const result = await signIn("credentials", {
+        email: toValidate.email,
+        password: toValidate.password,
+        redirect: false, // Empêche la redirection automatique pour gérer manuellement
+      });
 
-      if (apiError.fieldErrors) {
-        setFieldErrors(apiError.fieldErrors);
+      /**
+       * Gestion des erreurs d'authentification
+       * NextAuth retourne une erreur générique pour la sécurité
+       */
+      if (result?.error) {
+        // Message d'erreur générique pour email ou mot de passe incorrect
+        // Évite de révéler si l'email existe ou non (meilleure sécurité)
+        setFormError("Email ou mot de passe incorrect");
+        return;
       }
 
-      setFormError(apiError.message ?? "Une erreur est survenue. Veuillez réessayer.");
+      /**
+       * Connexion réussie - Redirection vers le profile
+       */
+      if (result?.ok) {
+        // Redirection vers la page protégée
+        router.push("/profile");
+        
+        // Recharge les données de session côté serveur
+        router.refresh();
+      }
+    } catch (err: unknown) {
+      /**
+       * Gestion des erreurs inattendues (réseau, serveur, etc.)
+       */
+      setFormError("Une erreur inattendue est survenue");
+      console.error("Login error:", err);
     } finally {
+      /**
+       * Réinitialisation de l'état de chargement dans tous les cas
+       * Garantit que le bouton est réactivé même en cas d'erreur
+       */
       setIsLoading(false);
     }
-
   };
 
   return (
@@ -169,19 +266,7 @@ export default function LoginForm() {
         </div>
 
         {/* Options */}
-        <div className="flex items-center justify-between">
-          <label className="inline-flex items-center gap-2">
-            <input
-              id="remember"
-              name="remember"
-              type="checkbox"
-              checked={values.remember}
-              onChange={onChange}
-              className="h-4 w-4 text-indigo-500 focus:ring-indigo-400 border-gray-700 rounded bg-gray-800"
-            />
-            <span className="text-sm text-gray-300">Se souvenir de moi</span>
-          </label>
-
+        <div className="flex items-center justify-end">
           <Link
             href="/forgot-password"
             className="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors"

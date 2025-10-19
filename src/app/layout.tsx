@@ -4,6 +4,8 @@ import "./globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/components/providers/AuthProvider";
+import ReduxProvider from "@/lib/redux/Provider";
+import AuthSync from '@/components/auth/AuthSync'
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -33,13 +35,17 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <meta name="color-scheme" content="dark" />
       </head>
       <body className={`${montserrat.className} antialiased min-h-dvh bg-gray-900 text-gray-100`}>
-        <AuthProvider>
-          <Header />
-          <main id="content" className="flex-grow pt-10">
-            {children}
-          </main>
-          <Footer />
-        </AuthProvider>
+        <ReduxProvider>
+          <AuthProvider>
+            <AuthSync>
+              <Header />
+              <main id="content" className="flex-grow pt-10">
+                {children}
+              </main>
+              <Footer />
+            </AuthSync>
+          </AuthProvider>
+        </ReduxProvider>
       </body>
     </html>
   );

@@ -7,11 +7,14 @@ import { HiMenu, HiX } from "react-icons/hi";
 import { motion, AnimatePresence } from "framer-motion";
 import { usePathname } from "next/navigation";
 import { useSession, signOut } from "next-auth/react";
+import { useDispatch } from "react-redux";
+import { clearUser } from "@/lib/redux/slices/userSlice";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
+  const dispatch = useDispatch();
 
   const toggleMenu = () => setIsOpen((v) => !v);
 
@@ -69,7 +72,10 @@ export default function Header() {
         <div className="hidden md:flex items-center space-x-4">
           {session ? (
             <button
-              onClick={() => signOut({ callbackUrl: "/" })}
+              onClick={async () => {
+                await signOut({ callbackUrl: "/" });
+                dispatch(clearUser());
+              }}
               className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-red-500/20 hover:shadow-red-500/30 group relative overflow-hidden hover:cursor-pointer"
             >
               <span className="relative">Déconnexion</span>
@@ -179,7 +185,10 @@ export default function Header() {
                 <div className="mt-8 pt-4 border-t border-gray-800">
                   {session ? (
                     <button
-                      onClick={() => signOut({ callbackUrl: "/" })}
+                      onClick={async () => {
+                        await signOut({ callbackUrl: "/" });
+                        dispatch(clearUser());
+                      }}
                       className="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-red-500/20 hover:shadow-red-500/30 group relative overflow-hidden hover:cursor-pointer"
                     >
                       <span className="relative">Déconnexion</span>

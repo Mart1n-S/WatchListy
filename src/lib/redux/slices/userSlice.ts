@@ -1,13 +1,17 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit'
 
 interface UserState {
-    id: string | null
-    name: string | null
-    email: string | null
-    image: string | null
-    role: string | null
-    createdAt: string | null
-    isAuthenticated: boolean
+    id: string | null;
+    name: string | null;
+    email: string | null;
+    image: string | null;
+    role: string | null;
+    createdAt: string | null;
+    isAuthenticated: boolean;
+    preferences?: {
+        movies?: number[];
+        tv?: number[];
+    };
 }
 
 const initialState: UserState = {
@@ -18,6 +22,10 @@ const initialState: UserState = {
     role: null,
     createdAt: null,
     isAuthenticated: false,
+    preferences: {
+        movies: [],
+        tv: [],
+    },
 }
 
 export const userSlice = createSlice({
@@ -25,7 +33,7 @@ export const userSlice = createSlice({
     initialState,
     reducers: {
         setUser: (state, action: PayloadAction<UserState>) => {
-            return { ...state, ...action.payload, isAuthenticated: true }
+            return { ...state, ...action.payload, isAuthenticated: true };
         },
         clearUser: (state) => {
             state.id = null

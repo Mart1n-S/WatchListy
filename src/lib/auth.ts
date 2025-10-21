@@ -95,6 +95,7 @@ export const authOptions: NextAuthOptions = {
                         image: user.avatar,
                         role: user.role || "user",
                         createdAt: user.created_at?.toISOString(),
+                        preferences: user.preferences || { movies: [], tv: [] },
                     };
                 } catch (error) {
                     console.error("Erreur d’authentification :", error);
@@ -123,11 +124,11 @@ export const authOptions: NextAuthOptions = {
          * @returns Token JWT mis à jour
          */
         async jwt({ token, user }) {
-            // Lors de la première connexion, ajoute les propriétés personnalisées
             if (user) {
-                token.role = user.role;
                 token.id = user.id;
+                token.role = user.role;
                 token.createdAt = user.createdAt;
+                token.preferences = user.preferences;
             }
             return token;
         },
@@ -141,11 +142,11 @@ export const authOptions: NextAuthOptions = {
          * @returns Session mise à jour avec les données personnalisées
          */
         async session({ session, token }) {
-            // Transfère les données du token vers la session
             if (token) {
                 session.user.id = token.id as string;
                 session.user.role = token.role as string;
                 session.user.createdAt = token.createdAt as string;
+                session.user.preferences = token.preferences;
             }
             return session;
         },

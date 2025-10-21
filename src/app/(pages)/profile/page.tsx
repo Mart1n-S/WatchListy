@@ -1,37 +1,16 @@
 "use client";
 
-import { useEffect } from "react";
 import { useSession } from "next-auth/react";
-import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "@/lib/redux/slices/userSlice";
-import { RootState } from "@/lib/redux/store";
+import { useAppSelector } from "@/lib/redux/hooks";
 import ProfileCard from "@/components/profile/ProfileCard";
 import ProfileBackground from "@/components/ui/ProfileBackground";
 
 export default function ProfilePage() {
-  const { data: session, status } = useSession();
-  const dispatch = useDispatch();
-  const reduxUser = useSelector((state: RootState) => state.user);
+  const { status } = useSession(); // toujours utile pour savoir si la session est en chargement
+  const user = useAppSelector((state) => state.user);
 
-  // Synchronise NextAuth avec Redux
-  useEffect(() => {
-    if (status === "authenticated" && session?.user) {
-      dispatch(
-        setUser({
-          id: session.user.id || null,
-          name: session.user.name || null,
-          email: session.user.email || null,
-          image: session.user.image || null,
-          role: session.user.role || "user",
-          createdAt: session.user.createdAt || null,
-          isAuthenticated: true,
-        })
-      );
-    }
-  }, [session, status, dispatch]);
-
-  // État de chargement (optionnel, car le middleware bloque déjà)
-  if (status === "loading") {
+  // État de chargement (le middleware protège déjà /profile, mais on garde une UX propre)
+  if (status === "loading" || !user.isAuthenticated) {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="flex flex-col items-center gap-4">
@@ -41,16 +20,6 @@ export default function ProfilePage() {
       </div>
     );
   }
-
-  // Utilise les données fusionnées (Redux + NextAuth)
-  const user = {
-    ...session?.user,
-    ...reduxUser,
-    name: reduxUser.name || session?.user?.name,
-    email: reduxUser.email || session?.user?.email,
-    image: reduxUser.image || session?.user?.image,
-    role: reduxUser.role || session?.user?.role || "user",
-  };
 
   return (
     <div className="min-h-screen relative">
@@ -62,6 +31,8 @@ export default function ProfilePage() {
             Gérez vos informations personnelles et vos préférences
           </p>
         </div>
+
+        {/* Le user vient directement du store Redux */}
         <ProfileCard user={user} />
       </div>
     </div>

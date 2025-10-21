@@ -3,26 +3,39 @@ import { getToken } from "next-auth/jwt";
 import type { NextRequest } from "next/server";
 
 export async function middleware(req: NextRequest) {
+    const { pathname, origin } = req.nextUrl;
+
+    // Récupère le token NextAuth (si existant)
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     const isAuth = !!token;
-    const isAuthPage = req.nextUrl.pathname === "/login";
+    const isAuthPage = pathname === "/login";
 
-    // Si l'utilisateur est connecté et essaie d'accéder à /login
+    // Si utilisateur déjà connecté → redirige hors de /login
     if (isAuth && isAuthPage) {
-        return NextResponse.redirect(new URL("/profile", req.url));
+        return NextResponse.redirect(new URL("/profile", origin));
     }
 
-    // Si l'utilisateur n'est pas connecté et essaie d'accéder à une page protégée
-    if (!isAuth && req.nextUrl.pathname.startsWith("/profile")) {
-        return NextResponse.redirect(new URL("/login", req.url));
+    // Si non connecté et tente d'accéder à /profile/*
+    if (!isAuth && pathname.startsWith("/profile")) {
+        return NextResponse.redirect(new URL("/login", origin));
     }
 
+    //  DEV : ajout d'un header de debug/cache sur le endpoint TMDB
+    if (pathname.startsWith("/api/tmdb/genres")) {
+        const res = NextResponse.next();
+        res.headers.set("X-Cache-Layer", "Next-Fetch-Cache");
+        console.log("🌀 [Middleware] Requête TMDB interceptée → cache actif");
+        return res;
+    }
+
+    // Si tout est bon
     return NextResponse.next();
 }
 
 export const config = {
     matcher: [
         "/profile/:path*",
-        "/login"
+        "/login",
+        "/api/tmdb/genres",
     ],
 };

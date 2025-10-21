@@ -12,23 +12,23 @@ export default function AuthSync({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (status === 'authenticated' && session?.user) {
-      // Hydrate Redux avec les infos de session
-      dispatch(
-        setUser({
-          id: session.user.id ?? null,
-          name: session.user.name ?? null,
-          email: session.user.email ?? null,
-          image: session.user.image ?? null,
-          role: session.user.role ?? 'user',
-          createdAt: session.user.createdAt ?? null,
-          isAuthenticated: true,
-          preferences: session.user.preferences ?? undefined,
-        })
-      );
+      // Hydrate Redux avec les infos NextAuth
+      dispatch(setUser({
+        id: session.user.id ?? null,
+        name: session.user.name ?? null,
+        email: session.user.email ?? null,
+        image: session.user.image ?? null,
+        role: session.user.role ?? 'user',
+        createdAt: session.user.createdAt ?? null,
+        isAuthenticated: true,
+        preferences: session.user.preferences ?? { movies: [], tv: [] },
+      }));
 
-      // Charge les genres TMDB (si pas encore en cache Redux/localStorage)
+      // Charge les genres TMDB en cache (serveur + client)
       dispatch(fetchGenres());
-    } else if (status === 'unauthenticated') {
+    } 
+    else if (status === 'unauthenticated') {
+      // Nettoie le store Redux
       dispatch(clearUser());
     }
   }, [session, status, dispatch]);

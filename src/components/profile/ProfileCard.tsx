@@ -61,15 +61,18 @@ export default function ProfileCard({ user }: ProfileCardProps) {
                   <div className="flex items-center gap-2 text-slate-300">
                     <FiCalendar className="w-4 h-4 text-purple-400" />
                     <span className="text-sm">
-                      Membre depuis{' '}
-                      {new Date(user.createdAt).toLocaleDateString('fr-FR', {
-                        year: 'numeric',
-                        month: 'long',
-                        day: 'numeric',
-                      })}
+                      Membre depuis{" "}
+                      {typeof window !== "undefined"
+                        ? new Date(user.createdAt).toLocaleDateString("fr-FR", {
+                            year: "numeric",
+                            month: "long",
+                            day: "numeric",
+                          })
+                        : ""}
                     </span>
                   </div>
                 )}
+
               </div>
 
               {/* === PRÉFÉRENCES === */}

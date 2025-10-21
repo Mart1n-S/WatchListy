@@ -3,26 +3,25 @@ import { NextResponse } from "next/server";
 const TMDB_BASE = process.env.TMDB_API_BASE!;
 const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN!;
 
-// Revalidation tous les 24h
-export const revalidate = 60 * 60 * 24;
+// Revalidation tous les 24 heures
+export const revalidate = 86400;
 
 export async function GET() {
     try {
-        // Les 2 requêtes TMDB parallèles avec cache côté serveur
         const [movieRes, tvRes] = await Promise.all([
             fetch(`${TMDB_BASE}/genre/movie/list?language=fr`, {
                 headers: {
                     Authorization: `Bearer ${TMDB_TOKEN}`,
                     Accept: "application/json",
                 },
-                next: { revalidate: 60 * 60 * 24 }, // cache 24h
+                next: { revalidate: 86400 },
             }),
             fetch(`${TMDB_BASE}/genre/tv/list?language=fr`, {
                 headers: {
                     Authorization: `Bearer ${TMDB_TOKEN}`,
                     Accept: "application/json",
                 },
-                next: { revalidate: 60 * 60 * 24 },
+                next: { revalidate: 86400 },
             }),
         ]);
 

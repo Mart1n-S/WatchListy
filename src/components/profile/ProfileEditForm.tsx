@@ -1,0 +1,423 @@
+"use client";
+
+import Image from "next/image";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { setUser } from "@/lib/redux/slices/userSlice";
+import { updateUserSchema, type UpdateUserInput } from "@/lib/validators/user";
+import toast from "react-hot-toast";
+import type { Session } from "next-auth";
+import { useSession } from "next-auth/react";
+import { z } from "zod";
+import { HiEye, HiEyeOff, HiLockClosed } from "react-icons/hi";
+
+/**
+ * Formulaire complet d’édition du profil utilisateur
+ * - Avatars radio-cards accessibles
+ * - Validation dynamique du mot de passe
+ * - Labels reliés via htmlFor/id
+ */
+export default function ProfileEditForm({ user }: { user: Session["user"] }) {
+  const router = useRouter();
+  const dispatch = useAppDispatch();
+  const genres = useAppSelector((state) => state.genres);
+  const { data: session, update } = useSession();
+
+  /** État local du formulaire */
+  const [form, setForm] = useState<UpdateUserInput>({
+    pseudo: user.name ?? "",
+    avatar: user.image ?? "avatar1.svg",
+    preferences: user.preferences ?? { movies: [], tv: [] },
+    oldPassword: undefined,
+    newPassword: undefined,
+    confirmPassword: undefined,
+  });
+
+  const [errors, setErrors] = useState<Record<string, string>>({});
+  const [loading, setLoading] = useState(false);
+  const [showPassword, setShowPassword] = useState({
+    old: false,
+    new: false,
+    confirm: false,
+  });
+
+  const handleChange = <K extends keyof UpdateUserInput>(
+    field: K,
+    value: UpdateUserInput[K]
+  ) => {
+    setForm((prev) => ({ ...prev, [field]: value }));
+
+    // Si on efface un champ de mot de passe → on supprime juste l’erreur sans valider
+    const passwordFields = ["oldPassword", "newPassword", "confirmPassword"];
+    if (passwordFields.includes(field as string)) {
+      if (!value || value === "") {
+        setErrors((prev) => {
+          const updated = { ...prev };
+          delete updated[field as string];
+          return updated;
+        });
+        return;
+      }
+    }
+
+    // Validation instantanée d’un champ "non-mot de passe"
+    const singleFieldSchema = updateUserSchema.pick({ [field]: true });
+    const result = singleFieldSchema.safeParse({ [field]: value });
+
+    setErrors((prev) => {
+      const updated = { ...prev };
+      if (result.success) delete updated[field as string];
+      return updated;
+    });
+  };
+
+
+  /** Vérifie les critères de sécurité du mot de passe */
+  const passwordCriteria = [
+    { label: "8 à 30 caractères", valid: !!form.newPassword?.match(/^.{8,30}$/) },
+    { label: "1 majuscule", valid: !!form.newPassword?.match(/[A-Z]/) },
+    { label: "1 minuscule", valid: !!form.newPassword?.match(/[a-z]/) },
+    { label: "1 chiffre", valid: !!form.newPassword?.match(/\d/) },
+    { label: "1 caractère spécial", valid: !!form.newPassword?.match(/[!@#$%^&*(),.?\":{}|<>]/) },
+  ];
+
+  /** Soumission du formulaire */
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setErrors({});
+    setLoading(true);
+
+    try {
+      const parsed = updateUserSchema.parse(form);
+      const res = await fetch("/api/user/update", {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(parsed),
+      });
+
+      const data = await res.json();
+      if (!res.ok) {
+        if (data.errors) setErrors(data.errors);
+        throw new Error(data.error || "Erreur de mise à jour");
+      }
+
+      dispatch(setUser(data.user));
+      await update({
+        ...session,
+        user: { ...session?.user, ...data.user },
+        trigger: "update",
+      });
+
+      router.push("/profile");
+    } catch (err) {
+      if (err instanceof z.ZodError) {
+        const fieldErrors: Record<string, string> = {};
+        err.issues.forEach((issue) => {
+          const key = issue.path[0] as string;
+          fieldErrors[key] = issue.message;
+        });
+        setErrors(fieldErrors);
+      } else {
+        toast.error("Erreur lors de la mise à jour du profil.", { position: "top-right" });
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  /** Liste des avatars disponibles */
+  const avatars = Array.from({ length: 6 }, (_, i) => `avatar${i + 1}.svg`);
+
+  return (
+    <form
+      onSubmit={handleSubmit}
+      className="bg-gray-900/60 border border-gray-800 rounded-3xl p-8 backdrop-blur-sm shadow-xl space-y-8"
+    >
+      {/* === AVATARS === */}
+      <div>
+        <fieldset>
+          <legend className="block text-gray-200 mb-3 font-medium text-lg">
+            Choisissez un avatar
+          </legend>
+          <div className="grid grid-cols-3 sm:grid-cols-6 gap-6">
+            {avatars.map((a, i) => {
+              const id = `avatar-${i}`;
+              const isSelected = form.avatar === a;
+              return (
+                <label
+                  key={a}
+                  htmlFor={id}
+                  className={`relative rounded-2xl p-2 flex flex-col items-center transition cursor-pointer border-2 ${
+                    isSelected
+                      ? "border-indigo-500 bg-gray-800/70 ring-2 ring-indigo-600"
+                      : "border-gray-700 hover:border-indigo-400/50 hover:bg-gray-800/40"
+                  }`}
+                >
+                  <input
+                    type="radio"
+                    id={id}
+                    name="avatar"
+                    value={a}
+                    checked={isSelected}
+                    onChange={() => handleChange("avatar", a)}
+                    className="absolute opacity-0 pointer-events-none"
+                  />
+                  <Image
+                    src={`/images/avatars/${a}`}
+                    alt={`Avatar ${i + 1}`}
+                    width={80}
+                    height={80}
+                    className="rounded-full object-cover"
+                  />
+                  {isSelected && (
+                    <div className="absolute inset-0 rounded-2xl bg-indigo-500/10 ring-2 ring-indigo-500 pointer-events-none" />
+                  )}
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
+        {errors.avatar && <p className="text-red-400 text-sm mt-2">{errors.avatar}</p>}
+      </div>
+
+      {/* === PSEUDO === */}
+      <div>
+        <label htmlFor="pseudo" className="block text-gray-200 mb-2 font-medium">
+          Pseudo
+        </label>
+        <input
+          id="pseudo"
+          type="text"
+          value={form.pseudo ?? ""}
+          onChange={(e) => handleChange("pseudo", e.target.value)}
+          className={`w-full bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors ${
+            errors.pseudo ? "border-red-600" : "border-gray-700 hover:border-gray-600"
+          }`}
+        />
+        {errors.pseudo && (
+          <p className="text-red-400 text-sm mt-1">{errors.pseudo}</p>
+        )}
+      </div>
+
+      {/* === PREFERENCES - FILMS === */}
+      <div>
+        <fieldset>
+          <legend className="block text-gray-200 mb-2 font-medium">
+            Préférences films
+          </legend>
+          <div className="flex flex-wrap gap-2">
+            {genres.movies.map((g) => {
+              const id = `movie-${g.id}`;
+              const selected = form.preferences?.movies ?? [];
+              const isActive = selected.includes(g.id);
+              return (
+                <label
+                  key={g.id}
+                  htmlFor={id}
+                  className={`px-3 py-1 rounded-full text-sm cursor-pointer transition ${
+                    isActive
+                      ? "bg-indigo-600 text-white"
+                      : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  }`}
+                >
+                  <input
+                    id={id}
+                    type="checkbox"
+                    checked={isActive}
+                    onChange={() =>
+                      handleChange("preferences", {
+                        ...form.preferences,
+                        movies: isActive
+                          ? selected.filter((id) => id !== g.id)
+                          : [...selected, g.id],
+                      })
+                    }
+                    className="sr-only"
+                  />
+                  {g.name}
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
+      </div>
+
+      {/* === PREFERENCES - SERIES === */}
+      <div>
+        <fieldset>
+          <legend className="block text-gray-200 mb-2 font-medium">
+            Préférences séries
+          </legend>
+          <div className="flex flex-wrap gap-2">
+            {genres.tv.map((g) => {
+              const id = `tv-${g.id}`;
+              const selected = form.preferences?.tv ?? [];
+              const isActive = selected.includes(g.id);
+              return (
+                <label
+                  key={g.id}
+                  htmlFor={id}
+                  className={`px-3 py-1 rounded-full text-sm cursor-pointer transition ${
+                    isActive
+                      ? "bg-emerald-600 text-white"
+                      : "bg-gray-700 text-gray-300 hover:bg-gray-600"
+                  }`}
+                >
+                  <input
+                    id={id}
+                    type="checkbox"
+                    checked={isActive}
+                    onChange={() =>
+                      handleChange("preferences", {
+                        ...form.preferences,
+                        tv: isActive
+                          ? selected.filter((id) => id !== g.id)
+                          : [...selected, g.id],
+                      })
+                    }
+                    className="sr-only"
+                  />
+                  {g.name}
+                </label>
+              );
+            })}
+          </div>
+        </fieldset>
+      </div>
+
+      {/* === MOT DE PASSE === */}
+      <div className="flex flex-col gap-6">
+        {/* Ancien mot de passe */}
+        <div className="relative group">
+          <label htmlFor="oldPassword" className="block text-gray-200 mb-2 font-medium">
+            Ancien mot de passe
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <HiLockClosed className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-400 transition-colors" />
+            </div>
+            <input
+              id="oldPassword"
+              type={showPassword.old ? "text" : "password"}
+              onChange={(e) => handleChange("oldPassword", e.target.value)}
+              className={`w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 border transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
+                errors.oldPassword ? "border-red-600" : "border-gray-700 hover:border-gray-600"
+              }`}
+            />
+            <button
+              type="button"
+              aria-label={showPassword.old ? "Masquer l'ancien mot de passe" : "Afficher l'ancien mot de passe"}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200 hover:cursor-pointer"
+              onClick={() => setShowPassword((s) => ({ ...s, old: !s.old }))}
+            >
+              {showPassword.old ? (
+                <HiEyeOff className="h-5 w-5 text-gray-400 hover:text-gray-200 transition-colors" />
+              ) : (
+                <HiEye className="h-5 w-5 text-gray-400 hover:text-gray-200 transition-colors" />
+              )}
+            </button>
+          </div>
+          {errors.oldPassword && (
+            <p className="text-red-400 text-sm mt-1">{errors.oldPassword}</p>
+          )}
+        </div>
+
+        {/* Nouveau mot de passe */}
+        <div className="relative group">
+          <label htmlFor="newPassword" className="block text-gray-200 mb-2 font-medium">
+            Nouveau mot de passe
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <HiLockClosed className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-400 transition-colors" />
+            </div>
+            <input
+              id="newPassword"
+              type={showPassword.new ? "text" : "password"}
+              onChange={(e) => handleChange("newPassword", e.target.value)}
+              className={`w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 border transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
+                errors.newPassword ? "border-red-600" : "border-gray-700 hover:border-gray-600"
+              }`}
+            />
+            <button
+              type="button"
+              aria-label={showPassword.new ? "Masquer le nouveau mot de passe" : "Afficher le nouveau mot de passe"}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200 hover:cursor-pointer"
+              onClick={() => setShowPassword((s) => ({ ...s, new: !s.new }))}
+            >
+              {showPassword.new ? (
+                <HiEyeOff className="h-5 w-5 text-gray-400 hover:text-gray-200 transition-colors" />
+              ) : (
+                <HiEye className="h-5 w-5 text-gray-400 hover:text-gray-200 transition-colors" />
+              )}
+            </button>
+          </div>
+
+          {form.newPassword && (
+            <ul className="mt-3 text-sm text-gray-400 space-y-1">
+              {passwordCriteria.map((c) => (
+                <li key={c.label} className={c.valid ? "text-emerald-400" : "text-gray-500"}>
+                  {c.valid ? "✔️" : "❌"} {c.label}
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+
+        {/* Confirmation */}
+        <div className="relative group">
+          <label htmlFor="confirmPassword" className="block text-gray-200 mb-2 font-medium">
+            Confirmer le mot de passe
+          </label>
+          <div className="relative">
+            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+              <HiLockClosed className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-400 transition-colors" />
+            </div>
+            <input
+              id="confirmPassword"
+              type={showPassword.confirm ? "text" : "password"}
+              onChange={(e) => handleChange("confirmPassword", e.target.value)}
+              className={`w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 border transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
+                errors.confirmPassword ? "border-red-600" : "border-gray-700 hover:border-gray-600"
+              }`}
+            />
+            <button
+              type="button"
+              aria-label={showPassword.confirm ? "Masquer la confirmation du mot de passe" : "Afficher la confirmation du mot de passe"}
+              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200 hover:cursor-pointer"
+              onClick={() => setShowPassword((s) => ({ ...s, confirm: !s.confirm }))}
+            >
+              {showPassword.confirm ? (
+                <HiEyeOff className="h-5 w-5 text-gray-400 hover:text-gray-200 transition-colors" />
+              ) : (
+                <HiEye className="h-5 w-5 text-gray-400 hover:text-gray-200 transition-colors" />
+              )}
+            </button>
+          </div>
+          {errors.confirmPassword && (
+            <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>
+          )}
+        </div>
+      </div>
+
+      {/* === BOUTONS === */}
+      <div className="flex items-center justify-end gap-4 mt-8">
+        <button
+          type="button"
+          onClick={() => router.push("/profile")}
+          className="px-6 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium transition hover:cursor-pointer"
+        >
+          Annuler
+        </button>
+        <button
+          type="submit"
+          disabled={loading}
+          className="px-8 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition disabled:opacity-60 hover:cursor-pointer"
+        >
+          {loading ? "Mise à jour..." : "Enregistrer"}
+        </button>
+      </div>
+    </form>
+  );
+}

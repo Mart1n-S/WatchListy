@@ -92,12 +92,13 @@ export default function Footer() {
         {/* Newsletter */}
         <div className="border-t border-gray-800 pt-8 mb-8">
           <h4 className="font-semibold mb-2 text-gray-50">Newsletter</h4>
-          <p className="text-gray-300 mb-4 max-w-md">
+          <label htmlFor="newsletter" className="text-gray-300 mb-4 max-w-md">
             Abonnez-vous pour recevoir les dernières nouveautés, conseils et offres spéciales.
-          </p>
+          </label>
           <div className="flex flex-col sm:flex-row gap-3 max-w-md">
             <input
               type="email"
+              id="newsletter"
               placeholder="Votre email"
               className="flex-grow px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-gray-100 placeholder-gray-400
                          focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"

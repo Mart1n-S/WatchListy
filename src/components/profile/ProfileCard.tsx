@@ -1,6 +1,7 @@
 'use client';
 
 import Image from 'next/image';
+import { useRouter } from 'next/navigation';
 import { FiUser, FiCalendar, FiEdit3, FiFilm, FiTv } from 'react-icons/fi';
 import { useAppSelector } from '@/lib/redux/hooks';
 import { Genre } from '@/lib/redux/slices/genresSlice';
@@ -20,6 +21,7 @@ interface ProfileCardProps {
 }
 
 export default function ProfileCard({ user }: ProfileCardProps) {
+  const router = useRouter();
   const genres = useAppSelector((state) => state.genres);
 
   const getGenreName = (id: number, type: 'movie' | 'tv') => {
@@ -72,7 +74,6 @@ export default function ProfileCard({ user }: ProfileCardProps) {
                     </span>
                   </div>
                 )}
-
               </div>
 
               {/* === PRÉFÉRENCES === */}
@@ -128,8 +129,8 @@ export default function ProfileCard({ user }: ProfileCardProps) {
           <div className="flex-shrink-0">
             <button
               type="button"
-              className="px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 group relative overflow-hidden flex items-center gap-3"
-              onClick={() => alert('Fonctionnalité de modification à venir')}
+              className="px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 group relative overflow-hidden flex items-center gap-3 hover:cursor-pointer"
+              onClick={() => router.push("/profile/edit")}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
               <FiEdit3 className="w-5 h-5 relative" />

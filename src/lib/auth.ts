@@ -50,64 +50,39 @@ export const authOptions: NextAuthOptions = {
              * @throws Error avec message descriptif en cas d'échec
              */
             async authorize(credentials) {
-                try {
-                    // Validation des champs avec Zod
-                    const validatedFields = LoginSchema.safeParse(credentials);
-                    if (!validatedFields.success) {
-                        throw new Error("Champs invalides");
-                    }
+                const validatedFields = LoginSchema.safeParse(credentials);
+                if (!validatedFields.success) throw new Error("Champs invalides");
 
-                    const { email, password } = validatedFields.data;
+                const { email, password } = validatedFields.data;
+                const { db } = await connectToDatabase();
 
-                    // Connexion à MongoDB
-                    const { db } = await connectToDatabase();
+                const user = await db.collection("users").findOne({
+                    email: email.toLowerCase(),
+                });
 
-                    // Recherche de l’utilisateur (insensible à la casse)
-                    const user = await db.collection("users").findOne({
-                        email: email.toLowerCase(),
-                    });
+                if (!user) throw new Error("Aucun utilisateur trouvé avec cet email");
+                if (!user.verified_at) throw new Error("Votre adresse e-mail n’a pas encore été vérifiée");
+                if (user.blocked_at) throw new Error("Ce compte a été bloqué");
 
-                    if (!user) {
-                        throw new Error("Aucun utilisateur trouvé avec cet email");
-                    }
+                const isPasswordValid = await compare(password, user.password);
+                if (!isPasswordValid) throw new Error("Mot de passe incorrect");
 
-                    // Vérification que le compte est vérifié
-                    if (!user.verified_at) {
-                        throw new Error("Votre adresse e-mail n’a pas encore été vérifiée");
-                    }
-
-                    // Vérification que le compte n’est pas bloqué
-                    if (user.blocked_at) {
-                        throw new Error("Ce compte a été bloqué");
-                    }
-
-                    // Vérification du mot de passe
-                    const isPasswordValid = await compare(password, user.password);
-                    if (!isPasswordValid) {
-                        throw new Error("Mot de passe incorrect");
-                    }
-
-                    // Retourne l’objet utilisateur pour NextAuth
-                    return {
-                        id: user._id.toString(),
-                        email: user.email,
-                        name: user.pseudo,
-                        image: user.avatar,
-                        role: user.role || "user",
-                        createdAt: user.created_at?.toISOString(),
-                        preferences: user.preferences || { movies: [], tv: [] },
-                    };
-                } catch (error) {
-                    console.error("Erreur d’authentification :", error);
-                    throw error;
-                }
+                return {
+                    id: user._id.toString(),
+                    email: user.email,
+                    name: user.pseudo,
+                    image: user.avatar,
+                    role: user.role || "user",
+                    createdAt: user.created_at?.toISOString(),
+                    preferences: user.preferences || { movies: [], tv: [] },
+                };
             },
         }),
     ],
 
     session: {
         strategy: "jwt",
-        maxAge: 2 * 60 * 60, // 2 heures
+        maxAge: 2 * 60 * 60, // 2h
     },
 
     /**
@@ -116,20 +91,28 @@ export const authOptions: NextAuthOptions = {
      */
     callbacks: {
         /**
-         * Callback JWT - Exécuté quand un JWT est créé ou mis à jour
-         * Permet d'ajouter des claims personnalisés au token
-         * 
-         * @param token - Le token JWT actuel
-         * @param user - L'utilisateur (seulement lors de la connexion initiale)
-         * @returns Token JWT mis à jour
+         * JWT callback — met à jour le token
+         * gère les connexions ET les updates manuels depuis `update()`
          */
-        async jwt({ token, user }) {
+        async jwt({ token, user, trigger, session }) {
+            // Première connexion
             if (user) {
                 token.id = user.id;
                 token.role = user.role;
                 token.createdAt = user.createdAt;
                 token.preferences = user.preferences;
+                token.name = user.name;
+                token.email = user.email;
+                token.image = user.image;
             }
+
+            // Lorsqu'on appelle update() côté client
+            if (trigger === "update" && session?.user) {
+                token.name = session.user.name;
+                token.image = session.user.image;
+                token.preferences = session.user.preferences;
+            }
+
             return token;
         },
 
@@ -147,6 +130,9 @@ export const authOptions: NextAuthOptions = {
                 session.user.role = token.role as string;
                 session.user.createdAt = token.createdAt as string;
                 session.user.preferences = token.preferences;
+                session.user.name = token.name as string;
+                session.user.email = token.email as string;
+                session.user.image = token.image as string;
             }
             return session;
         },

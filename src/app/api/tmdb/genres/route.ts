@@ -2,28 +2,27 @@ import { NextResponse } from "next/server";
 
 const TMDB_BASE = process.env.TMDB_API_BASE!;
 const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN!;
-const ONE_DAY = 60 * 60 * 24;
 
-// Active le cache ISR côté serveur / CDN (Vercel)
-export const revalidate = ONE_DAY;
+// Revalidation tous les 24h
+export const revalidate = 60 * 60 * 24;
 
 export async function GET() {
     try {
-        // Les 2 requêtes TMDB parallèles avec cache serveur
+        // Les 2 requêtes TMDB parallèles avec cache côté serveur
         const [movieRes, tvRes] = await Promise.all([
             fetch(`${TMDB_BASE}/genre/movie/list?language=fr`, {
                 headers: {
                     Authorization: `Bearer ${TMDB_TOKEN}`,
                     Accept: "application/json",
                 },
-                next: { revalidate: ONE_DAY }, // cache 24h
+                next: { revalidate: 60 * 60 * 24 }, // cache 24h
             }),
             fetch(`${TMDB_BASE}/genre/tv/list?language=fr`, {
                 headers: {
                     Authorization: `Bearer ${TMDB_TOKEN}`,
                     Accept: "application/json",
                 },
-                next: { revalidate: ONE_DAY },
+                next: { revalidate: 60 * 60 * 24 },
             }),
         ]);
 
@@ -43,7 +42,7 @@ export async function GET() {
             },
             {
                 headers: {
-                    "Cache-Control": `public, s-maxage=${ONE_DAY}, stale-while-revalidate`,
+                    "Cache-Control": "public, s-maxage=86400, stale-while-revalidate",
                 },
             }
         );

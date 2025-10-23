@@ -76,7 +76,7 @@ export default function Header() {
                 await signOut({ callbackUrl: "/" });
                 dispatch(clearUser());
               }}
-              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-red-500/20 hover:shadow-red-500/30 group relative overflow-hidden hover:cursor-pointer"
+              className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-red-500/20 hover:shadow-red-500/30 group relative overflow-hidden hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900"
             >
               <span className="relative">Déconnexion</span>
             </button>

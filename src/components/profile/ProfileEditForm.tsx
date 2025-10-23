@@ -148,11 +148,13 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
                 <label
                   key={a}
                   htmlFor={id}
-                  className={`relative rounded-2xl p-2 flex flex-col items-center transition cursor-pointer border-2 ${
-                    isSelected
+                  className={`relative rounded-2xl p-2 flex flex-col items-center transition-all cursor-pointer border-2
+                    ${isSelected
                       ? "border-indigo-500 bg-gray-800/70 ring-2 ring-indigo-600"
                       : "border-gray-700 hover:border-indigo-400/50 hover:bg-gray-800/40"
-                  }`}
+                    }
+                    focus-within:ring-2 focus-within:ring-indigo-400 focus-within:ring-offset-2 focus-within:ring-offset-gray-900
+                  `}
                 >
                   <input
                     type="radio"
@@ -191,7 +193,7 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
           type="text"
           value={form.pseudo ?? ""}
           onChange={(e) => handleChange("pseudo", e.target.value)}
-          className={`w-full bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors ${
+          className={`w-full bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none transition-colors ${
             errors.pseudo ? "border-red-600" : "border-gray-700 hover:border-gray-600"
           }`}
         />
@@ -215,11 +217,11 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
                 <label
                   key={g.id}
                   htmlFor={id}
-                  className={`px-3 py-1 rounded-full text-sm cursor-pointer transition ${
+                  className={`px-3 py-1 rounded-full text-sm cursor-pointer transition-all ${
                     isActive
                       ? "bg-indigo-600 text-white"
                       : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                  }`}
+                  } focus-within:ring-2 focus-within:ring-indigo-400 focus-within:ring-offset-2 focus-within:ring-offset-gray-900`}
                 >
                   <input
                     id={id}
@@ -258,11 +260,11 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
                 <label
                   key={g.id}
                   htmlFor={id}
-                  className={`px-3 py-1 rounded-full text-sm cursor-pointer transition ${
+                  className={`px-3 py-1 rounded-full text-sm cursor-pointer transition-all ${
                     isActive
                       ? "bg-emerald-600 text-white"
                       : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                  }`}
+                  } focus-within:ring-2 focus-within:ring-emerald-400 focus-within:ring-offset-2 focus-within:ring-offset-gray-900`}
                 >
                   <input
                     id={id}
@@ -301,14 +303,14 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
               id="oldPassword"
               type={showPassword.old ? "text" : "password"}
               onChange={(e) => handleChange("oldPassword", e.target.value)}
-              className={`w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 border transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
+              className={`w-full pl-10 pr-12 bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none transition-colors ${
                 errors.oldPassword ? "border-red-600" : "border-gray-700 hover:border-gray-600"
               }`}
             />
             <button
               type="button"
               aria-label={showPassword.old ? "Masquer l'ancien mot de passe" : "Afficher l'ancien mot de passe"}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200 hover:cursor-pointer"
+              className="absolute inset-y-0 right-0 p-3 flex items-center rounded-full focus:outline-none focus:ring-0 focus:border-2 focus:border-indigo-500 transition-colors"
               onClick={() => setShowPassword((s) => ({ ...s, old: !s.old }))}
             >
               {showPassword.old ? (
@@ -336,14 +338,14 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
               id="newPassword"
               type={showPassword.new ? "text" : "password"}
               onChange={(e) => handleChange("newPassword", e.target.value)}
-              className={`w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 border transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
+              className={`w-full pl-10 pr-12 bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none transition-colors ${
                 errors.newPassword ? "border-red-600" : "border-gray-700 hover:border-gray-600"
               }`}
             />
             <button
               type="button"
               aria-label={showPassword.new ? "Masquer le nouveau mot de passe" : "Afficher le nouveau mot de passe"}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200 hover:cursor-pointer"
+              className="absolute inset-y-0 right-0 p-3 flex items-center rounded-full focus:outline-none focus:ring-0 focus:border-2 focus:border-indigo-500 transition-colors"
               onClick={() => setShowPassword((s) => ({ ...s, new: !s.new }))}
             >
               {showPassword.new ? (
@@ -378,14 +380,14 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
               id="confirmPassword"
               type={showPassword.confirm ? "text" : "password"}
               onChange={(e) => handleChange("confirmPassword", e.target.value)}
-              className={`w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 border transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
+              className={`w-full pl-10 pr-12 bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none transition-colors ${
                 errors.confirmPassword ? "border-red-600" : "border-gray-700 hover:border-gray-600"
               }`}
             />
             <button
               type="button"
               aria-label={showPassword.confirm ? "Masquer la confirmation du mot de passe" : "Afficher la confirmation du mot de passe"}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200 hover:cursor-pointer"
+              className="absolute inset-y-0 right-0 p-3 flex items-center rounded-full focus:outline-none focus:ring-0 focus:border-2 focus:border-indigo-500 transition-colors"
               onClick={() => setShowPassword((s) => ({ ...s, confirm: !s.confirm }))}
             >
               {showPassword.confirm ? (
@@ -406,14 +408,14 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
         <button
           type="button"
           onClick={() => router.push("/profile")}
-          className="px-6 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium transition hover:cursor-pointer"
+          className="px-6 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium transition hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"
         >
           Annuler
         </button>
         <button
           type="submit"
           disabled={loading}
-          className="px-8 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition disabled:opacity-60 hover:cursor-pointer"
+          className="px-8 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition disabled:opacity-60 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"
         >
           {loading ? "Mise à jour..." : "Enregistrer"}
         </button>

@@ -129,7 +129,7 @@ export default function ProfileCard({ user }: ProfileCardProps) {
           <div className="flex-shrink-0">
             <button
               type="button"
-              className="px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 group relative overflow-hidden flex items-center gap-3 hover:cursor-pointer"
+              className="px-8 py-3 rounded-xl bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30 group relative overflow-hidden flex items-center gap-3 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"
               onClick={() => router.push("/profile/edit")}
             >
               <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>

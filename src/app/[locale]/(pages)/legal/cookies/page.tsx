@@ -1,125 +1,124 @@
+import { getTranslations } from "next-intl/server";
 import type { Metadata } from "next";
-import BackgroundCinematic from "@/components/ui/BackgroundCinematic";
 import Link from "next/link";
+import BackgroundCinematic from "@/components/ui/BackgroundCinematic";
 
-export const metadata: Metadata = {
-  title: "Cookies",
-  description: "Informations sur les cookies utilisés par WatchListy et comment gérer vos préférences.",
-};
+// --- Traduction dynamique des métadonnées ---
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "cookies.meta" });
 
-export default function CookiesPage() {
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
+
+export default async function CookiesPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "cookies" });
+
+  const getLocalizedPath = (href: string) => {
+    if (href === "/") return `/${locale}`;
+    return `/${locale}${href}`;
+  };
+
   return (
     <div className="relative">
       <BackgroundCinematic />
       <section className="mx-auto w-full max-w-4xl px-4 sm:px-6 lg:px-8 py-16">
         <header>
-          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">Cookies</h1>
+          <h1 className="text-3xl sm:text-4xl font-semibold tracking-tight text-white">
+            {t("title")}
+          </h1>
           <p className="mt-3 text-slate-300 max-w-2xl">
-            Version du 9 octobre 2025 — Cette page décrit les cookies et autres traceurs utilisés par WatchListy,
-            pourquoi nous les utilisons et comment gérer vos préférences.
+            {t("subtitle")}
           </p>
         </header>
 
         <div className="mt-8 space-y-6 text-slate-300">
+          {/* Section 1: Qu'est-ce qu'un cookie ? */}
           <section className="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6">
-            <h2 className="text-lg font-semibold text-white">1) Qu’est‑ce qu’un cookie ?</h2>
-            <p className="mt-2 text-slate-300">
-              Un cookie est un petit fichier texte stocké par votre navigateur. Il peut être utilisé pour
-              faire fonctionner le site, mémoriser des préférences ou mesurer l’usage.
-            </p>
+            <h2 className="text-lg font-semibold text-white">{t("definition.title")}</h2>
+            <p className="mt-2 text-slate-300">{t("definition.text")}</p>
           </section>
 
+          {/* Section 2: Principe général adopté */}
           <section className="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6">
-            <h2 className="text-lg font-semibold text-white">2) Principe général adopté</h2>
-            <p className="mt-2 text-slate-300">
-              Pour ce projet de cours nous :
-            </p>
+            <h2 className="text-lg font-semibold text-white">{t("principles.title")}</h2>
+            <p className="mt-2 text-slate-300">{t("principles.intro")}</p>
             <ul className="mt-2 list-disc list-inside text-slate-300 space-y-1">
-              <li>Ne transférons pas de données en dehors de l’Union européenne.</li>
-              <li>N’activons pas de cookies tiers de suivi sans consentement explicite.</li>
-              <li>Laissons l’utilisateur contrôler ses préférences via une bannière / panneau de préférences.</li>
+              {t.raw("principles.items").map((item: string, index: number) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
           </section>
 
+          {/* Section 3: Types de cookies utilisés */}
           <section className="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6">
-            <h2 className="text-lg font-semibold text-white">3) Types de cookies utilisés</h2>
+            <h2 className="text-lg font-semibold text-white">{t("types.title")}</h2>
             <ul className="mt-2 list-disc list-inside text-slate-300 space-y-2">
-              <li>
-                <strong>Cookies strictement nécessaires :</strong> session (authentification côté serveur), préférences d’affichage.
-              </li>
-              <li>
-                <strong>Cookies de performance :</strong> mesures anonymisées pour améliorer l’app (activés uniquement si consentement).
-              </li>
-              <li>
-                <strong>Cookies fonctionnels / tiers optionnels :</strong> ex. services de partage ou CMP (Axeptio) — activés après consentement.
-              </li>
+              {t.raw("types.items").map((item: { name: string; description: string }, index: number) => (
+                <li key={index}>
+                  <strong>{item.name}</strong>: {item.description}
+                </li>
+              ))}
             </ul>
           </section>
 
+          {/* Section 4: Exemples */}
           <section className="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6">
-            <h2 className="text-lg font-semibold text-white">4) Exemples</h2>
+            <h2 className="text-lg font-semibold text-white">{t("examples.title")}</h2>
             <div className="mt-3 space-y-3 text-sm text-slate-300">
-              <div className="rounded-md p-3 bg-slate-950/30 border border-slate-800/60">
-                <p className="font-medium text-slate-200">Session (cookie serveur)</p>
-                <p className="mt-1 text-slate-400">
-                  Finalité : maintenir la session utilisateur (connexion). Type : cookie HttpOnly recommandé.
-                  Durée : session ou durée définie côté serveur (ex. 7 jours).
-                </p>
-              </div>
-
-              <div className="rounded-md p-3 bg-slate-950/30 border border-slate-800/60">
-                <p className="font-medium text-slate-200">CMP (ex. Axeptio) — optionnel</p>
-                <p className="mt-1 text-slate-400">
-                  Finalité : gestion du consentement. Durée : dépend du fournisseur. À activer uniquement si utilisé.
-                </p>
-              </div>
+              {t.raw("examples.items").map((item: { title: string; description: string }, index: number) => (
+                <div key={index} className="rounded-md p-3 bg-slate-950/30 border border-slate-800/60">
+                  <p className="font-medium text-slate-200">{item.title}</p>
+                  <p className="mt-1 text-slate-400">{item.description}</p>
+                </div>
+              ))}
             </div>
           </section>
 
+          {/* Section 5: Consentement et gestion */}
           <section className="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6">
-            <h2 className="text-lg font-semibold text-white">5) Consentement et gestion</h2>
-            <p className="mt-2 text-slate-300">
-              À la première visite, une bannière permet d’accepter/refuser les cookies non‑nécessaires. Les choix sont enregistrés
-              (ex. cookie technique ou localStorage) et peuvent être modifiés via le centre de préférences.
-            </p>
-
-            <p className="mt-3 text-sm text-slate-400">
-              Remarque technique : n’injecte pas de scripts tiers (analytics, widgets) tant que le consentement correspondant n’a pas été donné.
-            </p>
+            <h2 className="text-lg font-semibold text-white">{t("consent.title")}</h2>
+            <p className="mt-2 text-slate-300">{t("consent.text")}</p>
+            <p className="mt-3 text-sm text-slate-400">{t("consent.note")}</p>
           </section>
 
+          {/* Section 6: Comment désactiver les cookies via le navigateur */}
           <section className="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6">
-            <h2 className="text-lg font-semibold text-white">6) Comment désactiver les cookies via le navigateur</h2>
-            <p className="mt-2 text-slate-300">
-              Vous pouvez configurer votre navigateur pour refuser les cookies. Voici les chemins généraux (varient selon versions) :
-            </p>
+            <h2 className="text-lg font-semibold text-white">{t("browser.title")}</h2>
+            <p className="mt-2 text-slate-300">{t("browser.intro")}</p>
             <ul className="mt-2 list-disc list-inside text-slate-300 space-y-1 text-sm">
-              <li>Chrome : Paramètres → Confidentialité et sécurité → Cookies.</li>
-              <li>Firefox : Options → Vie privée et sécurité → Cookies et données de sites.</li>
-              <li>Safari : Préférences → Confidentialité → Bloquer tous les cookies.</li>
-              <li>Edge : Paramètres → Cookies et autorisations de site.</li>
+              {t.raw("browser.steps").map((item: string, index: number) => (
+                <li key={index}>{item}</li>
+              ))}
             </ul>
-            <p className="mt-2 text-xs text-slate-500">La désactivation peut affecter certaines fonctionnalités.</p>
+            <p className="mt-2 text-xs text-slate-500">{t("browser.warning")}</p>
           </section>
 
+          {/* Section 7: Vos droits */}
           <section className="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6">
-            <h2 className="text-lg font-semibold text-white">7) Vos droits</h2>
+            <h2 className="text-lg font-semibold text-white">{t("rights.title")}</h2>
             <p className="mt-2 text-slate-300">
-              Vous pouvez retirer votre consentement, demander l’accès ou la suppression de vos données. Pour cela, utilisez la{" "}
-              <Link href="/contact" className="text-sky-400 hover:text-sky-300 underline">page Contact</Link> ou l’email indiqué dans la Politique de confidentialité.
+              {t("rights.text")}{" "}
+              <Link href={getLocalizedPath("/contact")} className="text-sky-400 hover:text-sky-300 underline">
+                {t("rights.contact")}
+              </Link>
+              {t("rights.email")}
             </p>
-            <p className="mt-2 text-xs text-slate-500">En France, l’autorité compétente est la CNIL.</p>
+            <p className="mt-2 text-xs text-slate-500">{t("rights.authority")}</p>
           </section>
 
+          {/* Section 8: Mise à jour de la page */}
           <section className="rounded-2xl border border-slate-800/60 bg-slate-900/40 p-6">
-            <h2 className="text-lg font-semibold text-white">8) Mise à jour de la page</h2>
-            <p className="mt-2 text-slate-300">
-              Nous pouvons modifier cette page. La date de révision en haut de la page sera mise à jour en conséquence.
-            </p>
+            <h2 className="text-lg font-semibold text-white">{t("updates.title")}</h2>
+            <p className="mt-2 text-slate-300">{t("updates.text")}</p>
           </section>
 
           <p className="text-xs text-slate-500">
-                        Ce document est fourni à titre indicatif et ne remplace pas un avis juridique. Il sert juste pour le projet de cours ESGI tout cela reste à titre d’exemple et fictif.
+            {t("disclaimer")}
           </p>
         </div>
       </section>

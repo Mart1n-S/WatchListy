@@ -44,6 +44,7 @@
       }
     }
   },
+
   "about": {
     "meta": {
       "title": "About",
@@ -93,6 +94,420 @@
       "link": "Contact page"
     }
   },
+
+  "accessibility": {
+    "meta": {
+      "title": "Accessibility Statement",
+      "description": "Accessibility statement and information for reporting barriers on the application."
+    },
+    "title": "Accessibility Statement",
+    "subtitle": "Version of October 9, 2025 — This page describes our accessibility commitments, current limitations and how to report an issue.",
+    "commitment": {
+      "title": "1) Our commitment",
+      "text": "We strive to make this application accessible to as many people as possible. We aim for WCAG 2.1 AA compliance level when reasonably possible. However, we acknowledge that the application is not guaranteed to be 100% accessible today."
+    },
+    "implemented": {
+      "title": "2) What is already implemented",
+      "items": [
+        "Semantic HTML structure (titles, headings, lists).",
+        "Keyboard navigation for main elements (menus, forms).",
+        "Color contrasts tested for most components.",
+        "Alt attributes on informative images when provided.",
+        "Minimal ARIA semantics where needed (roles and labels).",
+        "Visible focus and basic focus management after major interactions."
+      ]
+    },
+    "limitations": {
+      "title": "3) Known limitations",
+      "intro": "Despite our efforts, we have identified (or estimate possible) the following limitations:",
+      "items": [
+        "Complex visual components (graphics, canvas, animations) that may interfere with some screen readers or cause distractions.",
+        "Dynamic content loaded after interaction (modals, asynchronous content) that may require ARIA announcements and focus management improvements.",
+        "Complex forms where some labels or descriptions may be missing or insufficient.",
+        "Multimedia (video/audio) does not systematically have subtitles or complete transcripts.",
+        "Possible contrast issues on custom themes or with user content."
+      ],
+      "report": "If you encounter a specific barrier, please report it — see the Report a Problem section below."
+    },
+    "testing": {
+      "title": "4) How we test",
+      "intro": "Our tests include:",
+      "methods": [
+        "Automatic audits (Lighthouse, axe-core) on main pages.",
+        "Manual keyboard tests and with popular screen readers (NVDA, VoiceOver) on critical flows.",
+        "Contrast checks and UI component reviews."
+      ],
+      "conclusion": "We keep test reports and prioritize fixes based on user impact and technical feasibility."
+    },
+    "roadmap": {
+      "title": "5) Improvement roadmap",
+      "items": [
+        "Fix critical issues identified by axe-core and Lighthouse on creation and registration pages.",
+        "Add ARIA announcements and improve focus management for modals and dynamic content.",
+        "Transcribe/caption important video content.",
+        "Improve form accessibility (explicit labels, accessible errors).",
+        "Conduct user testing with people with disabilities for essential flows."
+      ]
+    },
+    "mitigation": {
+      "title": "6) Mitigation measures and tips",
+      "intro": "While waiting for fixes, here are some tips to work around certain obstacles:",
+      "tips": [
+        "Use tab navigation and browser search to quickly reach sections.",
+        "If an image or media lacks description, activate the browser's reader mode or request transcription via contact.",
+        "If a form doesn't focus on an error, go directly to required fields and use Ctrl/Cmd+F to find labels."
+      ]
+    },
+    "reporting": {
+      "title": "7) Report a problem",
+      "intro": "If you encounter an accessibility barrier, please provide us with the following information:",
+      "info": [
+        "URL (or specific step) where the problem occurs.",
+        "Description of the problem and its impact.",
+        "Operating system, browser and screen reader (if known).",
+        "Screenshot or recording if possible."
+      ],
+      "contact": {
+        "text": "To report:",
+        "link": "Contact page"
+      }
+    },
+    "response": {
+      "title": "8) Response commitment",
+      "text": "We acknowledge receipt of reports within 5 business days and provide a response or action plan within 30 business days when possible. If your report requires urgent action (e.g., complete inability to use an essential flow), please indicate this clearly for prioritization."
+    },
+    "technical": {
+      "title": "9) Technical accessibility — concrete points for developers",
+      "points": [
+        "Check DOM order to respect visual order.",
+        "Add explicit labels for all form controls.",
+        "Manage focus: set focus on open modals and restore it on close.",
+        "Use role, aria-label and aria-describedby only when necessary and correctly.",
+        "Provide text alternatives for all non-text content.",
+        "Avoid excessive animations or provide a way to reduce them (prefers-reduced-motion)."
+      ]
+    },
+    "disclaimer": "This document is provided for informational purposes only and does not replace legal advice. It is only for the ESGI course project, all of this remains as an example and fictional."
+  },
+
+  "cookies": {
+    "meta": {
+      "title": "Cookies",
+      "description": "Information about cookies used by WatchListy and how to manage your preferences."
+    },
+    "title": "Cookies",
+    "subtitle": "Version of October 9, 2025 — This page describes the cookies and other trackers used by WatchListy, why we use them and how to manage your preferences.",
+    "definition": {
+      "title": "1) What is a cookie?",
+      "text": "A cookie is a small text file stored by your browser. It can be used to make the site work, remember preferences or measure usage."
+    },
+    "principles": {
+      "title": "2) General principle adopted",
+      "intro": "For this course project we:",
+      "items": [
+        "Do not transfer data outside the European Union.",
+        "Do not enable third-party tracking cookies without explicit consent.",
+        "Allow users to control their preferences via a banner / preference panel."
+      ]
+    },
+    "types": {
+      "title": "3) Types of cookies used",
+      "items": [
+        {
+          "name": "Strictly necessary cookies",
+          "description": "session (server-side authentication), display preferences."
+        },
+        {
+          "name": "Performance cookies",
+          "description": "anonymized measurements to improve the app (enabled only with consent)."
+        },
+        {
+          "name": "Functional / optional third-party cookies",
+          "description": "e.g. sharing services or CMP (Axeptio) — enabled after consent."
+        }
+      ]
+    },
+    "examples": {
+      "title": "4) Examples",
+      "items": [
+        {
+          "title": "Session (server cookie)",
+          "description": "Purpose: maintain user session (login). Type: HttpOnly cookie recommended. Duration: session or defined server-side (e.g. 7 days)."
+        },
+        {
+          "title": "CMP (e.g. Axeptio) — optional",
+          "description": "Purpose: consent management. Duration: depends on provider. To be enabled only if used."
+        }
+      ]
+    },
+    "consent": {
+      "title": "5) Consent and management",
+      "text": "On first visit, a banner allows you to accept/refuse non-essential cookies. Choices are saved (e.g. technical cookie or localStorage) and can be modified via the preference center.",
+      "note": "Technical note: do not inject third-party scripts (analytics, widgets) until the corresponding consent has been given."
+    },
+    "browser": {
+      "title": "6) How to disable cookies via the browser",
+      "intro": "You can configure your browser to refuse cookies. Here are the general paths (vary by version):",
+      "steps": [
+        "Chrome: Settings → Privacy and security → Cookies.",
+        "Firefox: Options → Privacy & Security → Cookies and Site Data.",
+        "Safari: Preferences → Privacy → Block all cookies.",
+        "Edge: Settings → Cookies and site permissions."
+      ],
+      "warning": "Disabling may affect some functionality."
+    },
+    "rights": {
+      "title": "7) Your rights",
+      "text": "You can withdraw your consent, request access to or deletion of your data. To do this, use the",
+      "contact": "Contact page",
+      "email": " or the email indicated in the Privacy Policy.",
+      "authority": "In France, the competent authority is the CNIL."
+    },
+    "updates": {
+      "title": "8) Page updates",
+      "text": "We may modify this page. The revision date at the top of the page will be updated accordingly."
+    },
+    "disclaimer": "This document is provided for informational purposes only and does not replace legal advice. It is only for the ESGI course project, all of this remains as an example and fictional."
+  },
+
+  "privacy": {
+    "meta": {
+      "title": "Privacy Policy",
+      "description": "WatchListy's Privacy Policy: what data we collect, why, how we protect it, and what your rights are."
+    },
+    "title": "Privacy Policy",
+    "version": "Version of October 9, 2025",
+    "intro": "We respect your privacy. This page explains what data we collect, why we use it, how long we keep it, and how you can exercise your rights.",
+    "controller": {
+      "title": "1) Data Controller",
+      "text": "The data controller is:",
+      "name": "WatchListy",
+      "contact": "Contact:"
+    },
+    "data": {
+      "title": "2) Data Collected",
+      "items": [
+        {
+          "type": "Account data",
+          "description": "email address, name (optional), password (hashed)."
+        },
+        {
+          "type": "Usage data",
+          "description": "created lists, preferences, interactions with the application."
+        },
+        {
+          "type": "Support data",
+          "description": "messages sent via the contact form."
+        }
+      ]
+    },
+    "purposes": {
+      "title": "3) Purposes and Legal Bases",
+      "intro": "We process your data for the following purposes:",
+      "items": [
+        {
+          "purpose": "Provide the service",
+          "legal": "creation and management of your account (contract execution)."
+        },
+        {
+          "purpose": "Service improvement",
+          "legal": "anonymized analytics and audience measurement (legitimate interest or consent for certain trackers)."
+        },
+        {
+          "purpose": "Support",
+          "legal": "respond to your requests via the contact form (contract execution / legitimate interest)."
+        },
+        {
+          "purpose": "Security",
+          "legal": "fraud prevention and account protection (legitimate interest)."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "4) Cookies and Trackers",
+      "text": "We use strictly necessary cookies for the session and, if you accept them, audience measurement cookies. You can manage your preferences via the preference center (or cookie banner).",
+      "moreInfo": "For more details, see our",
+      "link": "Cookie Policy"
+    },
+    "recipients": {
+      "title": "5) Data Recipients",
+      "intro": "Your data may be shared with:",
+      "items": [
+        "Technical providers (hosting, monitoring, email sending) under subcontracting agreements.",
+        "Competent authorities if required by law."
+      ],
+      "guarantees": "We require our providers to provide security guarantees compliant with GDPR."
+    },
+    "transfers": {
+      "title": "6) Transfers Outside the European Union",
+      "text": "If data is transferred outside the European Union, we ensure that an adequate level of protection is guaranteed (standard contractual clauses, adequacy decisions, or other GDPR-compliant safeguards)."
+    },
+    "retention": {
+      "title": "7) Retention Period",
+      "items": [
+        {
+          "type": "Account data",
+          "duration": "retained as long as the account exists or according to legal obligations."
+        },
+        {
+          "type": "Usage data and logs",
+          "duration": "retained in pseudonymized or aggregated form for a reasonable period for the stated purposes (e.g. 12-36 months depending on the type of log)."
+        },
+        {
+          "type": "Contact data (support)",
+          "duration": "retained for case management, then archived according to legal requirements."
+        }
+      ]
+    },
+    "security": {
+      "title": "8) Security",
+      "text": "We implement appropriate technical and organizational measures to protect your data (password encryption, restricted access, backups, incident monitoring). Despite this, no system is invulnerable: report any anomaly immediately."
+    },
+    "rights": {
+      "title": "9) Your Rights",
+      "intro": "In accordance with GDPR, you have the following rights:",
+      "items": [
+        {
+          "name": "Right of access",
+          "description": "obtain a copy of the data we hold about you."
+        },
+        {
+          "name": "Right to rectification",
+          "description": "correct inaccurate or incomplete data."
+        },
+        {
+          "name": "Right to erasure",
+          "description": "request deletion of your data, subject to legal obligations."
+        },
+        {
+          "name": "Right to restriction of processing",
+          "description": ""
+        },
+        {
+          "name": "Right to object to processing",
+          "description": "for legitimate reasons."
+        },
+        {
+          "name": "Right to data portability",
+          "description": "when processing is based on your consent or a contract."
+        },
+        {
+          "name": "Right to withdraw your consent",
+          "description": "(where applicable) without affecting the lawfulness of previous processing."
+        }
+      ],
+      "contact": {
+        "text": "To exercise your rights, contact us:"
+      },
+      "complaint": " You can also file a complaint with the supervisory authority (in France: the CNIL)."
+    },
+    "modifications": {
+      "title": "10) Modifications",
+      "text": "We may update this policy. The revision date at the top of the page will be modified accordingly. In case of substantial changes, we will notify logged-in users."
+    },
+    "contact": {
+      "title": "11) Contact",
+      "text": "For any questions regarding data protection, write to:"
+    },
+    "disclaimer": "This document is provided for informational purposes only and does not replace legal advice. It is only for the ESGI course project, all of this remains as an example and fictional."
+  },
+
+  "terms": {
+    "meta": {
+      "title": "Terms of Service",
+      "description": "WatchListy Terms of Service: access rules, usage, intellectual property, liability, privacy and contact."
+    },
+    "title": "Terms of Service",
+    "version": "Version of October 9, 2025",
+    "object": {
+      "title": "1) Purpose",
+      "text": "These Terms of Service (the \"Terms\") govern access to and use of the WatchListy application (the \"Service\"). By accessing the Service, you accept these Terms."
+    },
+    "definitions": {
+      "title": "2) Definitions",
+      "items": [
+        {
+          "term": "User",
+          "definition": "any person accessing the Service."
+        },
+        {
+          "term": "Content",
+          "definition": "any information (text, image, list, link) published via the Service."
+        },
+        {
+          "term": "Account",
+          "definition": "personal space allowing use of features."
+        }
+      ]
+    },
+    "acceptance": {
+      "title": "3) Acceptance and modifications",
+      "text": "Use of the Service constitutes acceptance of the Terms. We may modify them at any time. In case of substantial changes, a notification may be displayed in the application. Continued use after publication constitutes acceptance of the revised Terms."
+    },
+    "eligibility": {
+      "title": "4) Eligibility",
+      "text": "The Service is reserved for persons aged 16 and over. If you are between 16 and 18 years old, you declare that you use the Service with the agreement of a legal representative."
+    },
+    "account": {
+      "title": "5) Account and security",
+      "items": [
+        "You must provide accurate information and keep it up to date.",
+        "You are responsible for the confidentiality of your credentials and any activity carried out via your account.",
+        "Notify us immediately in case of unauthorized use."
+      ]
+    },
+    "usage": {
+      "title": "6) Acceptable use",
+      "items": [
+        "Do not violate the law or third-party rights (copyright, trademarks, privacy).",
+        "Do not publish illegal, offensive, hateful, or misleading content.",
+        "Do not attempt to access the Service or its systems without authorization.",
+        "Do not massively scrape or overload the infrastructure."
+      ]
+    },
+    "content": {
+      "title": "7) User content",
+      "text": "You remain the owner of your Content. You grant us a worldwide, non-exclusive, free and revocable license to host, display and distribute your Content solely for the purpose of operating the Service. You guarantee that you have the necessary rights to the published Content."
+    },
+    "intellectual": {
+      "title": "8) Intellectual property",
+      "text": "The Service, its graphic design, logos, code and databases are protected. Any unauthorized reproduction, modification or exploitation is prohibited."
+    },
+    "thirdparty": {
+      "title": "9) Third-party services and links",
+      "text": "The Service may contain links to third-party sites. We do not endorse their content and assume no responsibility for their practices. Always check their own terms."
+    },
+    "privacy": {
+      "title": "10) Privacy and cookies",
+      "text": "Your data is processed in accordance with our",
+      "policy": "Privacy Policy",
+      "and": "and our",
+      "cookies": "Cookie Policy"
+    },
+    "availability": {
+      "title": "11) Availability and maintenance",
+      "text": "We aim for high availability but cannot guarantee it. The Service may be interrupted for maintenance, updates or technical incidents."
+    },
+    "liability": {
+      "title": "12) Liability",
+      "text": "The Service is provided \"as is\". To the extent permitted by law, our liability is limited to direct and foreseeable damages. We cannot be held responsible for indirect losses, data or usage."
+    },
+    "termination": {
+      "title": "13) Termination",
+      "text": "You can delete your Account at any time. We may suspend or terminate access in case of violation of these Terms or for security reasons."
+    },
+    "law": {
+      "title": "14) Applicable law and disputes",
+      "text": "These Terms are governed by French law. In case of dispute, an amicable solution will be sought before any action. Failing that, the competent courts will be those determined by law."
+    },
+    "contact": {
+      "title": "15) Contact",
+      "text": "For any questions, you can write to us via the",
+      "link": "Contact page"
+    },
+    "disclaimer": "This document is provided for informational purposes only and does not replace legal advice. It is only for the ESGI course project, all of this remains as an example and fictional."
+  },
+
   "home": {
     "hero": {
       "badge": "New — Smart movie management",

@@ -44,6 +44,7 @@
       }
     }
   },
+
   "about": {
     "meta": {
       "title": "À propos",
@@ -93,6 +94,420 @@
       "link": "page Contact"
     }
   },
+
+  "accessibility": {
+    "meta": {
+      "title": "Déclaration d'accessibilité",
+      "description": "Déclaration d'accessibilité et informations pour signaler des obstacles sur l'application."
+    },
+    "title": "Déclaration d'accessibilité",
+    "subtitle": "Version du 9 octobre 2025 — Cette page décrit nos engagements en matière d'accessibilité, les limitations actuelles et la manière de signaler un problème.",
+    "commitment": {
+      "title": "1) Notre engagement",
+      "text": "Nous nous efforçons de rendre cette application accessible au plus grand nombre. Nous visons un niveau de conformité WCAG 2.1 AA lorsque cela est raisonnablement possible. Cependant, nous reconnaissons que l'application n'est pas garantie comme 100% accessible aujourd'hui."
+    },
+    "implemented": {
+      "title": "2) Ce qui est déjà mis en place",
+      "items": [
+        "Structure HTML sémantique (titles, headings, lists).",
+        "Navigation clavier pour les éléments principaux (menus, formulaires).",
+        "Contrastes de couleurs testés pour la plupart des composants.",
+        "Attributs alt sur les images informatives lorsque fournis.",
+        "Sémantique ARIA minimale là où nécessaire (rôles et labels).",
+        "Focus visible et gestion basique du focus après interactions majeures."
+      ]
+    },
+    "limitations": {
+      "title": "3) Limitations connues",
+      "intro": "Malgré nos efforts, nous avons identifié (ou estimons possibles) les limitations suivantes :",
+      "items": [
+        "Composants visuels complexes (graphismes, canvas, animations) pouvant gêner certains lecteurs d'écran ou provoquer des distractions.",
+        "Contenus dynamiques chargés après interaction (modals, contenus asynchrones) pouvant nécessiter des améliorations d'annonces ARIA et de gestion du focus.",
+        "Formulaires complexes où certains labels ou descriptions peuvent manquer ou être insuffisants.",
+        "Multimédia (vidéo/audio) n'a pas systématiquement de sous-titres ou de transcriptions complètes.",
+        "Possibles problèmes de contraste sur des thèmes personnalisés ou avec du contenu utilisateur."
+      ],
+      "report": "Si vous rencontrez un obstacle précis, merci de le signaler — voir la section Signaler un problème ci‑dessous."
+    },
+    "testing": {
+      "title": "4) Comment nous testons",
+      "intro": "Nos tests incluent :",
+      "methods": [
+        "Audits automatiques (Lighthouse, axe-core) sur les pages principales.",
+        "Tests manuels au clavier et avec lecteurs d'écran populaires (NVDA, VoiceOver) sur les flux critiques.",
+        "Vérifications de contraste et revue des composants UI."
+      ],
+      "conclusion": "Nous conservons les rapports de test et priorisons les corrections en fonction de l'impact utilisateur et de la faisabilité technique."
+    },
+    "roadmap": {
+      "title": "5) Feuille de route d'amélioration",
+      "items": [
+        "Corriger les problèmes critiques identifiés par axe-core et Lighthouse sur les pages de création et d'inscription.",
+        "Ajouter des annonces ARIA et améliorer la gestion du focus pour les modals et contenus dynamiques.",
+        "Transcrire / sous-titrer le contenu vidéo important.",
+        "Améliorer l'accessibilité des formulaires (labels explicites, erreurs accessibles).",
+        "Effectuer des tests utilisateurs avec personnes en situation de handicap pour les flux essentiels."
+      ]
+    },
+    "mitigation": {
+      "title": "6) Mesures d'atténuation et conseils",
+      "intro": "En attendant les corrections, voici des astuces pour contourner certains obstacles :",
+      "tips": [
+        "Utiliser la navigation par onglets et la recherche du navigateur pour atteindre rapidement des sections.",
+        "Si une image ou un média manque de description, activez le mode lecteur du navigateur ou demandez la transcription via contact.",
+        "Si un formulaire ne met pas le focus sur une erreur, passez directement aux champs requis et utilisez Ctrl/Cmd+F pour trouver les labels."
+      ]
+    },
+    "reporting": {
+      "title": "7) Signaler un problème",
+      "intro": "Si vous rencontrez un obstacle d'accessibilité, merci de nous transmettre les informations suivantes :",
+      "info": [
+        "URL (ou étape précise) où le problème apparaît.",
+        "Description du problème et de son impact.",
+        "Système d'exploitation, navigateur et lecteur d'écran (si connu).",
+        "Capture d'écran ou enregistrement si possible."
+      ],
+      "contact": {
+        "text": "Pour signaler :",
+        "link": "page Contact"
+      }
+    },
+    "response": {
+      "title": "8) Engagement de réponse",
+      "text": "Nous accusons réception des signalements sous 5 jours ouvrés et fournissons une réponse ou plan d'action sous 30 jours ouvrés lorsque c'est possible. Si votre signalement nécessite une action urgente (ex. impossibilité totale d'utiliser un flux essentiel), indiquez-le clairement pour priorisation."
+    },
+    "technical": {
+      "title": "9) Accessibilité technique — points concrets pour les développeurs",
+      "points": [
+        "Vérifier l'ordre DOM pour respecter l'ordre visuel.",
+        "Ajouter des labels explicites pour tous les contrôles de formulaire.",
+        "Gérer le focus : mettre focus sur les modals ouverts et le remettre lors de la fermeture.",
+        "Utiliser role, aria-label et aria-describedby uniquement quand nécessaire et correctement.",
+        "Fournir des alternatives textuelles pour tout contenu non textuel.",
+        "Éviter les animations excessives ou fournir un moyen de les réduire (prefers-reduced-motion)."
+      ]
+    },
+    "disclaimer": "Ce document est fourni à titre indicatif et ne remplace pas un avis juridique. Il sert juste pour le projet de cours ESGI tout cela reste à titre d'exemple et fictif."
+  },
+
+  "cookies": {
+    "meta": {
+      "title": "Cookies",
+      "description": "Informations sur les cookies utilisés par WatchListy et comment gérer vos préférences."
+    },
+    "title": "Cookies",
+    "subtitle": "Version du 9 octobre 2025 — Cette page décrit les cookies et autres traceurs utilisés par WatchListy, pourquoi nous les utilisons et comment gérer vos préférences.",
+    "definition": {
+      "title": "1) Qu'est-ce qu'un cookie ?",
+      "text": "Un cookie est un petit fichier texte stocké par votre navigateur. Il peut être utilisé pour faire fonctionner le site, mémoriser des préférences ou mesurer l'usage."
+    },
+    "principles": {
+      "title": "2) Principe général adopté",
+      "intro": "Pour ce projet de cours nous :",
+      "items": [
+        "Ne transférons pas de données en dehors de l'Union européenne.",
+        "N'activons pas de cookies tiers de suivi sans consentement explicite.",
+        "Laissons l'utilisateur contrôler ses préférences via une bannière / panneau de préférences."
+      ]
+    },
+    "types": {
+      "title": "3) Types de cookies utilisés",
+      "items": [
+        {
+          "name": "Cookies strictement nécessaires",
+          "description": "session (authentification côté serveur), préférences d'affichage."
+        },
+        {
+          "name": "Cookies de performance",
+          "description": "mesures anonymisées pour améliorer l'app (activés uniquement si consentement)."
+        },
+        {
+          "name": "Cookies fonctionnels / tiers optionnels",
+          "description": "ex. services de partage ou CMP (Axeptio) — activés après consentement."
+        }
+      ]
+    },
+    "examples": {
+      "title": "4) Exemples",
+      "items": [
+        {
+          "title": "Session (cookie serveur)",
+          "description": "Finalité : maintenir la session utilisateur (connexion). Type : cookie HttpOnly recommandé. Durée : session ou durée définie côté serveur (ex. 7 jours)."
+        },
+        {
+          "title": "CMP (ex. Axeptio) — optionnel",
+          "description": "Finalité : gestion du consentement. Durée : dépend du fournisseur. À activer uniquement si utilisé."
+        }
+      ]
+    },
+    "consent": {
+      "title": "5) Consentement et gestion",
+      "text": "À la première visite, une bannière permet d'accepter/refuser les cookies non-nécessaires. Les choix sont enregistrés (ex. cookie technique ou localStorage) et peuvent être modifiés via le centre de préférences.",
+      "note": "Remarque technique : n'injecte pas de scripts tiers (analytics, widgets) tant que le consentement correspondant n'a pas été donné."
+    },
+    "browser": {
+      "title": "6) Comment désactiver les cookies via le navigateur",
+      "intro": "Vous pouvez configurer votre navigateur pour refuser les cookies. Voici les chemins généraux (varient selon versions) :",
+      "steps": [
+        "Chrome : Paramètres → Confidentialité et sécurité → Cookies.",
+        "Firefox : Options → Vie privée et sécurité → Cookies et données de sites.",
+        "Safari : Préférences → Confidentialité → Bloquer tous les cookies.",
+        "Edge : Paramètres → Cookies et autorisations de site."
+      ],
+      "warning": "La désactivation peut affecter certaines fonctionnalités."
+    },
+    "rights": {
+      "title": "7) Vos droits",
+      "text": "Vous pouvez retirer votre consentement, demander l'accès ou la suppression de vos données. Pour cela, utilisez la",
+      "contact": "page Contact",
+      "email": " ou l'email indiqué dans la Politique de confidentialité.",
+      "authority": "En France, l'autorité compétente est la CNIL."
+    },
+    "updates": {
+      "title": "8) Mise à jour de la page",
+      "text": "Nous pouvons modifier cette page. La date de révision en haut de la page sera mise à jour en conséquence."
+    },
+    "disclaimer": "Ce document est fourni à titre indicatif et ne remplace pas un avis juridique. Il sert juste pour le projet de cours ESGI tout cela reste à titre d'exemple et fictif."
+  },
+
+  "privacy": {
+    "meta": {
+      "title": "Politique de confidentialité",
+      "description": "Politique de confidentialité de WatchListy : quelles données nous collectons, pourquoi, comment nous les protégeons, et quels sont vos droits."
+    },
+    "title": "Politique de confidentialité",
+    "version": "Version du 9 octobre 2025",
+    "intro": "Nous respectons votre vie privée. Cette page explique quelles données nous collectons, pourquoi nous les utilisons, combien de temps nous les conservons, et comment vous pouvez exercer vos droits.",
+    "controller": {
+      "title": "1) Responsable du traitement",
+      "text": "Le responsable du traitement des données est :",
+      "name": "WatchListy",
+      "contact": "Contact :"
+    },
+    "data": {
+      "title": "2) Données collectées",
+      "items": [
+        {
+          "type": "Données de compte",
+          "description": "adresse e-mail, nom (optionnel), mot de passe (haché)."
+        },
+        {
+          "type": "Données d'usage",
+          "description": "listes créées, préférences, interactions avec l'application."
+        },
+        {
+          "type": "Données de support",
+          "description": "messages envoyés via le formulaire de contact."
+        }
+      ]
+    },
+    "purposes": {
+      "title": "3) Finalités et bases légales",
+      "intro": "Nous traitons vos données pour les finalités suivantes :",
+      "items": [
+        {
+          "purpose": "Fournir le service",
+          "legal": "création et gestion de votre compte (exécution du contrat)."
+        },
+        {
+          "purpose": "Amélioration du service",
+          "legal": "analyses anonymisées et mesure d'audience (intérêt légitime ou consentement pour certains traceurs)."
+        },
+        {
+          "purpose": "Support",
+          "legal": "répondre à vos demandes via le formulaire de contact (exécution du contrat / intérêt légitime)."
+        },
+        {
+          "purpose": "Sécurité",
+          "legal": "prévention des fraudes et protection des comptes (intérêt légitime)."
+        }
+      ]
+    },
+    "cookies": {
+      "title": "4) Cookies et traceurs",
+      "text": "Nous utilisons des cookies strictement nécessaires pour la session et, si vous les acceptez, des cookies de mesure d'audience. Vous pouvez gérer vos préférences via le centre de préférences (ou le bandeau de cookies).",
+      "moreInfo": "Pour plus de détails, consultez notre",
+      "link": "Politique de cookies"
+    },
+    "recipients": {
+      "title": "5) Destinataires des données",
+      "intro": "Vos données peuvent être partagées avec :",
+      "items": [
+        "Prestataires techniques (hébergement, monitoring, envoi d'e-mail) sous contrat de sous-traitance.",
+        "Autorités compétentes si la loi l'exige."
+      ],
+      "guarantees": "Nous exigeons de nos prestataires des garanties de sécurité conformes au RGPD."
+    },
+    "transfers": {
+      "title": "6) Transferts hors Union européenne",
+      "text": "Si des données sont transférées hors de l'Union européenne, nous nous assurons qu'un niveau de protection adéquat est garanti (clauses contractuelles types, décisions d'adéquation, ou autres garanties conformes au RGPD)."
+    },
+    "retention": {
+      "title": "7) Durée de conservation",
+      "items": [
+        {
+          "type": "Données de compte",
+          "duration": "conservées tant que le compte existe ou selon obligations légales."
+        },
+        {
+          "type": "Données d'usage et journaux",
+          "duration": "conservés de façon pseudonymisée ou agrégée pendant une durée raisonnable pour les finalités exposées (ex. 12-36 mois selon le type de log)."
+        },
+        {
+          "type": "Données de contact (support)",
+          "duration": "conservées pour la tenue du dossier, puis archivées selon les exigences légales."
+        }
+      ]
+    },
+    "security": {
+      "title": "8) Sécurité",
+      "text": "Nous mettons en place des mesures techniques et organisationnelles adaptées pour protéger vos données (chiffrement des mots de passe, accès restreint, sauvegardes, surveillance des incidents). Malgré cela, aucun système n'est invulnérable : signalez toute anomalie immédiatement."
+    },
+    "rights": {
+      "title": "9) Vos droits",
+      "intro": "Conformément au RGPD, vous disposez des droits suivants :",
+      "items": [
+        {
+          "name": "Droit d'accès",
+          "description": "obtenir une copie des données que nous détenons vous concernant."
+        },
+        {
+          "name": "Droit de rectification",
+          "description": "corriger des données inexactes ou incomplètes."
+        },
+        {
+          "name": "Droit à l'effacement",
+          "description": "demander la suppression de vos données, sous réserve des obligations légales."
+        },
+        {
+          "name": "Droit à la limitation du traitement",
+          "description": ""
+        },
+        {
+          "name": "Droit d'opposition au traitement",
+          "description": "pour motifs légitimes."
+        },
+        {
+          "name": "Droit à la portabilité des données",
+          "description": "lorsque le traitement est fondé sur votre consentement ou un contrat."
+        },
+        {
+          "name": "Droit de retirer votre consentement",
+          "description": "(lorsque applicable) sans affecter la licéité des traitements antérieurs."
+        }
+      ],
+      "contact": {
+        "text": "Pour exercer vos droits, contactez-nous :"
+      },
+      "complaint": " Vous pouvez aussi déposer une plainte auprès de l'autorité de contrôle (en France : la CNIL)."
+    },
+    "modifications": {
+      "title": "10) Modifications",
+      "text": "Nous pouvons mettre à jour cette politique. La date de révision en haut de la page sera modifiée en conséquence. En cas de changement substantiel, nous préviendrons les utilisateurs connectés."
+    },
+    "contact": {
+      "title": "11) Contact",
+      "text": "Pour toute question relative à la protection des données, écrivez à :"
+    },
+    "disclaimer": "Ce document est fourni à titre indicatif et ne remplace pas un avis juridique. Il sert juste pour le projet de cours ESGI tout cela reste à titre d'exemple et fictif."
+  },
+
+  "terms": {
+    "meta": {
+      "title": "Conditions d'utilisation",
+      "description": "Conditions d'utilisation de WatchListy : règles d'accès, d'usage, propriété intellectuelle, responsabilité, confidentialité et contact."
+    },
+    "title": "Conditions d'utilisation",
+    "version": "Version du 9 octobre 2025",
+    "object": {
+      "title": "1) Objet",
+      "text": "Les présentes Conditions d'utilisation (les « Conditions ») régissent l'accès et l'usage de l'application WatchListy (le « Service »). En accédant au Service, vous acceptez ces Conditions."
+    },
+    "definitions": {
+      "title": "2) Définitions",
+      "items": [
+        {
+          "term": "Utilisateur",
+          "definition": "toute personne accédant au Service."
+        },
+        {
+          "term": "Contenu",
+          "definition": "toute information (texte, image, liste, lien) publiée via le Service."
+        },
+        {
+          "term": "Compte",
+          "definition": "espace personnel permettant d'utiliser des fonctionnalités."
+        }
+      ]
+    },
+    "acceptance": {
+      "title": "3) Acceptation et modifications",
+      "text": "L'utilisation du Service vaut acceptation des Conditions. Nous pouvons les modifier à tout moment. En cas de changement substantiel, une notification pourra être affichée dans l'application. La poursuite de l'usage après publication vaut acceptation des Conditions révisées."
+    },
+    "eligibility": {
+      "title": "4) Éligibilité",
+      "text": "Le Service est réservé aux personnes de 16 ans et plus. Si vous avez entre 16 et 18 ans, vous déclarez utiliser le Service avec l'accord d'un représentant légal."
+    },
+    "account": {
+      "title": "5) Compte et sécurité",
+      "items": [
+        "Vous devez fournir des informations exactes et les maintenir à jour.",
+        "Vous êtes responsable de la confidentialité de vos identifiants et de toute activité réalisée via votre compte.",
+        "Prévenez-nous immédiatement en cas d'usage non autorisé."
+      ]
+    },
+    "usage": {
+      "title": "6) Utilisation acceptable",
+      "items": [
+        "Ne pas enfreindre la loi ni les droits de tiers (droits d'auteur, marques, vie privée).",
+        "Ne pas publier de contenus illégaux, offensants, haineux, ou trompeurs.",
+        "Ne pas tenter d'accéder sans autorisation au Service ou à ses systèmes.",
+        "Ne pas scraper massivement ni surcharger l'infrastructure."
+      ]
+    },
+    "content": {
+      "title": "7) Contenu utilisateur",
+      "text": "Vous restez propriétaire de votre Contenu. Vous nous concédez une licence mondiale, non exclusive, gratuite et révocable pour héberger, afficher et distribuer votre Contenu dans le seul but d'exploiter le Service. Vous garantissez disposer des droits nécessaires sur le Contenu publié."
+    },
+    "intellectual": {
+      "title": "8) Propriété intellectuelle",
+      "text": "Le Service, sa charte graphique, ses logos, son code et bases de données sont protégés. Toute reproduction, modification ou exploitation non autorisée est interdite."
+    },
+    "thirdparty": {
+      "title": "9) Services tiers et liens",
+      "text": "Le Service peut contenir des liens vers des sites tiers. Nous n'endossons pas leur contenu et n'assumons aucune responsabilité quant à leurs pratiques. Vérifiez toujours leurs propres conditions."
+    },
+    "privacy": {
+      "title": "10) Confidentialité et cookies",
+      "text": "Vos données sont traitées conformément à notre",
+      "policy": "Politique de confidentialité",
+      "and": "et à notre",
+      "cookies": "Politique de cookies"
+    },
+    "availability": {
+      "title": "11) Disponibilité et maintenance",
+      "text": "Nous visons une haute disponibilité mais ne pouvons la garantir. Le Service peut être interrompu pour maintenance, mise à jour ou incident technique."
+    },
+    "liability": {
+      "title": "12) Responsabilité",
+      "text": "Le Service est fourni « en l'état ». Dans la mesure permise par la loi, notre responsabilité est limitée aux dommages directs et prévisibles. Nous ne saurions être tenus responsables des pertes indirectes, de données ou d'usage."
+    },
+    "termination": {
+      "title": "13) Résiliation",
+      "text": "Vous pouvez supprimer votre Compte à tout moment. Nous pouvons suspendre ou résilier l'accès en cas de violation des présentes Conditions ou pour des raisons de sécurité."
+    },
+    "law": {
+      "title": "14) Droit applicable et litiges",
+      "text": "Les présentes Conditions sont régies par le droit français. En cas de litige, une solution amiable sera recherchée avant toute action. À défaut, les tribunaux compétents seront ceux déterminés par la loi."
+    },
+    "contact": {
+      "title": "15) Contact",
+      "text": "Pour toute question, vous pouvez nous écrire via la",
+      "link": "page Contact"
+    },
+    "disclaimer": "Ce document est fourni à titre indicatif et ne remplace pas un avis juridique. Il sert juste pour le projet de cours ESGI tout cela reste à titre d'exemple et fictif."
+  },
+
   "home": {
     "hero": {
       "badge": "Nouveau — Gestion intelligente de vos films",

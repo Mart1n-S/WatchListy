@@ -93,8 +93,8 @@ export default function Footer() {
               {[
                 { name: t("legal.terms"), href: "/legal/terms" },
                 { name: t("legal.privacy"), href: "/legal/privacy" },
-                { name: t("legal.cookies"), href: "/legal.cookies" },
-                { name: t("legal.accessibility"), href: "/legal.accessibility" },
+                { name: t("legal.cookies"), href: "/legal/cookies" },
+                { name: t("legal.accessibility"), href: "/legal/accessibility" },
               ].map((item) => (
                 <li key={item.name}>
                   <Link

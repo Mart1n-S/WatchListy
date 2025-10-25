@@ -10,12 +10,14 @@ import { useSession, signOut } from "next-auth/react";
 import { useDispatch } from "react-redux";
 import { clearUser } from "@/lib/redux/slices/userSlice";
 import LocaleSwitcher from "./LocaleSwitcher";
+import { useTranslations } from "next-intl";
 
 export default function Header() {
   const [isOpen, setIsOpen] = useState(false);
   const pathname = usePathname();
   const { data: session } = useSession();
   const dispatch = useDispatch();
+  const t = useTranslations("layout.header");
 
   const toggleMenu = () => setIsOpen((v) => !v);
 
@@ -31,12 +33,19 @@ export default function Header() {
   // --- Vérifie si un lien est actif ---
   const isActive = (href: string) => {
     const localized = getLocalizedPath(href);
+
+    // Cas particulier pour la page d'accueil
+    if (href === "/") {
+      return pathname === localized;
+    }
+
     return pathname === localized || pathname.startsWith(`${localized}/`);
   };
 
-  // --- Éléments de navigation ---
-  const navItems = [{ name: "Accueil", href: "/" }];
-  if (session) navItems.push({ name: "Profil", href: "/profile" });
+
+  // --- Éléments de navigation traduits ---
+  const navItems = [{ name: t("home"), href: "/" }];
+  if (session) navItems.push({ name: t("profile"), href: "/profile" });
 
   return (
     <header className="fixed top-0 left-0 w-full bg-gray-900/90 backdrop-blur-sm shadow-sm z-50 border-b border-gray-800">
@@ -45,11 +54,11 @@ export default function Header() {
         <Link
           href={`/${currentLocale}`}
           className="flex items-center gap-2"
-          aria-label="Aller à l’accueil WatchListy"
+          aria-label={t("aria.homeLink")}
         >
           <Image
             src="/watchlisty-icon.svg"
-            alt="Logo WatchListy"
+            alt={t("aria.logoAlt")}
             width={32}
             height={32}
             sizes="32px"
@@ -94,7 +103,7 @@ export default function Header() {
               }}
               className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-red-500/20 hover:shadow-red-500/30 group relative overflow-hidden hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 focus:ring-offset-gray-900"
             >
-              <span className="relative">Déconnexion</span>
+              <span className="relative">{t("logout")}</span>
             </button>
           ) : (
             <>
@@ -102,13 +111,13 @@ export default function Header() {
                 href={getLocalizedPath("/login")}
                 className="px-4 py-2 text-gray-200 hover:text-blue-400 transition-colors"
               >
-                Connexion
+                {t("login")}
               </Link>
               <Link
                 href={getLocalizedPath("/register")}
                 className="px-5 py-2 bg-gradient-to-r from-blue-600 to-emerald-500 text-white rounded-lg hover:from-blue-700 hover:to-emerald-600 transition-all focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"
               >
-                S’inscrire
+                {t("signup")}
               </Link>
             </>
           )}
@@ -122,7 +131,7 @@ export default function Header() {
           <button
             onClick={toggleMenu}
             className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            aria-label="Ouvrir le menu"
+            aria-label={isOpen ? t("aria.closeMenu") : t("aria.openMenu")}
           >
             {isOpen ? (
               <HiX className="w-6 h-6 text-gray-200" />
@@ -144,7 +153,7 @@ export default function Header() {
               exit={{ opacity: 0 }}
               className="md:hidden fixed inset-0 h-dvh min-h-screen w-screen block bg-gray-900/60 z-[95]"
               onClick={() => setIsOpen(false)}
-              aria-label="Fermer le menu"
+              aria-label={t("aria.closeMenu")}
             />
 
             <motion.aside
@@ -167,7 +176,7 @@ export default function Header() {
                   >
                     <Image
                       src="/watchlisty-icon.svg"
-                      alt="Logo WatchListy"
+                      alt={t("aria.logoAlt")}
                       width={32}
                       height={32}
                       sizes="32px"
@@ -180,7 +189,7 @@ export default function Header() {
                   <button
                     onClick={() => setIsOpen(false)}
                     className="p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-                    aria-label="Fermer le menu"
+                    aria-label={t("aria.closeMenu")}
                   >
                     <HiX className="w-6 h-6 text-gray-200" />
                   </button>
@@ -218,7 +227,7 @@ export default function Header() {
                       }}
                       className="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-red-500/20 hover:shadow-red-500/30 group relative overflow-hidden hover:cursor-pointer"
                     >
-                      <span className="relative">Déconnexion</span>
+                      <span className="relative">{t("logout")}</span>
                     </button>
                   ) : (
                     <>
@@ -227,14 +236,14 @@ export default function Header() {
                         onClick={() => setIsOpen(false)}
                         className="block w-full px-4 py-2 text-center rounded-lg bg-gray-800 text-gray-200 hover:bg-gray-700 transition-colors mb-3"
                       >
-                        Connexion
+                        {t("login")}
                       </Link>
                       <Link
                         href={getLocalizedPath("/register")}
                         onClick={() => setIsOpen(false)}
                         className="block w-full px-4 py-2 text-center rounded-lg bg-gradient-to-r from-blue-600 to-emerald-500 text-white hover:from-blue-700 hover:to-emerald-600 transition-all"
                       >
-                        S’inscrire
+                        {t("signup")}
                       </Link>
                     </>
                   )}

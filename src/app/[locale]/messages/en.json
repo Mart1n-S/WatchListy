@@ -1,4 +1,49 @@
 {
+  "layout": {
+    "header": {
+      "home": "Home",
+      "profile": "Profile",
+      "login": "Login",
+      "signup": "Sign up",
+      "logout": "Logout",
+      "aria": {
+        "homeLink": "Go to WatchListy home",
+        "logoAlt": "WatchListy logo",
+        "openMenu": "Open menu",
+        "closeMenu": "Close menu"
+      }
+    },
+    "footer": {
+      "brand": {
+        "logoAlt": "WatchListy logo",
+        "description": "The ultimate app to manage and discover your favorite movies and shows."
+      },
+      "usefulLinks": {
+        "title": "Useful Links",
+        "home": "Home",
+        "features": "Features",
+        "about": "About"
+      },
+      "legal": {
+        "title": "Legal",
+        "terms": "Terms of Use",
+        "privacy": "Privacy Policy",
+        "cookies": "Cookie Policy",
+        "accessibility": "Accessibility"
+      },
+      "newsletter": {
+        "title": "Newsletter",
+        "description": "Subscribe to get the latest news, tips, and special offers.",
+        "placeholder": "Your email",
+        "button": "Subscribe"
+      },
+      "copyright": {
+        "rights": "All rights reserved.",
+        "madeWith": "Made with ❤️ by the WatchListy team",
+        "disclaimer": "This product uses the TMDB API but is not endorsed or certified by TMDB. Data and images provided by"
+      }
+    }
+  },
   "home": {
     "hero": {
       "badge": "New — Smart movie management",

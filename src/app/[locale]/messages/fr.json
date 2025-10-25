@@ -1,4 +1,49 @@
 {
+  "layout": {
+    "header": {
+      "home": "Accueil",
+      "profile": "Profil",
+      "login": "Connexion",
+      "signup": "S’inscrire",
+      "logout": "Déconnexion",
+      "aria": {
+        "homeLink": "Aller à l’accueil WatchListy",
+        "logoAlt": "Logo WatchListy",
+        "openMenu": "Ouvrir le menu",
+        "closeMenu": "Fermer le menu"
+      }
+    },
+    "footer": {
+      "brand": {
+        "logoAlt": "Logo WatchListy",
+        "description": "L’application ultime pour gérer et découvrir vos films et séries préférés."
+      },
+      "usefulLinks": {
+        "title": "Liens utiles",
+        "home": "Accueil",
+        "features": "Fonctionnalités",
+        "about": "À propos"
+      },
+      "legal": {
+        "title": "Légal",
+        "terms": "Conditions d'utilisation",
+        "privacy": "Politique de confidentialité",
+        "cookies": "Politique de cookies",
+        "accessibility": "Accessibilité"
+      },
+      "newsletter": {
+        "title": "Newsletter",
+        "description": "Abonnez-vous pour recevoir les dernières nouveautés, conseils et offres spéciales.",
+        "placeholder": "Votre email",
+        "button": "S’abonner"
+      },
+      "copyright": {
+        "rights": "Tous droits réservés.",
+        "madeWith": "Made with ❤️ par l’équipe WatchListy",
+        "disclaimer": "Ce produit utilise l’API TMDB, mais n’est ni approuvé ni certifié par TMDB. Données et images fournies par"
+      }
+    }
+  },
   "home": {
     "hero": {
       "badge": "Nouveau — Gestion intelligente de vos films",

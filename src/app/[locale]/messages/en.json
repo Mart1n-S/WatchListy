@@ -73,5 +73,34 @@
       "cta": "Create a free account",
       "privacy": "No credit card required — Private and secure data"
     }
+  },
+  "auth": {
+    "login": {
+      "meta": {
+        "title": "Login"
+      },
+      "title": "Sign In",
+      "subtitle": "Access your lists and recommendations.",
+      "fields": {
+        "email": {
+          "label": "Email address",
+          "placeholder": "your.email@example.com"
+        },
+        "password": {
+          "label": "Password",
+          "show": "Show password",
+          "hide": "Hide password"
+        }
+      },
+      "forgot": "Forgot your password?",
+      "submit": "Sign in",
+      "loading": "Signing in...",
+      "noAccount": "Don't have an account yet?",
+      "createAccount": "Create an account",
+      "errors": {
+        "invalidCredentials": "Invalid email or password",
+        "unexpected": "An unexpected error occurred"
+      }
+    }
   }
 }

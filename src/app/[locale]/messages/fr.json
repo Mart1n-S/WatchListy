@@ -73,5 +73,35 @@
       "cta": "Créer un compte gratuit",
       "privacy": "Aucune carte requise — Données privées et sécurisées"
     }
+  },
+
+  "auth": {
+    "login": {
+      "meta": {
+        "title": "Connexion"
+      },
+      "title": "Se connecter",
+      "subtitle": "Accédez à vos listes et recommandations.",
+      "fields": {
+        "email": {
+          "label": "Adresse email",
+          "placeholder": "votre.email@exemple.com"
+        },
+        "password": {
+          "label": "Mot de passe",
+          "show": "Afficher le mot de passe",
+          "hide": "Masquer le mot de passe"
+        }
+      },
+      "forgot": "Mot de passe oublié ?",
+      "submit": "Se connecter",
+      "loading": "Connexion en cours...",
+      "noAccount": "Pas encore de compte ?",
+      "createAccount": "Créer un compte",
+      "errors": {
+        "invalidCredentials": "Email ou mot de passe incorrect",
+        "unexpected": "Une erreur inattendue est survenue"
+      }
+    }
   }
 }

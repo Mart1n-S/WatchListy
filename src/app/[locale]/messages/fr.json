@@ -44,6 +44,55 @@
       }
     }
   },
+  "about": {
+    "meta": {
+      "title": "À propos",
+      "description": "Découvrez la mission, les engagements et la feuille de route de WatchListy — la solution pensée pour les passionnés de films et séries."
+    },
+    "title": "À propos de WatchListy",
+    "intro": "WatchListy aide les cinéphiles et les sérievores à organiser, suivre et redécouvrir leurs contenus préférés. Notre priorité : proposer une expérience rapide, respectueuse de la vie privée et centrée sur l’utilité.",
+    "version": "Version du 9 octobre 2025",
+    "mission": {
+      "title": "Notre mission",
+      "text": "Simplifier la gestion de ce que vous souhaitez regarder, faciliter la découverte et permettre le partage de recommandations — le tout sans sacrifier la performance ni la confidentialité."
+    },
+    "commitments": {
+      "title": "Nos engagements",
+      "items": {
+        "privacy": {
+          "title": "Respect de la vie privée",
+          "desc": "Collecte minimale et contrôle utilisateur."
+        },
+        "performance": {
+          "title": "Performance",
+          "desc": "Interface réactive et optimisée."
+        },
+        "accessibility": {
+          "title": "Accessibilité",
+          "desc": "Contrastes, navigation clavier et sémantique soignée."
+        },
+        "transparency": {
+          "title": "Transparence",
+          "desc": "Documentation claire et mises à jour publiques."
+        }
+      }
+    },
+    "features": {
+      "title": "Produits & fonctionnalités",
+      "text": "WatchListy propose des listes personnalisées, un suivi d’avancement, des notes, et des options de tri/filtrage avancées. L’application est conçue pour rester légère et extensible : intégrations et fonctionnalités avancées arrivent progressivement."
+    },
+    "roadmap": {
+      "title": "Feuille de route",
+      "text": "Notre roadmap priorise les fonctionnalités qui apportent le plus de valeur aux utilisateurs tout en restant fidèles à nos principes de confidentialité et de performance.",
+      "contact": "Vous souhaitez contribuer ou proposer une idée ? Contactez-nous via",
+      "link": "la page Contact"
+    },
+    "team": {
+      "title": "Équipe",
+      "text": "Petite équipe produit & tech dédiée à l’expérience utilisateur et à la confidentialité. Pour contact commercial ou presse, utilisez la",
+      "link": "page Contact"
+    }
+  },
   "home": {
     "hero": {
       "badge": "Nouveau — Gestion intelligente de vos films",

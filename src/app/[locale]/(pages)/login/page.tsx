@@ -1,12 +1,23 @@
-"use client";
-
+import { getTranslations } from "next-intl/server";
+import type { Metadata } from "next";
 import Image from "next/image";
-import { useTranslations } from "next-intl";
 import LoginForm from "@/components/auth/LoginForm";
 import BackgroundCinematic from "@/components/ui/BackgroundCinematic";
 
-export default function LoginPage() {
-  const t = useTranslations("auth.login");
+// --- Traduction dynamique des métadonnées ---
+export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "auth.login.meta" });
+
+  return {
+    title: t("title"),
+  };
+}
+
+// --- Page principale ---
+export default async function LoginPage({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale, namespace: "auth.login" });
 
   return (
     <div className="relative min-h-[calc(100dvh-5rem)] flex items-center justify-center px-4 py-10">

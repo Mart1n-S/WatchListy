@@ -44,6 +44,55 @@
       }
     }
   },
+  "about": {
+    "meta": {
+      "title": "About",
+      "description": "Discover WatchListy’s mission, commitments, and roadmap — built for movie and series enthusiasts."
+    },
+    "title": "About WatchListy",
+    "intro": "WatchListy helps movie and series lovers organize, track, and rediscover their favorite content. Our priority: a fast, private, and user-focused experience.",
+    "version": "Version October 9, 2025",
+    "mission": {
+      "title": "Our Mission",
+      "text": "Simplify how you manage what you want to watch, make discovery easier, and enable sharing recommendations — without compromising performance or privacy."
+    },
+    "commitments": {
+      "title": "Our Commitments",
+      "items": {
+        "privacy": {
+          "title": "Privacy First",
+          "desc": "Minimal data collection and full user control."
+        },
+        "performance": {
+          "title": "Performance",
+          "desc": "Fast and responsive interface."
+        },
+        "accessibility": {
+          "title": "Accessibility",
+          "desc": "High contrast, keyboard navigation, and semantic markup."
+        },
+        "transparency": {
+          "title": "Transparency",
+          "desc": "Clear documentation and public updates."
+        }
+      }
+    },
+    "features": {
+      "title": "Products & Features",
+      "text": "WatchListy offers custom lists, progress tracking, ratings, and advanced filtering options. Built to stay light and extendable — new features are coming progressively."
+    },
+    "roadmap": {
+      "title": "Roadmap",
+      "text": "Our roadmap focuses on delivering the most valuable features while staying true to privacy and performance principles.",
+      "contact": "Want to contribute or suggest an idea? Reach out via",
+      "link": "the Contact page"
+    },
+    "team": {
+      "title": "Team",
+      "text": "Small product & tech team focused on user experience and privacy. For business or press inquiries, use the",
+      "link": "Contact page"
+    }
+  },
   "home": {
     "hero": {
       "badge": "New — Smart movie management",

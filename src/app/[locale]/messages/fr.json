@@ -1,0 +1,77 @@
+{
+  "home": {
+    "hero": {
+      "badge": "Nouveau — Gestion intelligente de vos films",
+      "title": "WatchListy",
+      "subtitle": "Votre <highlight>compagnon ultime</highlight> pour suivre, organiser et découvrir vos films et séries préférés.",
+      "cta": "Commencer gratuitement",
+      "stats": {
+        "followed": "124 films suivis",
+        "reviews": "42 avis"
+      }
+    },
+
+    "features": {
+      "title": "Tout ce dont vous avez besoin pour <highlight>gérer vos films</highlight>",
+      "subtitle": "WatchListy combine toutes les fonctionnalités essentielles pour suivre vos films et séries préférés en un seul endroit élégant et intuitif.",
+      "feature1": {
+        "title": "Recherche intelligente",
+        "description": "Trouvez instantanément n'importe quel film ou série grâce à notre base de données complète et notre système de suggestion avancé."
+      },
+      "feature2": {
+        "title": "Suivi de visionnage",
+        "description": "Marquez les films que vous avez vus, ceux que vous voulez voir, et suivez votre progression avec des statistiques détaillées."
+      },
+      "feature3": {
+        "title": "Notation et avis",
+        "description": "Notez vos films préférés, écrivez des avis et découvrez les recommandations de notre communauté passionnée."
+      },
+      "feature4": {
+        "title": "Listes personnalisées",
+        "description": "Créez des listes thématiques (à regarder, favoris, par genre) et organisez votre collection comme vous le souhaitez."
+      },
+      "feature5": {
+        "title": "Intégration IMDB",
+        "description": "Accédez aux notes IMDB, aux synopsis complets et aux informations détaillées directement depuis notre plateforme."
+      },
+      "feature6": {
+        "title": "Recommandations",
+        "description": "Recevez des suggestions personnalisées basées sur vos goûts et votre historique de visionnage."
+      }
+    },
+
+    "testimonials": {
+      "title": "Ce que nos utilisateurs disent",
+      "subtitle": "Des milliers de cinéphiles utilisent WatchListy pour organiser leurs films et séries au quotidien.",
+      "user1": {
+        "name": "Marie D.",
+        "role": "Membre depuis 2023",
+        "quote": "WatchListy a complètement transformé ma façon de gérer ma collection de films. L’interface est magnifique et les fonctionnalités sont exactement ce dont j’avais besoin."
+      },
+      "user2": {
+        "name": "Thomas L.",
+        "role": "Cinéphile",
+        "quote": "Enfin une application qui comprend vraiment les besoins des amateurs de cinéma ! La fonction de recommandation est bluffante."
+      },
+      "user3": {
+        "name": "Sophie M.",
+        "role": "Étudiante en cinéma",
+        "quote": "J’adore les listes personnalisées et le suivi de progression. Ça me fait gagner un temps fou pour mes projets de cours."
+      },
+      "user4": {
+        "name": "Alex P.",
+        "role": "Sérivore",
+        "quote": "La recherche avancée et les filtres par genre/année sont super efficaces. UX clean et rapide, top !"
+      }
+    },
+
+    "cta": {
+      "badge": "Nouveau — Reprenez le contrôle de votre watchlist",
+      "title": "Prêt à organiser vos films et séries en un clin d’œil ?",
+      "subtitle": "Centralisez vos listes, suivez votre progression et découvrez de nouveaux titres grâce à des recommandations pertinentes.",
+      "trustedText": "cinéphiles nous font déjà confiance.",
+      "cta": "Créer un compte gratuit",
+      "privacy": "Aucune carte requise — Données privées et sécurisées"
+    }
+  }
+}

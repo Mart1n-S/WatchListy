@@ -16,7 +16,6 @@ export default function Footer() {
                 width={32}
                 height={32}
                 className="h-8 w-8 mr-2"
-                priority
               />
               <span className="bg-gradient-to-r from-blue-600 to-emerald-500 bg-clip-text text-transparent">
                 Watch

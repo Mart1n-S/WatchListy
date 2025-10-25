@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { FiUserPlus, FiShield } from "react-icons/fi";
-import { fadeInUp } from "@/lib/animation";
-import { gradientBackground } from "@/lib/animation";
+import { fadeInUp, gradientBackground } from "@/lib/animation";
+import { useTranslations } from "next-intl";
 
 export function CtaSection() {
+  const t = useTranslations("home.cta");
+
   return (
     <section
       className="relative py-20 px-6 sm:px-10 overflow-hidden"
@@ -33,7 +35,7 @@ export function CtaSection() {
             transition={{ delay: 0.1, type: "spring", stiffness: 200 }}
             className="inline-flex items-center px-3 py-1 mb-5 rounded-full text-xs font-medium bg-blue-900/40 text-blue-300"
           >
-            🚀 Nouveau — Reprenez le contrôle de votre watchlist
+            🚀 {t("badge")}
           </motion.span>
 
           {/* Titre */}
@@ -41,7 +43,7 @@ export function CtaSection() {
             variants={fadeInUp}
             className="text-3xl md:text-4xl font-bold tracking-tight mb-4"
           >
-            Prêt à organiser vos films et séries en un clin d’œil ?
+            {t("title")}
           </motion.h2>
 
           {/* Sous-titre */}
@@ -50,8 +52,7 @@ export function CtaSection() {
             transition={{ delay: 0.1 }}
             className="text-gray-300 max-w-2xl mx-auto mb-8"
           >
-            Centralisez vos listes, suivez votre progression et découvrez de
-            nouveaux titres grâce à des recommandations pertinentes.
+            {t("subtitle")}
           </motion.p>
 
           {/* Indicateur social */}
@@ -60,8 +61,10 @@ export function CtaSection() {
             transition={{ delay: 0.15 }}
             className="mb-6 text-sm text-gray-400"
           >
-            <span className="font-semibold text-blue-400">12 345+</span> cinéphiles
-            nous font déjà confiance.
+            <span className="font-semibold text-blue-400">
+              12,345+
+            </span>{" "}
+            {t("trustedText")}
           </motion.div>
 
           {/* Boutons */}
@@ -75,7 +78,7 @@ export function CtaSection() {
               className="inline-flex items-center justify-center rounded-xl px-5 py-3 bg-gradient-to-r text-white font-medium shadow from-blue-600 to-emerald-500 hover:from-blue-700 hover:to-emerald-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"
             >
               <FiUserPlus className="mr-2" />
-              Créer un compte gratuit
+              {t("cta")}
             </Link>
           </motion.div>
 
@@ -86,7 +89,7 @@ export function CtaSection() {
             className="mt-6 flex items-center justify-center gap-2 text-xs text-gray-400"
           >
             <FiShield />
-            <span>Aucune carte requise — Données privées et sécurisées</span>
+            <span>{t("privacy")}</span>
           </motion.div>
         </motion.div>
       </div>

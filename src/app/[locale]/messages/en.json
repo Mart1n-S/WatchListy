@@ -1,0 +1,77 @@
+{
+  "home": {
+    "hero": {
+      "badge": "New — Smart movie management",
+      "title": "WatchListy",
+      "subtitle": "Your <highlight>ultimate companion</highlight> to track, organize and discover your favorite movies and series.",
+      "cta": "Get started for free",
+      "stats": {
+        "followed": "124 movies tracked",
+        "reviews": "42 reviews"
+      }
+    },
+
+    "features": {
+      "title": "Everything you need to <highlight>manage your movies</highlight>",
+      "subtitle": "WatchListy combines all essential features to track your favorite movies and series in one elegant and intuitive place.",
+      "feature1": {
+        "title": "Smart search",
+        "description": "Instantly find any movie or show using our complete database and advanced suggestion system."
+      },
+      "feature2": {
+        "title": "Watch tracking",
+        "description": "Mark movies you've seen or plan to see, and monitor your progress with detailed statistics."
+      },
+      "feature3": {
+        "title": "Ratings and reviews",
+        "description": "Rate your favorite movies, write reviews, and discover recommendations from our passionate community."
+      },
+      "feature4": {
+        "title": "Custom lists",
+        "description": "Create thematic lists (to watch, favorites, by genre) and organize your collection your way."
+      },
+      "feature5": {
+        "title": "IMDB integration",
+        "description": "Access IMDB ratings, full synopses, and detailed information directly from our platform."
+      },
+      "feature6": {
+        "title": "Recommendations",
+        "description": "Get personalized suggestions based on your tastes and watch history."
+      }
+    },
+
+    "testimonials": {
+      "title": "What our users say",
+      "subtitle": "Thousands of movie lovers use WatchListy every day to organize their favorite films and shows.",
+      "user1": {
+        "name": "Marie D.",
+        "role": "Member since 2023",
+        "quote": "WatchListy completely changed how I manage my movie collection. The interface is beautiful, and the features are exactly what I needed."
+      },
+      "user2": {
+        "name": "Thomas L.",
+        "role": "Movie Enthusiast",
+        "quote": "Finally, an app that truly understands movie lovers! The recommendation feature is amazing."
+      },
+      "user3": {
+        "name": "Sophie M.",
+        "role": "Film Student",
+        "quote": "I love the custom lists and progress tracking. It saves me so much time for my film projects."
+      },
+      "user4": {
+        "name": "Alex P.",
+        "role": "Series Addict",
+        "quote": "The advanced search and genre/year filters are super efficient. Clean and fast UX — love it!"
+      }
+    },
+
+    "cta": {
+      "badge": "New — Take control of your watchlist",
+      "title": "Ready to organize your movies and series in a snap?",
+      "subtitle": "Centralize your lists, track your progress, and discover new titles with smart recommendations.",
+      "trustedText": "movie lovers already trust us.",
+      "cta": "Create a free account",
+      "privacy": "No credit card required — Private and secure data"
+    }
+  }
+}

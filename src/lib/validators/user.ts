@@ -15,12 +15,9 @@ export const updateUserSchema = z
         pseudo: z
             .string()
             .trim()
-            .min(2, "Le pseudo doit contenir au moins 2 caractères")
-            .max(30, "Le pseudo ne peut pas dépasser 30 caractères")
-            .regex(
-                /^[a-zA-Z0-9_]+$/,
-                "Le pseudo ne peut contenir que des lettres, chiffres et underscores"
-            )
+            .min(2, "validation.pseudoMin")
+            .max(30, "validation.pseudoMax")
+            .regex(/^[a-zA-Z0-9_]+$/, "validation.pseudoRegex")
             .optional()
             .transform((val) => (val === "" ? undefined : val)),
 
@@ -29,7 +26,7 @@ export const updateUserSchema = z
          */
         avatar: z
             .string()
-            .regex(/^avatar\d+\.svg$/, "Avatar invalide")
+            .regex(/^avatar\d+\.svg$/, "validation.avatarInvalid")
             .optional()
             .transform((val) => (val === "" ? undefined : val)),
 
@@ -61,15 +58,12 @@ export const updateUserSchema = z
                 z.literal(""),
                 z
                     .string()
-                    .min(8, "Le mot de passe doit contenir au moins 8 caractères")
-                    .max(30, "Le mot de passe ne peut pas dépasser 30 caractères")
-                    .regex(/[A-Z]/, "Le mot de passe doit contenir une majuscule")
-                    .regex(/[a-z]/, "Le mot de passe doit contenir une minuscule")
-                    .regex(/\d/, "Le mot de passe doit contenir un chiffre")
-                    .regex(
-                        /[^A-Za-z0-9]/,
-                        "Le mot de passe doit contenir un caractère spécial"
-                    ),
+                    .min(8, "validation.passwordMin")
+                    .max(30, "validation.passwordMax")
+                    .regex(/[A-Z]/, "validation.passwordUpper")
+                    .regex(/[a-z]/, "validation.passwordLower")
+                    .regex(/\d/, "validation.passwordNumber")
+                    .regex(/[^A-Za-z0-9]/, "validation.passwordSpecial"),
             ])
             .optional()
             .transform((val) => (val === "" ? undefined : val)),
@@ -94,7 +88,7 @@ export const updateUserSchema = z
             if (!hasOld) {
                 ctx.addIssue({
                     code: "custom",
-                    message: "L'ancien mot de passe est requis",
+                    message: "validation.oldPasswordRequired",
                     path: ["oldPassword"],
                 });
             }
@@ -103,7 +97,7 @@ export const updateUserSchema = z
             if (!hasNew) {
                 ctx.addIssue({
                     code: "custom",
-                    message: "Le nouveau mot de passe est requis",
+                    message: "validation.newPasswordRequired",
                     path: ["newPassword"],
                 });
             }
@@ -112,7 +106,7 @@ export const updateUserSchema = z
             if (!hasConfirm) {
                 ctx.addIssue({
                     code: "custom",
-                    message: "Veuillez confirmer le mot de passe",
+                    message: "validation.confirmPasswordRequired",
                     path: ["confirmPassword"],
                 });
             }
@@ -125,7 +119,7 @@ export const updateUserSchema = z
             ) {
                 ctx.addIssue({
                     code: "custom",
-                    message: "Les mots de passe ne correspondent pas",
+                    message: "validation.passwordsMismatch",
                     path: ["confirmPassword"],
                 });
             }

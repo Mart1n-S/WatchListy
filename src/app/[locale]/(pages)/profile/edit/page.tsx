@@ -5,10 +5,12 @@ import { useRouter } from "next/navigation";
 import ProfileEditForm from "@/components/profile/ProfileEditForm";
 import ProfileBackground from "@/components/ui/ProfileBackground";
 import { Toaster } from "react-hot-toast";
+import { useTranslations } from "next-intl";
 
 export default function EditProfilePage() {
   const { data: session, status } = useSession();
   const router = useRouter();
+  const t = useTranslations("ProfileEdit");
 
   // Redirige si non connecté
   if (status === "unauthenticated") {
@@ -29,10 +31,8 @@ export default function EditProfilePage() {
     <div className="min-h-screen relative">
       <ProfileBackground />
       <div className="pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto relative z-10">
-        <h1 className="text-3xl font-bold text-white mb-4">Modifier mon profil</h1>
-        <p className="text-slate-400 mb-8">
-          Mettez à jour vos informations, vos préférences et votre mot de passe.
-        </p>
+        <h1 className="text-3xl font-bold text-white mb-4">{t("title")}</h1>
+        <p className="text-slate-400 mb-8">{t("subtitle")}</p>
 
         <ProfileEditForm user={session.user} />
       </div>

@@ -607,10 +607,91 @@
       "loading": "Connexion en cours...",
       "noAccount": "Pas encore de compte ?",
       "createAccount": "Créer un compte",
+      "validation": {
+        "emailRequired": "L'adresse e-mail est requise",
+        "passwordRequired": "Le mot de passe est requis"
+      },
       "errors": {
-        "invalidCredentials": "Email ou mot de passe incorrect",
+        "invalidFields": "Champs invalides",
+        "userNotFound": "Aucun utilisateur trouvé avec cet e-mail",
+        "emailNotVerified": "Votre adresse e-mail n’a pas encore été vérifiée",
+        "accountBlocked": "Ce compte a été bloqué",
+        "invalidCredentials": "Identifiants incorrects",
         "unexpected": "Une erreur inattendue est survenue"
       }
+    }
+  },
+
+  "profile": {
+    "loading": "Préparation de votre profil...",
+    "title": "Mon profil",
+    "subtitle": "Gérez vos informations personnelles et vos préférences",
+    "unknownUser": "Utilisateur",
+    "unknownGenre": "Inconnu",
+    "memberSince": "Membre depuis",
+    "movieGenres": "Genres de films favoris",
+    "tvGenres": "Genres de séries favoris",
+    "edit": "Modifier"
+  },
+
+  "ProfileEdit": {
+    "title": "Modifier mon profil",
+    "subtitle": "Mettez à jour vos informations personnelles et vos préférences",
+    "chooseAvatar": "Choisissez un avatar",
+    "avatar": "Avatar",
+    "pseudo": "Pseudo",
+    "moviePreferences": "Préférences films",
+    "tvPreferences": "Préférences séries",
+    "oldPassword": "Ancien mot de passe",
+    "newPassword": "Nouveau mot de passe",
+    "confirmPassword": "Confirmer le mot de passe",
+    "hideOldPassword": "Masquer l'ancien mot de passe",
+    "showOldPassword": "Afficher l'ancien mot de passe",
+    "hideNewPassword": "Masquer le nouveau mot de passe",
+    "showNewPassword": "Afficher le nouveau mot de passe",
+    "hideConfirmPassword": "Masquer la confirmation du mot de passe",
+    "showConfirmPassword": "Afficher la confirmation du mot de passe",
+    "cancel": "Annuler",
+    "save": "Enregistrer",
+    "saving": "Mise à jour...",
+    "error": "Erreur lors de la mise à jour du profil.",
+    "passwordCriteria": {
+      "length": "8 à 30 caractères",
+      "uppercase": "1 majuscule",
+      "lowercase": "1 minuscule",
+      "number": "1 chiffre",
+      "special": "1 caractère spécial"
+    },
+    "validation": {
+      "pseudoMin": "Le pseudo doit contenir au moins 2 caractères",
+      "pseudoMax": "Le pseudo ne peut pas dépasser 30 caractères",
+      "pseudoRegex": "Le pseudo ne peut contenir que des lettres, chiffres et underscores",
+      "avatarInvalid": "Avatar invalide",
+      "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
+      "passwordMax": "Le mot de passe ne peut pas dépasser 30 caractères",
+      "passwordUpper": "Le mot de passe doit contenir une majuscule",
+      "passwordLower": "Le mot de passe doit contenir une minuscule",
+      "passwordNumber": "Le mot de passe doit contenir un chiffre",
+      "passwordSpecial": "Le mot de passe doit contenir un caractère spécial",
+      "oldPasswordRequired": "L'ancien mot de passe est requis",
+      "newPasswordRequired": "Le nouveau mot de passe est requis",
+      "confirmPasswordRequired": "Veuillez confirmer le mot de passe",
+      "passwordsMismatch": "Les mots de passe ne correspondent pas"
+    },
+    "errors": {
+      "invalidUserId": "ID utilisateur invalide.",
+      "invalidData": "Données invalides.",
+      "userNotFound": "Utilisateur introuvable.",
+      "noDataToUpdate": "Aucune donnée à mettre à jour.",
+      "updateFailed": "Échec de la mise à jour.",
+      "passwordIncomplete": "Les champs de mot de passe sont incomplets.",
+      "oldPasswordIncorrect": "L'ancien mot de passe est incorrect."
+    }
+  },
+  "common": {
+    "errors": {
+      "unauthorized": "Non autorisé.",
+      "internalServerError": "Erreur interne du serveur."
     }
   }
 }

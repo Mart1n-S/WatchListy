@@ -126,7 +126,7 @@ export default function LoginForm() {
       const errs: FieldErrors = {};
       parsed.error.issues.forEach((i) => {
         const k = i.path[0] as keyof LoginInput;
-        errs[k] = i.message;
+        errs[k] = t(i.message.replace(/^auth\.login\./, ""));
       });
       setFieldErrors(errs);
       focusFirstError(errs);
@@ -149,7 +149,7 @@ export default function LoginForm() {
        * NextAuth retourne une erreur générique pour la sécurité
        */
       if (result?.error) {
-        setFormError(t("errors.invalidCredentials"));
+        setFormError(t(result.error.replace(/^auth\.login\./, "")));
         return;
       }
 
@@ -240,7 +240,7 @@ export default function LoginForm() {
             <button
               type="button"
               aria-label={showPassword ? t("fields.password.hide") : t("fields.password.show")}
-              className="absolute inset-y-0 right-0 p-3 flex items-center rounded-full focus:outline-none focus:ring-0 focus:border-2 focus:border-indigo-500 transition-colors"
+              className="absolute inset-y-0 right-0 p-3 flex items-center rounded-full focus:outline-none focus:ring-0 focus:border-2 focus:border-indigo-500 transition-colors hover:cursor-pointer"
               onClick={() => setShowPassword((s) => !s)}
             >
               {showPassword ? (
@@ -269,7 +269,7 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full flex justify-center items-center py-3 px-4 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:opacity-60"
+          className="w-full flex justify-center items-center py-3 px-4 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:opacity-60 hover:cursor-pointer"
         >
           {isLoading ? (
             <>

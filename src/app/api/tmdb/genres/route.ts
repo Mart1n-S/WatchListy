@@ -6,17 +6,21 @@ const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN!;
 // Revalidation tous les 24 heures
 export const revalidate = 86400;
 
-export async function GET() {
+export async function GET(request: Request) {
     try {
+        // Récupère la langue depuis l'URL (par défaut fr)
+        const { searchParams } = new URL(request.url);
+        const lang = searchParams.get("lang") || "fr";
+
         const [movieRes, tvRes] = await Promise.all([
-            fetch(`${TMDB_BASE}/genre/movie/list?language=fr`, {
+            fetch(`${TMDB_BASE}/genre/movie/list?language=${lang}`, {
                 headers: {
                     Authorization: `Bearer ${TMDB_TOKEN}`,
                     Accept: "application/json",
                 },
                 next: { revalidate: 86400 },
             }),
-            fetch(`${TMDB_BASE}/genre/tv/list?language=fr`, {
+            fetch(`${TMDB_BASE}/genre/tv/list?language=${lang}`, {
                 headers: {
                     Authorization: `Bearer ${TMDB_TOKEN}`,
                     Accept: "application/json",
@@ -34,6 +38,7 @@ export async function GET() {
         // Réponse typée + cache HTTP public
         return NextResponse.json(
             {
+                language: lang,
                 movies: movies.genres,
                 tv: tv.genres,
                 fetchedAt: new Date().toISOString(),

@@ -124,15 +124,15 @@ export default async function LocaleRootLayout({
       >
         <ReduxProvider>
           <AuthProvider>
-            <AuthSync>
               <NextIntlClientProvider locale={locale} messages={messages}>
-                <Header />
-                <main id="content" className="flex-grow pt-10">
-                  {children}
-                </main>
-                <Footer />
+                <AuthSync>  
+                  <Header />
+                  <main id="content" className="flex-grow pt-10">
+                    {children}
+                  </main>
+                  <Footer />
+                </AuthSync>
               </NextIntlClientProvider>
-            </AuthSync>
           </AuthProvider>
         </ReduxProvider>
       </body>

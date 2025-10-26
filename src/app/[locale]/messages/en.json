@@ -606,10 +606,91 @@
       "loading": "Signing in...",
       "noAccount": "Don't have an account yet?",
       "createAccount": "Create an account",
+      "validation": {
+        "emailRequired": "Email is required",
+        "passwordRequired": "Password is required"
+      },
       "errors": {
-        "invalidCredentials": "Invalid email or password",
+        "invalidFields": "Invalid fields",
+        "userNotFound": "No user found with this email",
+        "emailNotVerified": "Your email address has not been verified yet",
+        "accountBlocked": "This account has been blocked",
+        "invalidCredentials": "Invalid credentials",
         "unexpected": "An unexpected error occurred"
       }
+    }
+  },
+
+  "profile": {
+    "loading": "Loading your profile...",
+    "title": "My Profile",
+    "subtitle": "Manage your personal information and preferences",
+    "unknownUser": "User",
+    "unknownGenre": "Unknown",
+    "memberSince": "Member since",
+    "movieGenres": "Favorite movie genres",
+    "tvGenres": "Favorite TV genres",
+    "edit": "Edit"
+  },
+
+  "ProfileEdit": {
+    "title": "Edit my profile",
+    "subtitle": "Update your personal information and preferences",
+    "chooseAvatar": "Choose an avatar",
+    "avatar": "Avatar",
+    "pseudo": "Username",
+    "moviePreferences": "Movie preferences",
+    "tvPreferences": "TV show preferences",
+    "oldPassword": "Old password",
+    "newPassword": "New password",
+    "confirmPassword": "Confirm password",
+    "hideOldPassword": "Hide old password",
+    "showOldPassword": "Show old password",
+    "hideNewPassword": "Hide new password",
+    "showNewPassword": "Show new password",
+    "hideConfirmPassword": "Hide confirm password",
+    "showConfirmPassword": "Show confirm password",
+    "cancel": "Cancel",
+    "save": "Save",
+    "saving": "Updating...",
+    "error": "Error updating profile.",
+    "passwordCriteria": {
+      "length": "8 to 30 characters",
+      "uppercase": "1 uppercase letter",
+      "lowercase": "1 lowercase letter",
+      "number": "1 number",
+      "special": "1 special character"
+    },
+    "validation": {
+      "pseudoMin": "Username must have at least 2 characters",
+      "pseudoMax": "Username cannot exceed 30 characters",
+      "pseudoRegex": "Username can only contain letters, numbers, and underscores",
+      "avatarInvalid": "Invalid avatar",
+      "passwordMin": "Password must have at least 8 characters",
+      "passwordMax": "Password cannot exceed 30 characters",
+      "passwordUpper": "Password must contain an uppercase letter",
+      "passwordLower": "Password must contain a lowercase letter",
+      "passwordNumber": "Password must contain a number",
+      "passwordSpecial": "Password must contain a special character",
+      "oldPasswordRequired": "Old password is required",
+      "newPasswordRequired": "New password is required",
+      "confirmPasswordRequired": "Please confirm your password",
+      "passwordsMismatch": "Passwords do not match"
+    },
+    "errors": {
+      "invalidUserId": "Invalid user ID.",
+      "invalidData": "Invalid data.",
+      "userNotFound": "User not found.",
+      "noDataToUpdate": "No data to update.",
+      "updateFailed": "Update failed.",
+      "passwordIncomplete": "Password fields are incomplete.",
+      "oldPasswordIncorrect": "Old password is incorrect."
+    }
+  },
+  "common": {
+    "errors": {
+      "unauthorized": "Unauthorized.",
+      "internalServerError": "Internal server error."
     }
   }
 }

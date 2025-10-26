@@ -14,6 +14,11 @@ const intlMiddleware = createMiddleware({
 export async function middleware(req: NextRequest) {
     const { pathname, origin } = req.nextUrl;
 
+    // Ignore les routes API (pas de locale)
+    if (pathname.startsWith("/api")) {
+        return NextResponse.next();
+    }
+
     // Ignore les fichiers statiques et Next.js internes
     if (
         pathname.startsWith("/_next") ||

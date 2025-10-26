@@ -58,10 +58,11 @@ export async function middleware(req: NextRequest) {
     const pathWithoutLocale = pathname.replace(`/${currentLocale}`, "");
 
     const isLoginPage = pathWithoutLocale === "/login";
+    const isRegisterPage = pathWithoutLocale === "/register";
     const isProfilePage = pathWithoutLocale.startsWith("/profile");
 
     // Redirige si utilisateur connecté → évite /login
-    if (isAuth && isLoginPage) {
+    if (isAuth && (isLoginPage || isRegisterPage)) {
         return NextResponse.redirect(
             new URL(`/${currentLocale}/profile`, origin)
         );

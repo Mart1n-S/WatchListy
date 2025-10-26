@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
-import { authOptions } from "@/lib/auth"; // Vérifie bien ce chemin !
+import { authOptions } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
 import { updateUserSchema } from "@/lib/validators/user";
 import { hash, compare } from "bcryptjs";
@@ -19,7 +19,7 @@ export async function PATCH(req: Request) {
         /** Vérification de la session utilisateur */
         const session = await getServerSession(authOptions);
         if (!session?.user?.id) {
-            return NextResponse.json({ error: "Non autorisé" }, { status: 401 });
+            return NextResponse.json({ error: "common.errors.unauthorized" }, { status: 401 });
         }
 
         /** Conversion du string ID en ObjectId MongoDB */
@@ -27,7 +27,7 @@ export async function PATCH(req: Request) {
         try {
             userId = new ObjectId(session.user.id);
         } catch {
-            return NextResponse.json({ error: "ID utilisateur invalide" }, { status: 400 });
+            return NextResponse.json({ error: "ProfileEdit.errors.invalidUserId" }, { status: 400 });
         }
 
         /** Lecture et validation du corps de la requête */
@@ -41,7 +41,7 @@ export async function PATCH(req: Request) {
                 fieldErrors[key] = issue.message;
             });
             return NextResponse.json(
-                { error: "Données invalides", errors: fieldErrors },
+                { error: "ProfileEdit.errors.invalidData", errors: fieldErrors },
                 { status: 400 }
             );
         }
@@ -53,7 +53,7 @@ export async function PATCH(req: Request) {
         const user = await db.collection("users").findOne({ _id: userId });
 
         if (!user) {
-            return NextResponse.json({ error: "Utilisateur introuvable" }, { status: 404 });
+            return NextResponse.json({ error: "ProfileEdit.errors.userNotFound" }, { status: 404 });
         }
 
         /** Préparation des champs à mettre à jour */
@@ -67,7 +67,7 @@ export async function PATCH(req: Request) {
         if (oldPassword || newPassword) {
             if (!oldPassword || !newPassword) {
                 return NextResponse.json(
-                    { error: "Les champs de mot de passe sont incomplets." },
+                    { error: "ProfileEdit.errors.passwordIncomplete" },
                     { status: 400 }
                 );
             }
@@ -75,7 +75,7 @@ export async function PATCH(req: Request) {
             const validOldPassword = await compare(oldPassword, user.password);
             if (!validOldPassword) {
                 return NextResponse.json(
-                    { errors: { oldPassword: "L'ancien mot de passe est incorrect." } },
+                    { errors: { oldPassword: "ProfileEdit.errors.oldPasswordIncorrect" } },
                     { status: 400 }
                 );
             }
@@ -86,7 +86,10 @@ export async function PATCH(req: Request) {
 
         /** Aucune donnée à mettre à jour */
         if (Object.keys(updateData).length === 0) {
-            return NextResponse.json({ error: "Aucune donnée à mettre à jour." }, { status: 400 });
+            return NextResponse.json(
+                { error: "ProfileEdit.errors.noDataToUpdate" },
+                { status: 400 }
+            );
         }
 
         /** Mise à jour en base et récupération du document mis à jour */
@@ -97,7 +100,7 @@ export async function PATCH(req: Request) {
         );
 
         if (!result.value) {
-            return NextResponse.json({ error: "Échec de la mise à jour." }, { status: 500 });
+            return NextResponse.json({ error: "ProfileEdit.errors.updateFailed" }, { status: 500 });
         }
 
         /** Nettoyage des données avant réponse */
@@ -115,7 +118,7 @@ export async function PATCH(req: Request) {
     } catch (error) {
         console.error("Erreur dans /api/user/update :", error);
         return NextResponse.json(
-            { error: "Erreur interne du serveur" },
+            { error: "common.errors.internalServerError" },
             { status: 500 }
         );
     }

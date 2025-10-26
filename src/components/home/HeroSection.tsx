@@ -5,9 +5,12 @@ import { motion, useReducedMotion } from "framer-motion";
 import { FiFilm, FiCheckCircle, FiStar, FiUserPlus } from "react-icons/fi";
 import { FaImdb } from "react-icons/fa";
 import { fadeInUp, gradientBackground } from "@/lib/animation";
+import { useTranslations, useLocale } from "next-intl";
 
 export function HeroSection() {
   const prefersReducedMotion = useReducedMotion();
+  const t = useTranslations("home.hero");
+  const locale = useLocale();
 
   const variants = prefersReducedMotion
     ? { visible: { opacity: 1 }, hidden: { opacity: 0 } }
@@ -32,7 +35,7 @@ export function HeroSection() {
           className="inline-flex items-center px-3 py-1 mb-6 rounded-full bg-blue-900/30 text-blue-300 text-sm font-medium"
         >
           <FiFilm className="mr-1" aria-hidden="true" />
-          Nouveau — Gestion intelligente de vos films
+          {t("badge")}
         </motion.div>
 
         {/* Titre principal */}
@@ -44,7 +47,7 @@ export function HeroSection() {
           transition={{ delay: 0.3, duration: 0.8 }}
           className="text-5xl md:text-7xl font-bold mb-6 bg-clip-text text-transparent bg-gradient-to-r from-blue-500 to-emerald-400"
         >
-          WatchListy
+          {t("title")}
         </motion.h1>
 
         {/* Sous-titre */}
@@ -55,8 +58,11 @@ export function HeroSection() {
           transition={{ delay: 0.5, duration: 0.8 }}
           className="text-lg md:text-xl text-gray-300 max-w-2xl mx-auto mb-10"
         >
-          Votre <span className="font-semibold text-blue-400">compagnon ultime</span> pour suivre,
-          organiser et découvrir vos films et séries préférés.
+          {t.rich("subtitle", {
+            highlight: (chunk) => (
+              <span className="font-semibold text-blue-400">{chunk}</span>
+            ),
+          })}
         </motion.p>
 
         {/* Bouton d'action */}
@@ -68,12 +74,12 @@ export function HeroSection() {
           className="flex flex-col sm:flex-row gap-4 justify-center mb-12"
         >
           <Link
-            href="/register"
+            href={`/${locale}/register`}
             className="relative inline-flex items-center justify-center px-8 py-3 overflow-hidden font-medium text-white transition duration-300 ease-out rounded-lg group bg-gradient-to-r from-blue-600 to-emerald-500 hover:from-blue-700 hover:to-emerald-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"
           >
             <span className="absolute inset-0 w-full h-full bg-gradient-to-br from-white/0 via-white/20 to-white/0 opacity-0 group-hover:opacity-100 transition duration-300" />
             <FiUserPlus className="mr-2" aria-hidden="true" />
-            Commencer gratuitement
+            {t("cta")}
           </Link>
         </motion.div>
 
@@ -101,7 +107,7 @@ export function HeroSection() {
           <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between px-4 py-2 bg-gray-800/90 backdrop-blur-sm rounded-lg text-gray-100">
             <div className="flex items-center space-x-2">
               <FiCheckCircle className="text-green-400" aria-hidden="true" />
-              <span className="text-sm font-medium">124 films suivis</span>
+              <span className="text-sm font-medium">{t("stats.followed")}</span>
             </div>
             <div className="flex items-center space-x-2">
               <FaImdb className="text-yellow-400" aria-hidden="true" />
@@ -109,7 +115,7 @@ export function HeroSection() {
             </div>
             <div className="flex items-center space-x-2">
               <FiStar className="text-blue-400" aria-hidden="true" />
-              <span className="text-sm font-medium">42 avis</span>
+              <span className="text-sm font-medium">{t("stats.reviews")}</span>
             </div>
           </div>
         </motion.div>

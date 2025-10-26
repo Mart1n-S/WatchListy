@@ -3,7 +3,7 @@ import { FeaturesSection } from "@/components/home/FeaturesSection";
 import { TestimonialsSection } from "@/components/home/TestimonialsSection";
 import { CtaSection } from "@/components/home/CtaSection";
 
-export default function Home() {
+export default async function HomePage() {
   return (
     <>
       <HeroSection />

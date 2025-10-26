@@ -11,6 +11,8 @@ import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { z } from "zod";
 import { HiEye, HiEyeOff, HiLockClosed } from "react-icons/hi";
+import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 
 /**
  * Formulaire complet d’édition du profil utilisateur
@@ -19,10 +21,12 @@ import { HiEye, HiEyeOff, HiLockClosed } from "react-icons/hi";
  * - Labels reliés via htmlFor/id
  */
 export default function ProfileEditForm({ user }: { user: Session["user"] }) {
+  const t = useTranslations("ProfileEdit");
   const router = useRouter();
   const dispatch = useAppDispatch();
   const genres = useAppSelector((state) => state.genres);
   const { data: session, update } = useSession();
+  const locale = useLocale();
 
   /** État local du formulaire */
   const [form, setForm] = useState<UpdateUserInput>({
@@ -72,14 +76,13 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
     });
   };
 
-
   /** Vérifie les critères de sécurité du mot de passe */
   const passwordCriteria = [
-    { label: "8 à 30 caractères", valid: !!form.newPassword?.match(/^.{8,30}$/) },
-    { label: "1 majuscule", valid: !!form.newPassword?.match(/[A-Z]/) },
-    { label: "1 minuscule", valid: !!form.newPassword?.match(/[a-z]/) },
-    { label: "1 chiffre", valid: !!form.newPassword?.match(/\d/) },
-    { label: "1 caractère spécial", valid: !!form.newPassword?.match(/[!@#$%^&*(),.?\":{}|<>]/) },
+    { label: t("passwordCriteria.length"), valid: !!form.newPassword?.match(/^.{8,30}$/) },
+    { label: t("passwordCriteria.uppercase"), valid: !!form.newPassword?.match(/[A-Z]/) },
+    { label: t("passwordCriteria.lowercase"), valid: !!form.newPassword?.match(/[a-z]/) },
+    { label: t("passwordCriteria.number"), valid: !!form.newPassword?.match(/\d/) },
+    { label: t("passwordCriteria.special"), valid: !!form.newPassword?.match(/[!@#$%^&*(),.?\":{}|<>]/) },
   ];
 
   /** Soumission du formulaire */
@@ -92,15 +95,31 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
       const parsed = updateUserSchema.parse(form);
       const res = await fetch("/api/user/update", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json" },
+        headers: { "Content-Type": "application/json", "Accept-Language": locale },
         body: JSON.stringify(parsed),
       });
 
       const data = await res.json();
+
       if (!res.ok) {
-        if (data.errors) setErrors(data.errors);
-        throw new Error(data.error || "Erreur de mise à jour");
+        if (data.errors) {
+          const translatedErrors: Record<string, string> = {};
+          Object.entries(data.errors).forEach(([field, messageKey]) => {
+            // Supprime le préfixe "ProfileEdit." si présent
+            const cleanKey = String(messageKey).replace(/^ProfileEdit\./, "");
+            translatedErrors[field] = t(cleanKey);
+          });
+          setErrors(translatedErrors);
+        }
+
+        // Idem pour l’erreur globale
+        const globalErrorKey = String(data.error || "ProfileEdit.errors.updateFailed").replace(
+          /^ProfileEdit\./,
+          ""
+        );
+        throw new Error(t(globalErrorKey));
       }
+
 
       dispatch(setUser(data.user));
       await update({
@@ -109,17 +128,18 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
         trigger: "update",
       });
 
-      router.push("/profile");
+      router.push(`/${locale}/profile`);
     } catch (err) {
       if (err instanceof z.ZodError) {
         const fieldErrors: Record<string, string> = {};
         err.issues.forEach((issue) => {
           const key = issue.path[0] as string;
-          fieldErrors[key] = issue.message;
+          const msgKey = String(issue.message);
+          fieldErrors[key] = t(msgKey);
         });
         setErrors(fieldErrors);
       } else {
-        toast.error("Erreur lors de la mise à jour du profil.", { position: "top-right" });
+        toast.error(t("error"), { position: "top-right" });
       }
     } finally {
       setLoading(false);
@@ -138,7 +158,7 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
       <div>
         <fieldset>
           <legend className="block text-gray-200 mb-3 font-medium text-lg">
-            Choisissez un avatar
+            {t("chooseAvatar")}
           </legend>
           <div className="grid grid-cols-3 sm:grid-cols-6 gap-6">
             {avatars.map((a, i) => {
@@ -148,11 +168,14 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
                 <label
                   key={a}
                   htmlFor={id}
-                  className={`relative rounded-2xl p-2 flex flex-col items-center transition cursor-pointer border-2 ${
-                    isSelected
-                      ? "border-indigo-500 bg-gray-800/70 ring-2 ring-indigo-600"
-                      : "border-gray-700 hover:border-indigo-400/50 hover:bg-gray-800/40"
-                  }`}
+                  className={`relative rounded-2xl p-2 flex flex-col items-center transition-all cursor-pointer border-2
+                    ${
+                      isSelected
+                        ? "border-indigo-500 bg-gray-800/70 ring-2 ring-indigo-600"
+                        : "border-gray-700 hover:border-indigo-400/50 hover:bg-gray-800/40"
+                    }
+                    focus-within:ring-2 focus-within:ring-indigo-400 focus-within:ring-offset-2 focus-within:ring-offset-gray-900
+                  `}
                 >
                   <input
                     type="radio"
@@ -165,7 +188,7 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
                   />
                   <Image
                     src={`/images/avatars/${a}`}
-                    alt={`Avatar ${i + 1}`}
+                    alt={`${t("avatar")} ${i + 1}`}
                     width={80}
                     height={80}
                     className="rounded-full object-cover"
@@ -184,14 +207,14 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
       {/* === PSEUDO === */}
       <div>
         <label htmlFor="pseudo" className="block text-gray-200 mb-2 font-medium">
-          Pseudo
+          {t("pseudo")}
         </label>
         <input
           id="pseudo"
           type="text"
           value={form.pseudo ?? ""}
           onChange={(e) => handleChange("pseudo", e.target.value)}
-          className={`w-full bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:outline-none transition-colors ${
+          className={`w-full bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none transition-colors ${
             errors.pseudo ? "border-red-600" : "border-gray-700 hover:border-gray-600"
           }`}
         />
@@ -204,7 +227,7 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
       <div>
         <fieldset>
           <legend className="block text-gray-200 mb-2 font-medium">
-            Préférences films
+            {t("moviePreferences")}
           </legend>
           <div className="flex flex-wrap gap-2">
             {genres.movies.map((g) => {
@@ -215,11 +238,11 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
                 <label
                   key={g.id}
                   htmlFor={id}
-                  className={`px-3 py-1 rounded-full text-sm cursor-pointer transition ${
+                  className={`px-3 py-1 rounded-full text-sm cursor-pointer transition-all ${
                     isActive
                       ? "bg-indigo-600 text-white"
                       : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                  }`}
+                  } focus-within:ring-2 focus-within:ring-indigo-400 focus-within:ring-offset-2 focus-within:ring-offset-gray-900`}
                 >
                   <input
                     id={id}
@@ -247,7 +270,7 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
       <div>
         <fieldset>
           <legend className="block text-gray-200 mb-2 font-medium">
-            Préférences séries
+            {t("tvPreferences")}
           </legend>
           <div className="flex flex-wrap gap-2">
             {genres.tv.map((g) => {
@@ -258,11 +281,11 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
                 <label
                   key={g.id}
                   htmlFor={id}
-                  className={`px-3 py-1 rounded-full text-sm cursor-pointer transition ${
+                  className={`px-3 py-1 rounded-full text-sm cursor-pointer transition-all ${
                     isActive
                       ? "bg-emerald-600 text-white"
                       : "bg-gray-700 text-gray-300 hover:bg-gray-600"
-                  }`}
+                  } focus-within:ring-2 focus-within:ring-emerald-400 focus-within:ring-offset-2 focus-within:ring-offset-gray-900`}
                 >
                   <input
                     id={id}
@@ -291,7 +314,7 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
         {/* Ancien mot de passe */}
         <div className="relative group">
           <label htmlFor="oldPassword" className="block text-gray-200 mb-2 font-medium">
-            Ancien mot de passe
+            {t("oldPassword")}
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -301,14 +324,18 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
               id="oldPassword"
               type={showPassword.old ? "text" : "password"}
               onChange={(e) => handleChange("oldPassword", e.target.value)}
-              className={`w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 border transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
+              className={`w-full pl-10 pr-12 bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none transition-colors ${
                 errors.oldPassword ? "border-red-600" : "border-gray-700 hover:border-gray-600"
               }`}
             />
             <button
               type="button"
-              aria-label={showPassword.old ? "Masquer l'ancien mot de passe" : "Afficher l'ancien mot de passe"}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200 hover:cursor-pointer"
+              aria-label={
+                showPassword.old
+                  ? t("hideOldPassword")
+                  : t("showOldPassword")
+              }
+              className="absolute inset-y-0 right-0 p-3 flex items-center rounded-full focus:outline-none focus:ring-0 focus:border-2 focus:border-indigo-500 transition-colors hover:cursor-pointer"
               onClick={() => setShowPassword((s) => ({ ...s, old: !s.old }))}
             >
               {showPassword.old ? (
@@ -326,7 +353,7 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
         {/* Nouveau mot de passe */}
         <div className="relative group">
           <label htmlFor="newPassword" className="block text-gray-200 mb-2 font-medium">
-            Nouveau mot de passe
+            {t("newPassword")}
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -336,14 +363,16 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
               id="newPassword"
               type={showPassword.new ? "text" : "password"}
               onChange={(e) => handleChange("newPassword", e.target.value)}
-              className={`w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 border transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
+              className={`w-full pl-10 pr-12 bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none transition-colors ${
                 errors.newPassword ? "border-red-600" : "border-gray-700 hover:border-gray-600"
               }`}
             />
             <button
               type="button"
-              aria-label={showPassword.new ? "Masquer le nouveau mot de passe" : "Afficher le nouveau mot de passe"}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200 hover:cursor-pointer"
+              aria-label={
+                showPassword.new ? t("hideNewPassword") : t("showNewPassword")
+              }
+              className="absolute inset-y-0 right-0 p-3 flex items-center rounded-full focus:outline-none focus:ring-0 focus:border-2 focus:border-indigo-500 transition-colors hover:cursor-pointer"
               onClick={() => setShowPassword((s) => ({ ...s, new: !s.new }))}
             >
               {showPassword.new ? (
@@ -368,7 +397,7 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
         {/* Confirmation */}
         <div className="relative group">
           <label htmlFor="confirmPassword" className="block text-gray-200 mb-2 font-medium">
-            Confirmer le mot de passe
+            {t("confirmPassword")}
           </label>
           <div className="relative">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -378,14 +407,18 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
               id="confirmPassword"
               type={showPassword.confirm ? "text" : "password"}
               onChange={(e) => handleChange("confirmPassword", e.target.value)}
-              className={`w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 border transition-colors focus:ring-2 focus:ring-indigo-500 focus:outline-none ${
+              className={`w-full pl-10 pr-12 bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none transition-colors ${
                 errors.confirmPassword ? "border-red-600" : "border-gray-700 hover:border-gray-600"
               }`}
             />
             <button
               type="button"
-              aria-label={showPassword.confirm ? "Masquer la confirmation du mot de passe" : "Afficher la confirmation du mot de passe"}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-200 hover:cursor-pointer"
+              aria-label={
+                showPassword.confirm
+                  ? t("hideConfirmPassword")
+                  : t("showConfirmPassword")
+              }
+              className="absolute inset-y-0 right-0 p-3 flex items-center rounded-full focus:outline-none focus:ring-0 focus:border-2 focus:border-indigo-500 transition-colors hover:cursor-pointer"
               onClick={() => setShowPassword((s) => ({ ...s, confirm: !s.confirm }))}
             >
               {showPassword.confirm ? (
@@ -406,16 +439,16 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
         <button
           type="button"
           onClick={() => router.push("/profile")}
-          className="px-6 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium transition hover:cursor-pointer"
+          className="px-6 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium transition hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"
         >
-          Annuler
+          {t("cancel")}
         </button>
         <button
           type="submit"
           disabled={loading}
-          className="px-8 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition disabled:opacity-60 hover:cursor-pointer"
+          className="px-8 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition disabled:opacity-60 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"
         >
-          {loading ? "Mise à jour..." : "Enregistrer"}
+          {loading ? t("saving") : t("save")}
         </button>
       </div>
     </form>

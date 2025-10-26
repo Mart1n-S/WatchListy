@@ -3,48 +3,14 @@
 import { motion } from "framer-motion";
 import { FaStar } from "react-icons/fa";
 import { fadeInUp, staggerContainer } from "@/lib/animation";
-
-type Testimonial = {
-  name: string;
-  role: string;
-  quote: string;
-  rating: number; // 1..5
-};
-
-const testimonials: Testimonial[] = [
-  {
-    name: "Marie D.",
-    role: "Membre depuis 2023",
-    quote:
-      "WatchListy a complètement transformé ma façon de gérer ma collection de films. L’interface est magnifique et les fonctionnalités sont exactement ce dont j’avais besoin.",
-    rating: 5,
-  },
-  {
-    name: "Thomas L.",
-    role: "Cinéphile",
-    quote:
-      "Enfin une application qui comprend vraiment les besoins des amateurs de cinéma ! La fonction de recommandation est bluffante.",
-    rating: 5,
-  },
-  {
-    name: "Sophie M.",
-    role: "Étudiante en cinéma",
-    quote:
-      "J’adore les listes personnalisées et le suivi de progression. Ça me fait gagner un temps fou pour mes projets de cours.",
-    rating: 4,
-  },
-  {
-    name: "Alex P.",
-    role: "Sérivore",
-    quote:
-      "La recherche avancée et les filtres par genre/année sont super efficaces. UX clean et rapide, top !",
-    rating: 5,
-  },
-];
+import { useTranslations } from "next-intl";
 
 function Stars({ count }: { count: number }) {
   return (
-    <div className="flex items-center gap-1 text-yellow-400" aria-label={`${count} sur 5`}>
+    <div
+      className="flex items-center gap-1 text-yellow-400"
+      aria-label={`${count} sur 5`}
+    >
       {Array.from({ length: 5 }).map((_, i) => (
         <FaStar key={i} className={i < count ? "opacity-100" : "opacity-30"} />
       ))}
@@ -53,6 +19,36 @@ function Stars({ count }: { count: number }) {
 }
 
 export function TestimonialsSection() {
+  const t = useTranslations("home.testimonials");
+
+  // Liste traduite via next-intl
+  const testimonials = [
+    {
+      name: t("user1.name"),
+      role: t("user1.role"),
+      quote: t("user1.quote"),
+      rating: 5,
+    },
+    {
+      name: t("user2.name"),
+      role: t("user2.role"),
+      quote: t("user2.quote"),
+      rating: 5,
+    },
+    {
+      name: t("user3.name"),
+      role: t("user3.role"),
+      quote: t("user3.quote"),
+      rating: 4,
+    },
+    {
+      name: t("user4.name"),
+      role: t("user4.role"),
+      quote: t("user4.quote"),
+      rating: 5,
+    },
+  ];
+
   return (
     <section className="py-20 px-6 sm:px-10 bg-gray-900">
       <div className="max-w-6xl mx-auto">
@@ -66,10 +62,10 @@ export function TestimonialsSection() {
           className="text-center mb-16"
         >
           <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            Ce que nos utilisateurs disent
+            {t("title")}
           </h2>
           <p className="text-gray-300 max-w-2xl mx-auto">
-            Des milliers de cinéphiles utilisent WatchListy pour organiser leurs films et séries au quotidien.
+            {t("subtitle")}
           </p>
         </motion.div>
 

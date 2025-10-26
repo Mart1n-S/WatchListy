@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import ProfileEditForm from "@/components/profile/ProfileEditForm";
 import ProfileBackground from "@/components/ui/ProfileBackground";
-import { Toaster } from "react-hot-toast";
 import { useTranslations } from "next-intl";
 
 export default function EditProfilePage() {
@@ -36,7 +35,6 @@ export default function EditProfilePage() {
 
         <ProfileEditForm user={session.user} />
       </div>
-      <Toaster position="bottom-right" />
     </div>
   );
 }

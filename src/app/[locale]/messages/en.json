@@ -588,8 +588,8 @@
       "meta": {
         "title": "Login"
       },
-      "title": "Sign In",
-      "subtitle": "Access your lists and recommendations.",
+      "title": "Sign in",
+      "subtitle": "Access your watchlists and recommendations.",
       "fields": {
         "email": {
           "label": "Email address",
@@ -601,10 +601,10 @@
           "hide": "Hide password"
         }
       },
-      "forgot": "Forgot your password?",
+      "forgot": "Forgot password?",
       "submit": "Sign in",
       "loading": "Signing in...",
-      "noAccount": "Don't have an account yet?",
+      "noAccount": "Don't have an account?",
       "createAccount": "Create an account",
       "validation": {
         "emailRequired": "Email is required",
@@ -617,6 +617,79 @@
         "accountBlocked": "This account has been blocked",
         "invalidCredentials": "Invalid credentials",
         "unexpected": "An unexpected error occurred"
+      }
+    },
+
+    "register": {
+      "meta": {
+        "title": "Sign up"
+      },
+      "title": "Create an account",
+      "subtitle": "Join Watchlisty and start managing your movies and shows.",
+      "fields": {
+        "email": {
+          "label": "Email address",
+          "placeholder": "your.email@example.com"
+        },
+        "pseudo": {
+          "label": "Username",
+          "placeholder": "Your username"
+        },
+        "password": {
+          "label": "Password",
+          "show": "Show password",
+          "hide": "Hide password"
+        },
+        "confirmPassword": {
+          "label": "Confirm password",
+          "show": "Show password",
+          "hide": "Hide password"
+        },
+        "avatar": {
+          "label": "Choose an avatar",
+          "alt": "Avatar"
+        },
+        "preferences": {
+          "movies": "Favorite movie genres",
+          "tv": "Favorite TV genres"
+        }
+      },
+      "submit": "Sign up",
+      "loading": "Creating account...",
+      "alreadyAccount": "Already have an account?",
+      "goToLogin": "Sign in",
+      "success": "Registration successful! Please check your email to verify your address.",
+      "validation": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email address",
+        "pseudoMin": "Username must be at least 2 characters long",
+        "pseudoMax": "Username cannot exceed 30 characters",
+        "pseudoRegex": "Username can only contain letters, numbers, and underscores",
+        "passwordMin": "Password must be at least 8 characters long",
+        "passwordMax": "Password cannot exceed 30 characters",
+        "passwordUpper": "Password must contain at least one uppercase letter",
+        "passwordLower": "Password must contain at least one lowercase letter",
+        "passwordNumber": "Password must contain at least one number",
+        "passwordSpecial": "Password must contain at least one special character",
+        "confirmPasswordRequired": "Please confirm your password",
+        "passwordsMismatch": "Passwords do not match",
+        "avatarInvalid": "The selected avatar is invalid",
+        "genresRequired": "Please select at least one movie or TV genre"
+      },
+      "errors": {
+        "invalidFields": "Invalid fields",
+        "emailExists": "This email address is already in use",
+        "pseudoExists": "This username is already taken",
+        "invalidData": "Invalid data",
+        "internalServerError": "Internal server error",
+        "unexpected": "An unexpected error occurred"
+      },
+      "passwordCriteria": {
+        "length": "8–30 characters",
+        "uppercase": "At least one uppercase letter",
+        "lowercase": "At least one lowercase letter",
+        "number": "At least one number",
+        "special": "At least one special character"
       }
     }
   },
@@ -661,6 +734,7 @@
       "number": "1 number",
       "special": "1 special character"
     },
+    "success": "Profile updated successfully !",
     "validation": {
       "pseudoMin": "Username must have at least 2 characters",
       "pseudoMax": "Username cannot exceed 30 characters",

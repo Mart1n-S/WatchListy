@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 
 const TMDB_BASE = process.env.TMDB_API_BASE!;
 const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN!;
-console.log("TMDB_TOKEN 🟢:", process.env.TMDB_ACCESS_TOKEN?.slice(0, 10) + "...");
 
 export async function GET(request: Request) {
     try {

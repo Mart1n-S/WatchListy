@@ -1,10 +1,10 @@
+export const dynamic = "force-dynamic";
+export const revalidate = 86400;
+
 import { NextResponse } from "next/server";
 
 const TMDB_BASE = process.env.TMDB_API_BASE!;
 const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN!;
-
-// Revalidation tous les 24 heures
-export const revalidate = 86400;
 
 export async function GET(request: Request) {
     try {
@@ -30,6 +30,11 @@ export async function GET(request: Request) {
         ]);
 
         if (!movieRes.ok || !tvRes.ok) {
+            console.error(
+                "TMDB Error details:",
+                await movieRes.text(),
+                await tvRes.text()
+            );
             throw new Error("Erreur lors de la récupération des genres TMDB");
         }
 

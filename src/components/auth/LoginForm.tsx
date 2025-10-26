@@ -3,9 +3,10 @@
 import { useRef, useState } from "react";
 import Link from "next/link";
 import { signIn } from "next-auth/react";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname } from "next/navigation";
 import { HiEye, HiEyeOff, HiMail, HiLockClosed } from "react-icons/hi";
-import { LoginSchema, type LoginInput } from "../../lib/validators/auth";
+import { useTranslations } from "next-intl";
+import { LoginSchema, type LoginInput } from "@/lib/validators/auth";
 
 /**
  * Type pour les erreurs de champ de formulaire
@@ -21,8 +22,13 @@ type FieldErrors = Partial<Record<keyof LoginInput, string>>;
  * 
  */
 export default function LoginForm() {
+  const t = useTranslations("auth.login");
   const router = useRouter();
-  
+  const pathname = usePathname();
+
+  // Détecte la locale actuelle
+  const currentLocale = pathname.startsWith("/en") ? "en" : "fr";
+
   /**
    * État des valeurs du formulaire
    * Contient les données saisies par l'utilisateur
@@ -70,15 +76,9 @@ export default function LoginForm() {
    * @param e - Événement de changement d'input
    */
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value, type, checked } = e.target;
-    
-    // Met à jour la valeur du champ modifié
-    setValues((v) => ({ ...v, [name]: type === "checkbox" ? checked : value }));
-    
-    // Efface l'erreur du champ en cours de modification
+    const { name, value } = e.target;
+    setValues((v) => ({ ...v, [name]: value }));
     setFieldErrors((fe) => ({ ...fe, [name]: undefined }));
-    
-    // Efface les erreurs générales du formulaire
     setFormError(null);
   };
 
@@ -126,9 +126,8 @@ export default function LoginForm() {
       const errs: FieldErrors = {};
       parsed.error.issues.forEach((i) => {
         const k = i.path[0] as keyof LoginInput;
-        errs[k] = i.message;
+        errs[k] = t(i.message.replace(/^auth\.login\./, ""));
       });
-      
       setFieldErrors(errs);
       focusFirstError(errs);
       setIsLoading(false);
@@ -142,7 +141,7 @@ export default function LoginForm() {
       const result = await signIn("credentials", {
         email: toValidate.email,
         password: toValidate.password,
-        redirect: false, // Empêche la redirection automatique pour gérer manuellement
+        redirect: false,
       });
 
       /**
@@ -150,28 +149,19 @@ export default function LoginForm() {
        * NextAuth retourne une erreur générique pour la sécurité
        */
       if (result?.error) {
-        // Message d'erreur générique pour email ou mot de passe incorrect
-        // Évite de révéler si l'email existe ou non (meilleure sécurité)
-        setFormError("Email ou mot de passe incorrect");
+        setFormError(t(result.error.replace(/^auth\.login\./, "")));
         return;
       }
 
-      /**
-       * Connexion réussie - Redirection vers le profile
-       */
       if (result?.ok) {
         // Redirection vers la page protégée
-        router.push("/profile");
-        
+        router.push(`/${currentLocale}/profile`);
         // Recharge les données de session côté serveur
         router.refresh();
       }
-    } catch (err: unknown) {
-      /**
-       * Gestion des erreurs inattendues (réseau, serveur, etc.)
-       */
-      setFormError("Une erreur inattendue est survenue");
+    } catch (err) {
       console.error("Login error:", err);
+      setFormError(t("errors.unexpected"));
     } finally {
       /**
        * Réinitialisation de l'état de chargement dans tous les cas
@@ -197,7 +187,7 @@ export default function LoginForm() {
         {/* Email */}
         <div>
           <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-2">
-            Adresse email
+            {t("fields.email.label")}
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -213,8 +203,8 @@ export default function LoginForm() {
               onChange={onChange}
               aria-invalid={!!fieldErrors.email}
               aria-describedby={fieldErrors.email ? "email-error" : undefined}
-              placeholder="votre.email@exemple.com"
-              className={`block w-full pl-10 pr-3 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500
+              placeholder={t("fields.email.placeholder")}
+              className={`block w-full pl-10 pr-3 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
                 ${fieldErrors.email ? "border-red-600" : "border-gray-700 hover:border-gray-600"}
               `}
             />
@@ -227,7 +217,7 @@ export default function LoginForm() {
         {/* Mot de passe */}
         <div>
           <label htmlFor="password" className="block text-sm font-medium text-gray-200 mb-2">
-            Mot de passe
+            {t("fields.password.label")}
           </label>
           <div className="relative group">
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
@@ -243,14 +233,14 @@ export default function LoginForm() {
               aria-invalid={!!fieldErrors.password}
               aria-describedby={fieldErrors.password ? "password-error" : undefined}
               placeholder="••••••••"
-              className={`block w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500
+              className={`block w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
                 ${fieldErrors.password ? "border-red-600" : "border-gray-700 hover:border-gray-600"}
               `}
             />
             <button
               type="button"
-              aria-label={showPassword ? "Masquer le mot de passe" : "Afficher le mot de passe"}
-              className="absolute inset-y-0 right-0 pr-3 flex items-center"
+              aria-label={showPassword ? t("fields.password.hide") : t("fields.password.show")}
+              className="absolute inset-y-0 right-0 p-3 flex items-center rounded-full focus:outline-none focus:ring-0 focus:border-2 focus:border-indigo-500 transition-colors hover:cursor-pointer"
               onClick={() => setShowPassword((s) => !s)}
             >
               {showPassword ? (
@@ -268,10 +258,10 @@ export default function LoginForm() {
         {/* Options */}
         <div className="flex items-center justify-end">
           <Link
-            href="/forgot-password"
+            href={`/${currentLocale}/forgot-password`}
             className="text-sm font-medium text-indigo-400 hover:text-indigo-300 transition-colors"
           >
-            Mot de passe oublié ?
+            {t("forgot")}
           </Link>
         </div>
 
@@ -279,26 +269,30 @@ export default function LoginForm() {
         <button
           type="submit"
           disabled={isLoading}
-          className="w-full flex justify-center items-center py-3 px-4 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 disabled:opacity-60"
+          className="w-full flex justify-center items-center py-3 px-4 rounded-lg text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-400 focus:ring-offset-2 focus:ring-offset-gray-900 disabled:opacity-60 hover:cursor-pointer"
         >
           {isLoading ? (
             <>
-              <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" viewBox="0 0 24 24" aria-hidden="true">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"/>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0A12 12 0 000 12h4z"/>
+              <svg
+                className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                viewBox="0 0 24 24"
+                aria-hidden="true"
+              >
+                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0A12 12 0 000 12h4z" />
               </svg>
-              Connexion en cours...
+              {t("loading")}
             </>
           ) : (
-            "Se connecter"
+            t("submit")
           )}
         </button>
 
         {/* Footer */}
         <p className="text-center text-sm text-gray-400">
-          Pas encore de compte ?{" "}
-          <Link href="/register" className="font-medium text-indigo-400 hover:text-indigo-300">
-            Créer un compte
+          {t("noAccount")}{" "}
+          <Link href={`/${currentLocale}/register`} className="font-medium text-indigo-400 hover:text-indigo-300">
+            {t("createAccount")}
           </Link>
         </p>
       </form>

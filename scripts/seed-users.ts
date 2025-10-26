@@ -3,100 +3,85 @@ import { hash } from "bcryptjs";
 import { ObjectId } from "mongodb";
 import { UserDocument, UserInput } from "@/models/User";
 
-// Liste des avatars disponibles
-const avatars = [
-    "avatar1.svg",
-    "avatar2.svg",
-    "avatar3.svg",
-    "avatar4.svg",
-    "avatar5.svg",
+// Genres de TMDB (extraits de ta réponse API)
+const movieGenres = [
+    { id: 28, name: "Action" },
+    { id: 12, name: "Aventure" },
+    { id: 16, name: "Animation" },
+    { id: 35, name: "Comédie" },
+    { id: 80, name: "Crime" },
+    { id: 18, name: "Drame" },
+    { id: 10749, name: "Romance" },
+    { id: 878, name: "Science-Fiction" },
 ];
 
-// Liste des utilisateurs à insérer
+const tvGenres = [
+    { id: 10759, name: "Action & Adventure" },
+    { id: 16, name: "Animation" },
+    { id: 35, name: "Comédie" },
+    { id: 80, name: "Crime" },
+    { id: 18, name: "Drame" },
+    { id: 9648, name: "Mystère" },
+    { id: 10765, name: "Science-Fiction & Fantastique" },
+];
+
+// Fonction pour tirer quelques genres aléatoires
+function getRandomGenres(list: { id: number }[], count: number) {
+    const shuffled = [...list].sort(() => 0.5 - Math.random());
+    return shuffled.slice(0, count).map((g) => g.id);
+}
+
+const avatars = ["avatar1.svg", "avatar2.svg", "avatar3.svg", "avatar4.svg", "avatar5.svg"];
+
 const users: UserInput[] = [
-    {
-        pseudo: "user",
-        email: "user@example.com",
-        password: "password",
-        avatar: avatars[0],
-    },
-    {
-        pseudo: "Alice42",
-        email: "alice@example.com",
-        password: "securePassword42",
-        avatar: avatars[1],
-    },
-    {
-        pseudo: "BobTheBuilder",
-        email: "bob@example.com",
-        password: "build123",
-        avatar: avatars[2],
-    },
-    {
-        pseudo: "CharlieBrown",
-        email: "charlie@example.com",
-        password: "peanuts456",
-        avatar: avatars[3],
-    },
-    {
-        pseudo: "DianaPrince",
-        email: "diana@example.com",
-        password: "wonderWoman789",
-        avatar: avatars[4],
-    },
+    { pseudo: "user", email: "user@example.com", password: "password", avatar: avatars[0] },
+    { pseudo: "Alice42", email: "alice@example.com", password: "securePassword42", avatar: avatars[1] },
+    { pseudo: "BobTheBuilder", email: "bob@example.com", password: "build123", avatar: avatars[2] },
+    { pseudo: "CharlieBrown", email: "charlie@example.com", password: "peanuts456", avatar: avatars[3] },
+    { pseudo: "DianaPrince", email: "diana@example.com", password: "wonderWoman789", avatar: avatars[4] },
 ];
 
 async function seedUsers() {
     let connection;
     try {
-        // Étendre connectToDatabase pour retourner aussi la connexion
         const { db, client } = await connectToDatabase("watchlisty");
         connection = client;
 
-        // Créer la collection (MongoDB la crée automatiquement à l'insertion)
-        await db.createCollection("users");
-
-        // Créer un index unique sur l'email
         await db.collection("users").createIndex({ email: 1 }, { unique: true });
-
-        // Créer un index unique sur le pseudo
         await db.collection("users").createIndex({ pseudo: 1 }, { unique: true });
 
-        // Insérer les utilisateurs
         for (let i = 0; i < users.length; i++) {
             const userInput = users[i];
-
-            // Hacher le mot de passe
             const hashedPassword = await hash(userInput.password, 10);
 
-            // Créer un utilisateur avec les champs par défaut
             const user: UserDocument = {
-                _id: new ObjectId(), // Généré automatiquement par MongoDB
+                _id: new ObjectId(),
                 pseudo: userInput.pseudo,
-                email: userInput.email,
+                email: userInput.email.toLowerCase(),
                 password: hashedPassword,
                 avatar: userInput.avatar,
                 created_at: new Date(),
-                verified_at: i === 0 ? new Date() : null, // Vérifié uniquement pour le premier utilisateur
+                verified_at: i === 0 ? new Date() : null,
                 blocked_at: null,
-                role: "user",
-                // Pas de preferences pour l'instant
+                role: i === 0 ? "admin" : "user",
+                preferences: {
+                    movies: getRandomGenres(movieGenres, 3),
+                    tv: getRandomGenres(tvGenres, 2),
+                },
             };
 
-            // Insérer l'utilisateur dans la base de données
             const result = await db.collection("users").insertOne(user);
-            console.log(`Utilisateur inséré avec l'_id: ${result.insertedId}`);
+            console.log(`✅ Utilisateur ${user.pseudo} inséré avec l'_id: ${result.insertedId}`);
         }
 
-        console.log("Seed des utilisateurs terminé avec succès !");
+        console.log("🌱 Seed des utilisateurs terminé avec succès !");
     } catch (error) {
-        console.error("Erreur lors du seed des utilisateurs:", error);
+        console.error("❌ Erreur lors du seed des utilisateurs:", error);
         throw error;
     } finally {
-        // Fermer la connexion dans le bloc finally pour s'assurer qu'elle est fermée même en cas d'erreur
         if (connection) {
             await connection.close();
-            console.log("Connexion à MongoDB fermée.");
+            console.log("🔒 Connexion MongoDB fermée.");
         }
     }
 }

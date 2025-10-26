@@ -51,7 +51,7 @@ export const authOptions: NextAuthOptions = {
              */
             async authorize(credentials) {
                 const validatedFields = LoginSchema.safeParse(credentials);
-                if (!validatedFields.success) throw new Error("Champs invalides");
+                if (!validatedFields.success) throw new Error("auth.login.errors.invalidFields");
 
                 const { email, password } = validatedFields.data;
                 const { db } = await connectToDatabase();
@@ -60,12 +60,12 @@ export const authOptions: NextAuthOptions = {
                     email: email.toLowerCase(),
                 });
 
-                if (!user) throw new Error("Aucun utilisateur trouvé avec cet email");
-                if (!user.verified_at) throw new Error("Votre adresse e-mail n’a pas encore été vérifiée");
-                if (user.blocked_at) throw new Error("Ce compte a été bloqué");
+                if (!user) throw new Error("auth.login.errors.userNotFound");
+                if (!user.verified_at) throw new Error("auth.login.errors.emailNotVerified");
+                if (user.blocked_at) throw new Error("auth.login.errors.accountBlocked");
 
                 const isPasswordValid = await compare(password, user.password);
-                if (!isPasswordValid) throw new Error("Mot de passe incorrect");
+                if (!isPasswordValid) throw new Error("auth.login.errors.invalidCredentials");
 
                 return {
                     id: user._id.toString(),

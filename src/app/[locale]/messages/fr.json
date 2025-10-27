@@ -607,6 +607,8 @@
       "loading": "Connexion en cours...",
       "noAccount": "Pas encore de compte ?",
       "createAccount": "Créer un compte",
+      "notVerified": "Pas encore vérifié ton adresse e-mail ?",
+      "resendVerification": "Demander un e-mail de validation",
       "validation": {
         "emailRequired": "L'adresse e-mail est requise",
         "passwordRequired": "Le mot de passe est requis"

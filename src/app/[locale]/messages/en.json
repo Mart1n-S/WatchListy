@@ -606,6 +606,8 @@
       "loading": "Signing in...",
       "noAccount": "Don't have an account?",
       "createAccount": "Create an account",
+      "notVerified": "Haven’t verified your e-mail yet?",
+      "resendVerification": "Request a new verification e-mail",
       "validation": {
         "emailRequired": "Email is required",
         "passwordRequired": "Password is required"

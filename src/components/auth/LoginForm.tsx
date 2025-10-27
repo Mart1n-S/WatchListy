@@ -16,10 +16,10 @@ type FieldErrors = Partial<Record<keyof LoginInput, string>>;
 
 /**
  * Composant LoginForm - Formulaire de connexion utilisateur
- * 
+ *
  * Ce composant gère l'authentification des utilisateurs via NextAuth.js
  * avec validation des champs, gestion d'erreurs et expérience utilisateur optimisée
- * 
+ *
  */
 export default function LoginForm() {
   const t = useTranslations("auth.login");
@@ -37,13 +37,13 @@ export default function LoginForm() {
     email: "",
     password: "",
   });
-  
+
   /**
    * État pour afficher/masquer le mot de passe
    * Améliore l'UX en permettant à l'utilisateur de vérifier sa saisie
    */
   const [showPassword, setShowPassword] = useState(false);
-  
+
   /**
    * État de chargement pendant la soumission du formulaire
    * Utilisé pour désactiver le bouton et afficher un indicateur de progression
@@ -55,7 +55,7 @@ export default function LoginForm() {
    * Stocke les messages d'erreur spécifiques à chaque input
    */
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
-  
+
   /**
    * État des erreurs générales du formulaire
    * Utilisé pour les erreurs d'authentification (mauvais identifiants, etc.)
@@ -72,7 +72,7 @@ export default function LoginForm() {
   /**
    * Gestionnaire de changement pour les inputs du formulaire
    * Met à jour les valeurs et efface les erreurs associées au champ modifié
-   * 
+   *
    * @param e - Événement de changement d'input
    */
   const onChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -85,7 +85,7 @@ export default function LoginForm() {
   /**
    * Focus sur le premier champ contenant une erreur
    * Améliore l'accessibilité et l'expérience utilisateur
-   * 
+   *
    * @param errs - Objet contenant les erreurs de champ
    */
   const focusFirstError = (errs: FieldErrors) => {
@@ -96,12 +96,12 @@ export default function LoginForm() {
   /**
    * Gestionnaire de soumission du formulaire
    * Valide les données, tente l'authentification et gère les erreurs
-   * 
+   *
    * @param e - Événement de soumission du formulaire
    */
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     // Réinitialisation des états
     setIsLoading(true);
     setFormError(null);
@@ -186,7 +186,10 @@ export default function LoginForm() {
       <form className="space-y-6" onSubmit={onSubmit} noValidate>
         {/* Email */}
         <div>
-          <label htmlFor="email" className="block text-sm font-medium text-gray-200 mb-2">
+          <label
+            htmlFor="email"
+            className="block text-sm font-medium text-gray-200 mb-2"
+          >
             {t("fields.email.label")}
           </label>
           <div className="relative group">
@@ -205,18 +208,27 @@ export default function LoginForm() {
               aria-describedby={fieldErrors.email ? "email-error" : undefined}
               placeholder={t("fields.email.placeholder")}
               className={`block w-full pl-10 pr-3 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
-                ${fieldErrors.email ? "border-red-600" : "border-gray-700 hover:border-gray-600"}
+                ${
+                  fieldErrors.email
+                    ? "border-red-600"
+                    : "border-gray-700 hover:border-gray-600"
+                }
               `}
             />
           </div>
           {fieldErrors.email && (
-            <p id="email-error" className="mt-2 text-sm text-red-300">{fieldErrors.email}</p>
+            <p id="email-error" className="mt-2 text-sm text-red-300">
+              {fieldErrors.email}
+            </p>
           )}
         </div>
 
         {/* Mot de passe */}
         <div>
-          <label htmlFor="password" className="block text-sm font-medium text-gray-200 mb-2">
+          <label
+            htmlFor="password"
+            className="block text-sm font-medium text-gray-200 mb-2"
+          >
             {t("fields.password.label")}
           </label>
           <div className="relative group">
@@ -231,15 +243,25 @@ export default function LoginForm() {
               value={values.password}
               onChange={onChange}
               aria-invalid={!!fieldErrors.password}
-              aria-describedby={fieldErrors.password ? "password-error" : undefined}
+              aria-describedby={
+                fieldErrors.password ? "password-error" : undefined
+              }
               placeholder="••••••••"
               className={`block w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
-                ${fieldErrors.password ? "border-red-600" : "border-gray-700 hover:border-gray-600"}
+                ${
+                  fieldErrors.password
+                    ? "border-red-600"
+                    : "border-gray-700 hover:border-gray-600"
+                }
               `}
             />
             <button
               type="button"
-              aria-label={showPassword ? t("fields.password.hide") : t("fields.password.show")}
+              aria-label={
+                showPassword
+                  ? t("fields.password.hide")
+                  : t("fields.password.show")
+              }
               className="absolute inset-y-0 right-0 p-3 flex items-center rounded-full focus:outline-none focus:ring-0 focus:border-2 focus:border-indigo-500 transition-colors hover:cursor-pointer"
               onClick={() => setShowPassword((s) => !s)}
             >
@@ -251,7 +273,9 @@ export default function LoginForm() {
             </button>
           </div>
           {fieldErrors.password && (
-            <p id="password-error" className="mt-2 text-sm text-red-300">{fieldErrors.password}</p>
+            <p id="password-error" className="mt-2 text-sm text-red-300">
+              {fieldErrors.password}
+            </p>
           )}
         </div>
 
@@ -278,8 +302,19 @@ export default function LoginForm() {
                 viewBox="0 0 24 24"
                 aria-hidden="true"
               >
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0A12 12 0 000 12h4z" />
+                <circle
+                  className="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  strokeWidth="4"
+                />
+                <path
+                  className="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0A12 12 0 000 12h4z"
+                />
               </svg>
               {t("loading")}
             </>
@@ -291,8 +326,21 @@ export default function LoginForm() {
         {/* Footer */}
         <p className="text-center text-sm text-gray-400">
           {t("noAccount")}{" "}
-          <Link href={`/${currentLocale}/register`} className="font-medium text-indigo-400 hover:text-indigo-300">
+          <Link
+            href={`/${currentLocale}/register`}
+            className="font-medium text-indigo-400 hover:text-indigo-300"
+          >
             {t("createAccount")}
+          </Link>
+        </p>
+
+        <p className="mt-2 text-center text-sm text-gray-400">
+          {t("notVerified")}{" "}
+          <Link
+            href={`/${currentLocale}/resend-verification`}
+            className="font-medium text-indigo-400 hover:text-indigo-300"
+          >
+            {t("resendVerification")}
           </Link>
         </p>
       </form>

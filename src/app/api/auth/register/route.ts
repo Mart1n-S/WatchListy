@@ -3,6 +3,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { RegisterSchema } from "@/lib/validators/register";
 import { hash } from "bcryptjs";
 import { randomBytes } from "crypto";
+import { sendVerificationEmail } from "@/lib/emails/sendVerificationEmail";
 
 /**
  * POST /api/auth/register
@@ -13,6 +14,9 @@ import { randomBytes } from "crypto";
 export async function POST(req: Request) {
     try {
         const body = await req.json();
+
+        // Récupère la langue depuis le header
+        const locale = req.headers.get("accept-language") || "fr";
 
         // Validation du schéma Zod
         const parsed = RegisterSchema.safeParse(body);
@@ -34,7 +38,7 @@ export async function POST(req: Request) {
         // --- Connexion à la base ---
         const { db } = await connectToDatabase();
 
-        // --- Vérifie si l’email existe déjà ---
+        // Vérifie email existant
         const existingEmail = await db.collection("users").findOne({ email: email.toLowerCase() });
         if (existingEmail) {
             return NextResponse.json(
@@ -43,7 +47,7 @@ export async function POST(req: Request) {
             );
         }
 
-        // --- Vérifie si le pseudo existe déjà ---
+        // Vérifie pseudo existant
         const existingPseudo = await db.collection("users").findOne({ pseudo });
         if (existingPseudo) {
             return NextResponse.json(
@@ -76,8 +80,17 @@ export async function POST(req: Request) {
 
         await db.collection("users").insertOne(newUser);
 
-        // --- (Optionnel) Envoi d’un e-mail de vérification ---
-        // await sendVerificationEmail(email, verifyToken);
+        // --- Envoi d’un e-mail de vérification ---
+        try {
+            // Passe la locale à la fonction email
+            await sendVerificationEmail(email, verifyToken, locale);
+        } catch (error) {
+            console.error("Erreur lors de l’envoi de l’e-mail de vérification :", error);
+            return NextResponse.json(
+                { error: "auth.register.errors.emailSendFailed" },
+                { status: 500 }
+            );
+        }
 
         return NextResponse.json(
             { message: "auth.register.success" },

@@ -682,6 +682,7 @@
         "pseudoExists": "This username is already taken",
         "invalidData": "Invalid data",
         "internalServerError": "Internal server error",
+        "emailSendFailed": "Failed to send confirmation email. Please try again later.",
         "unexpected": "An unexpected error occurred"
       },
       "passwordCriteria": {
@@ -690,6 +691,55 @@
         "lowercase": "At least one lowercase letter",
         "number": "At least one number",
         "special": "At least one special character"
+      }
+    },
+    "verify": {
+      "loading": "Verifying your email...",
+      "successTitle": "Email successfully verified 🎉",
+      "successText": "Your email has been verified successfully. You can now log in.",
+      "goToLogin": "Log in",
+
+      "expiredTitle": "Link expired ⏳",
+      "expiredText": "Your verification link has expired. You can request a new one.",
+      "resendLink": "Resend verification email",
+      "resendSuccess": "If an account is associated with this email, a verification link has been sent.",
+
+      "resend": {
+        "title": "Resend verification email",
+        "description": "Enter your email address to receive a new verification link.",
+        "button": "Resend email",
+        "loading": "Resending...",
+        "neutral": "If an account is associated with this email, a verification link has been sent.",
+        "success": "A new verification email has been sent.",
+        "label": "Email address",
+        "placeholder": "Enter your email address"
+      },
+
+      "invalidTitle": "Invalid link ❌",
+      "invalidText": "The verification link is invalid or has already been used.",
+      "resendNeutral": "If an account is associated with this email, a verification link has been sent.",
+
+      "errorText": "An error occurred during verification.",
+      "successToast": "Your email has been verified 🎬",
+      "success": "Email verified successfully 🎉",
+
+      "errors": {
+        "tokenMissing": "Email address is required.",
+        "invalidLink": "Invalid verification link.",
+        "expiredLink": "The verification link has expired. Please request a new email.",
+        "emailAlreadyVerified": "Your email is already verified."
+      }
+    },
+
+    "email": {
+      "verification": {
+        "subject": "Confirm your email address",
+        "title": "Confirm your email address",
+        "intro": "Thank you for signing up for <strong>Watchlisty</strong> 🎬!<br />To activate your account, click below:",
+        "button": "Confirm my email",
+        "expiry": "This link will expire in <strong>24 hours</strong>.",
+        "footer": "See you soon 👋,<br />The <strong>Watchlisty</strong> Team",
+        "rights": "All rights reserved."
       }
     }
   },

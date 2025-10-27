@@ -683,6 +683,7 @@
         "pseudoExists": "Ce pseudo est déjà pris",
         "invalidData": "Données invalides",
         "internalServerError": "Erreur interne du serveur",
+        "emailSendFailed": "Impossible d'envoyer l’e-mail de confirmation. Veuillez réessayer plus tard.",
         "unexpected": "Une erreur inattendue est survenue"
       },
       "passwordCriteria": {
@@ -691,6 +692,55 @@
         "lowercase": "Au moins une minuscule",
         "number": "Au moins un chiffre",
         "special": "Au moins un caractère spécial"
+      }
+    },
+
+    "verify": {
+      "loading": "Vérification de votre e-mail en cours...",
+      "successTitle": "E-mail confirmé avec succès 🎉",
+      "successText": "Votre adresse e-mail a été vérifiée avec succès. Vous pouvez maintenant vous connecter.",
+      "goToLogin": "Se connecter",
+
+      "expiredTitle": "Lien expiré ⏳",
+      "expiredText": "Votre lien de vérification a expiré. Vous pouvez en demander un nouveau.",
+      "resendLink": "Renvoyer un e-mail de vérification",
+      "resendSuccess": "Si un compte est associé à cet e-mail, un lien de vérification a été envoyé.",
+
+      "resend": {
+        "title": "Renvoyer l’e-mail de vérification",
+        "description": "Entrez votre adresse e-mail pour recevoir un nouveau lien de confirmation.",
+        "button": "Renvoyer l’e-mail",
+        "loading": "Envoi en cours...",
+        "neutral": "Si un compte est associé à cet e-mail, un lien de vérification a été envoyé.",
+        "success": "Un nouvel e-mail de vérification a été envoyé.",
+        "label": "Adresse e-mail",
+        "placeholder": "Entrez votre adresse e-mail"
+      },
+
+      "invalidTitle": "Lien invalide ❌",
+      "invalidText": "Le lien de vérification est invalide ou a déjà été utilisé.",
+      "resendNeutral": "Si un compte est associé à cet e-mail, un lien de vérification a été envoyé.",
+
+      "errorText": "Une erreur est survenue pendant la vérification.",
+      "successToast": "Votre e-mail a bien été vérifié 🎬",
+      "success": "E-mail confirmé avec succès 🎉",
+
+      "errors": {
+        "tokenMissing": "L’adresse e-mail est requise.",
+        "invalidLink": "Le lien de vérification est invalide.",
+        "expiredLink": "Le lien de vérification a expiré. Veuillez demander un nouvel e-mail.",
+        "emailAlreadyVerified": "Votre e-mail est déjà vérifié."
+      }
+    },
+    "email": {
+      "verification": {
+        "subject": "Confirmez votre adresse e-mail",
+        "title": "Confirmez votre adresse e-mail",
+        "intro": "Merci de vous être inscrit sur <strong>Watchlisty</strong> 🎬 !<br />Pour activer votre compte, cliquez ci-dessous :",
+        "button": "Confirmer mon e-mail",
+        "expiry": "Ce lien expirera dans <strong>24 heures</strong>.",
+        "footer": "À bientôt 👋,<br />L’équipe <strong>Watchlisty</strong>",
+        "rights": "Tous droits réservés."
       }
     }
   },

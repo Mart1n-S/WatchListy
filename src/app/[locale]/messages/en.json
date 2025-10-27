@@ -588,8 +588,8 @@
       "meta": {
         "title": "Login"
       },
-      "title": "Sign In",
-      "subtitle": "Access your lists and recommendations.",
+      "title": "Sign in",
+      "subtitle": "Access your watchlists and recommendations.",
       "fields": {
         "email": {
           "label": "Email address",
@@ -601,11 +601,13 @@
           "hide": "Hide password"
         }
       },
-      "forgot": "Forgot your password?",
+      "forgot": "Forgot password?",
       "submit": "Sign in",
       "loading": "Signing in...",
-      "noAccount": "Don't have an account yet?",
+      "noAccount": "Don't have an account?",
       "createAccount": "Create an account",
+      "notVerified": "Haven’t verified your e-mail yet?",
+      "resendVerification": "Request a new verification e-mail",
       "validation": {
         "emailRequired": "Email is required",
         "passwordRequired": "Password is required"
@@ -617,6 +619,129 @@
         "accountBlocked": "This account has been blocked",
         "invalidCredentials": "Invalid credentials",
         "unexpected": "An unexpected error occurred"
+      }
+    },
+
+    "register": {
+      "meta": {
+        "title": "Sign up"
+      },
+      "title": "Create an account",
+      "subtitle": "Join Watchlisty and start managing your movies and shows.",
+      "fields": {
+        "email": {
+          "label": "Email address",
+          "placeholder": "your.email@example.com"
+        },
+        "pseudo": {
+          "label": "Username",
+          "placeholder": "Your username"
+        },
+        "password": {
+          "label": "Password",
+          "show": "Show password",
+          "hide": "Hide password"
+        },
+        "confirmPassword": {
+          "label": "Confirm password",
+          "show": "Show password",
+          "hide": "Hide password"
+        },
+        "avatar": {
+          "label": "Choose an avatar",
+          "alt": "Avatar"
+        },
+        "preferences": {
+          "movies": "Favorite movie genres",
+          "tv": "Favorite TV genres"
+        }
+      },
+      "submit": "Sign up",
+      "loading": "Creating account...",
+      "alreadyAccount": "Already have an account?",
+      "goToLogin": "Sign in",
+      "success": "Registration successful! Please check your email to verify your address.",
+      "validation": {
+        "emailRequired": "Email is required",
+        "emailInvalid": "Invalid email address",
+        "pseudoMin": "Username must be at least 2 characters long",
+        "pseudoMax": "Username cannot exceed 30 characters",
+        "pseudoRegex": "Username can only contain letters, numbers, and underscores",
+        "passwordMin": "Password must be at least 8 characters long",
+        "passwordMax": "Password cannot exceed 30 characters",
+        "passwordUpper": "Password must contain at least one uppercase letter",
+        "passwordLower": "Password must contain at least one lowercase letter",
+        "passwordNumber": "Password must contain at least one number",
+        "passwordSpecial": "Password must contain at least one special character",
+        "confirmPasswordRequired": "Please confirm your password",
+        "passwordsMismatch": "Passwords do not match",
+        "avatarInvalid": "The selected avatar is invalid",
+        "genresRequired": "Please select at least one movie or TV genre"
+      },
+      "errors": {
+        "invalidFields": "Invalid fields",
+        "emailExists": "This email address is already in use",
+        "pseudoExists": "This username is already taken",
+        "invalidData": "Invalid data",
+        "internalServerError": "Internal server error",
+        "emailSendFailed": "Failed to send confirmation email. Please try again later.",
+        "unexpected": "An unexpected error occurred"
+      },
+      "passwordCriteria": {
+        "length": "8–30 characters",
+        "uppercase": "At least one uppercase letter",
+        "lowercase": "At least one lowercase letter",
+        "number": "At least one number",
+        "special": "At least one special character"
+      }
+    },
+    "verify": {
+      "loading": "Verifying your email...",
+      "successTitle": "Email successfully verified 🎉",
+      "successText": "Your email has been verified successfully. You can now log in.",
+      "goToLogin": "Log in",
+
+      "expiredTitle": "Link expired ⏳",
+      "expiredText": "Your verification link has expired. You can request a new one.",
+      "resendLink": "Resend verification email",
+      "resendSuccess": "If an account is associated with this email, a verification link has been sent.",
+
+      "resend": {
+        "title": "Resend verification email",
+        "description": "Enter your email address to receive a new verification link.",
+        "button": "Resend email",
+        "loading": "Resending...",
+        "neutral": "If an account is associated with this email, a verification link has been sent.",
+        "success": "A new verification email has been sent.",
+        "label": "Email address",
+        "placeholder": "Enter your email address"
+      },
+
+      "invalidTitle": "Invalid link ❌",
+      "invalidText": "The verification link is invalid or has already been used.",
+      "resendNeutral": "If an account is associated with this email, a verification link has been sent.",
+
+      "errorText": "An error occurred during verification.",
+      "successToast": "Your email has been verified 🎬",
+      "success": "Email verified successfully 🎉",
+
+      "errors": {
+        "tokenMissing": "Email address is required.",
+        "invalidLink": "Invalid verification link.",
+        "expiredLink": "The verification link has expired. Please request a new email.",
+        "emailAlreadyVerified": "Your email is already verified."
+      }
+    },
+
+    "email": {
+      "verification": {
+        "subject": "Confirm your email address",
+        "title": "Confirm your email address",
+        "intro": "Thank you for signing up for <strong>Watchlisty</strong> 🎬!<br />To activate your account, click below:",
+        "button": "Confirm my email",
+        "expiry": "This link will expire in <strong>24 hours</strong>.",
+        "footer": "See you soon 👋,<br />The <strong>Watchlisty</strong> Team",
+        "rights": "All rights reserved."
       }
     }
   },
@@ -661,6 +786,7 @@
       "number": "1 number",
       "special": "1 special character"
     },
+    "success": "Profile updated successfully !",
     "validation": {
       "pseudoMin": "Username must have at least 2 characters",
       "pseudoMax": "Username cannot exceed 30 characters",

@@ -78,11 +78,26 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
 
   /** Vérifie les critères de sécurité du mot de passe */
   const passwordCriteria = [
-    { label: t("passwordCriteria.length"), valid: !!form.newPassword?.match(/^.{8,30}$/) },
-    { label: t("passwordCriteria.uppercase"), valid: !!form.newPassword?.match(/[A-Z]/) },
-    { label: t("passwordCriteria.lowercase"), valid: !!form.newPassword?.match(/[a-z]/) },
-    { label: t("passwordCriteria.number"), valid: !!form.newPassword?.match(/\d/) },
-    { label: t("passwordCriteria.special"), valid: !!form.newPassword?.match(/[!@#$%^&*(),.?\":{}|<>]/) },
+    {
+      label: t("passwordCriteria.length"),
+      valid: !!form.newPassword?.match(/^.{8,30}$/),
+    },
+    {
+      label: t("passwordCriteria.uppercase"),
+      valid: !!form.newPassword?.match(/[A-Z]/),
+    },
+    {
+      label: t("passwordCriteria.lowercase"),
+      valid: !!form.newPassword?.match(/[a-z]/),
+    },
+    {
+      label: t("passwordCriteria.number"),
+      valid: !!form.newPassword?.match(/\d/),
+    },
+    {
+      label: t("passwordCriteria.special"),
+      valid: !!form.newPassword?.match(/[!@#$%^&*(),.?\":{}|<>]/),
+    },
   ];
 
   /** Soumission du formulaire */
@@ -95,7 +110,10 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
       const parsed = updateUserSchema.parse(form);
       const res = await fetch("/api/user/update", {
         method: "PATCH",
-        headers: { "Content-Type": "application/json", "Accept-Language": locale },
+        headers: {
+          "Content-Type": "application/json",
+          "Accept-Language": locale,
+        },
         body: JSON.stringify(parsed),
       });
 
@@ -113,13 +131,11 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
         }
 
         // Idem pour l’erreur globale
-        const globalErrorKey = String(data.error || "ProfileEdit.errors.updateFailed").replace(
-          /^ProfileEdit\./,
-          ""
-        );
+        const globalErrorKey = String(
+          data.error || "ProfileEdit.errors.updateFailed"
+        ).replace(/^ProfileEdit\./, "");
         throw new Error(t(globalErrorKey));
       }
-
 
       dispatch(setUser(data.user));
       await update({
@@ -127,6 +143,8 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
         user: { ...session?.user, ...data.user },
         trigger: "update",
       });
+
+      toast.success(t("success"), { position: "top-right", duration: 5000 });
 
       router.push(`/${locale}/profile`);
     } catch (err) {
@@ -139,7 +157,7 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
         });
         setErrors(fieldErrors);
       } else {
-        toast.error(t("error"), { position: "top-right" });
+        toast.error(t("error"), { position: "top-right", duration: 5000 });
       }
     } finally {
       setLoading(false);
@@ -201,12 +219,17 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
             })}
           </div>
         </fieldset>
-        {errors.avatar && <p className="text-red-400 text-sm mt-2">{errors.avatar}</p>}
+        {errors.avatar && (
+          <p className="text-red-400 text-sm mt-2">{errors.avatar}</p>
+        )}
       </div>
 
       {/* === PSEUDO === */}
       <div>
-        <label htmlFor="pseudo" className="block text-gray-200 mb-2 font-medium">
+        <label
+          htmlFor="pseudo"
+          className="block text-gray-200 mb-2 font-medium"
+        >
           {t("pseudo")}
         </label>
         <input
@@ -215,7 +238,9 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
           value={form.pseudo ?? ""}
           onChange={(e) => handleChange("pseudo", e.target.value)}
           className={`w-full bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none transition-colors ${
-            errors.pseudo ? "border-red-600" : "border-gray-700 hover:border-gray-600"
+            errors.pseudo
+              ? "border-red-600"
+              : "border-gray-700 hover:border-gray-600"
           }`}
         />
         {errors.pseudo && (
@@ -313,7 +338,10 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
       <div className="flex flex-col gap-6">
         {/* Ancien mot de passe */}
         <div className="relative group">
-          <label htmlFor="oldPassword" className="block text-gray-200 mb-2 font-medium">
+          <label
+            htmlFor="oldPassword"
+            className="block text-gray-200 mb-2 font-medium"
+          >
             {t("oldPassword")}
           </label>
           <div className="relative">
@@ -325,15 +353,15 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
               type={showPassword.old ? "text" : "password"}
               onChange={(e) => handleChange("oldPassword", e.target.value)}
               className={`w-full pl-10 pr-12 bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none transition-colors ${
-                errors.oldPassword ? "border-red-600" : "border-gray-700 hover:border-gray-600"
+                errors.oldPassword
+                  ? "border-red-600"
+                  : "border-gray-700 hover:border-gray-600"
               }`}
             />
             <button
               type="button"
               aria-label={
-                showPassword.old
-                  ? t("hideOldPassword")
-                  : t("showOldPassword")
+                showPassword.old ? t("hideOldPassword") : t("showOldPassword")
               }
               className="absolute inset-y-0 right-0 p-3 flex items-center rounded-full focus:outline-none focus:ring-0 focus:border-2 focus:border-indigo-500 transition-colors hover:cursor-pointer"
               onClick={() => setShowPassword((s) => ({ ...s, old: !s.old }))}
@@ -352,7 +380,10 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
 
         {/* Nouveau mot de passe */}
         <div className="relative group">
-          <label htmlFor="newPassword" className="block text-gray-200 mb-2 font-medium">
+          <label
+            htmlFor="newPassword"
+            className="block text-gray-200 mb-2 font-medium"
+          >
             {t("newPassword")}
           </label>
           <div className="relative">
@@ -364,7 +395,9 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
               type={showPassword.new ? "text" : "password"}
               onChange={(e) => handleChange("newPassword", e.target.value)}
               className={`w-full pl-10 pr-12 bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none transition-colors ${
-                errors.newPassword ? "border-red-600" : "border-gray-700 hover:border-gray-600"
+                errors.newPassword
+                  ? "border-red-600"
+                  : "border-gray-700 hover:border-gray-600"
               }`}
             />
             <button
@@ -386,7 +419,10 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
           {form.newPassword && (
             <ul className="mt-3 text-sm text-gray-400 space-y-1">
               {passwordCriteria.map((c) => (
-                <li key={c.label} className={c.valid ? "text-emerald-400" : "text-gray-500"}>
+                <li
+                  key={c.label}
+                  className={c.valid ? "text-emerald-400" : "text-gray-500"}
+                >
                   {c.valid ? "✔️" : "❌"} {c.label}
                 </li>
               ))}
@@ -396,7 +432,10 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
 
         {/* Confirmation */}
         <div className="relative group">
-          <label htmlFor="confirmPassword" className="block text-gray-200 mb-2 font-medium">
+          <label
+            htmlFor="confirmPassword"
+            className="block text-gray-200 mb-2 font-medium"
+          >
             {t("confirmPassword")}
           </label>
           <div className="relative">
@@ -408,7 +447,9 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
               type={showPassword.confirm ? "text" : "password"}
               onChange={(e) => handleChange("confirmPassword", e.target.value)}
               className={`w-full pl-10 pr-12 bg-gray-800 border rounded-lg px-4 py-3 text-gray-100 placeholder-gray-500 focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900 focus:outline-none transition-colors ${
-                errors.confirmPassword ? "border-red-600" : "border-gray-700 hover:border-gray-600"
+                errors.confirmPassword
+                  ? "border-red-600"
+                  : "border-gray-700 hover:border-gray-600"
               }`}
             />
             <button
@@ -419,7 +460,9 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
                   : t("showConfirmPassword")
               }
               className="absolute inset-y-0 right-0 p-3 flex items-center rounded-full focus:outline-none focus:ring-0 focus:border-2 focus:border-indigo-500 transition-colors hover:cursor-pointer"
-              onClick={() => setShowPassword((s) => ({ ...s, confirm: !s.confirm }))}
+              onClick={() =>
+                setShowPassword((s) => ({ ...s, confirm: !s.confirm }))
+              }
             >
               {showPassword.confirm ? (
                 <HiEyeOff className="h-5 w-5 text-gray-400 hover:text-gray-200 transition-colors" />
@@ -429,7 +472,9 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
             </button>
           </div>
           {errors.confirmPassword && (
-            <p className="text-red-400 text-sm mt-1">{errors.confirmPassword}</p>
+            <p className="text-red-400 text-sm mt-1">
+              {errors.confirmPassword}
+            </p>
           )}
         </div>
       </div>

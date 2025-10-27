@@ -607,6 +607,8 @@
       "loading": "Connexion en cours...",
       "noAccount": "Pas encore de compte ?",
       "createAccount": "Créer un compte",
+      "notVerified": "Pas encore vérifié ton adresse e-mail ?",
+      "resendVerification": "Demander un e-mail de validation",
       "validation": {
         "emailRequired": "L'adresse e-mail est requise",
         "passwordRequired": "Le mot de passe est requis"
@@ -618,6 +620,129 @@
         "accountBlocked": "Ce compte a été bloqué",
         "invalidCredentials": "Identifiants incorrects",
         "unexpected": "Une erreur inattendue est survenue"
+      }
+    },
+
+    "register": {
+      "meta": {
+        "title": "Inscription"
+      },
+      "title": "Créer un compte",
+      "subtitle": "Rejoignez Watchlisty et commencez à gérer vos films et séries.",
+      "fields": {
+        "email": {
+          "label": "Adresse e-mail",
+          "placeholder": "votre.email@exemple.com"
+        },
+        "pseudo": {
+          "label": "Pseudo",
+          "placeholder": "Votre pseudo"
+        },
+        "password": {
+          "label": "Mot de passe",
+          "show": "Afficher le mot de passe",
+          "hide": "Masquer le mot de passe"
+        },
+        "confirmPassword": {
+          "label": "Confirmer le mot de passe",
+          "show": "Afficher le mot de passe",
+          "hide": "Masquer le mot de passe"
+        },
+        "avatar": {
+          "label": "Choisis ton avatar",
+          "alt": "Avatar"
+        },
+        "preferences": {
+          "movies": "Genres de films préférés",
+          "tv": "Genres de séries préférés"
+        }
+      },
+      "submit": "S'inscrire",
+      "loading": "Création du compte...",
+      "alreadyAccount": "Déjà un compte ?",
+      "goToLogin": "Se connecter",
+      "success": "Inscription réussie ! Pensez à confirmer votre adresse e-mail depuis votre boîte mail.",
+      "validation": {
+        "emailRequired": "L'email est requis",
+        "emailInvalid": "Adresse e-mail invalide",
+        "pseudoMin": "Le pseudo doit contenir au moins 2 caractères",
+        "pseudoMax": "Le pseudo ne peut pas dépasser 30 caractères",
+        "pseudoRegex": "Le pseudo ne peut contenir que des lettres, chiffres et underscores",
+        "passwordMin": "Le mot de passe doit contenir au moins 8 caractères",
+        "passwordMax": "Le mot de passe ne peut pas dépasser 30 caractères",
+        "passwordUpper": "Le mot de passe doit contenir une majuscule",
+        "passwordLower": "Le mot de passe doit contenir une minuscule",
+        "passwordNumber": "Le mot de passe doit contenir un chiffre",
+        "passwordSpecial": "Le mot de passe doit contenir un caractère spécial",
+        "confirmPasswordRequired": "Veuillez confirmer le mot de passe",
+        "passwordsMismatch": "Les mots de passe ne correspondent pas",
+        "avatarInvalid": "L’avatar sélectionné est invalide",
+        "genresRequired": "Veuillez sélectionner au moins un genre de film ou de série"
+      },
+      "errors": {
+        "invalidFields": "Champs invalides",
+        "emailExists": "Cette adresse e-mail est déjà utilisée",
+        "pseudoExists": "Ce pseudo est déjà pris",
+        "invalidData": "Données invalides",
+        "internalServerError": "Erreur interne du serveur",
+        "emailSendFailed": "Impossible d'envoyer l’e-mail de confirmation. Veuillez réessayer plus tard.",
+        "unexpected": "Une erreur inattendue est survenue"
+      },
+      "passwordCriteria": {
+        "length": "8 à 30 caractères",
+        "uppercase": "Au moins une majuscule",
+        "lowercase": "Au moins une minuscule",
+        "number": "Au moins un chiffre",
+        "special": "Au moins un caractère spécial"
+      }
+    },
+
+    "verify": {
+      "loading": "Vérification de votre e-mail en cours...",
+      "successTitle": "E-mail confirmé avec succès 🎉",
+      "successText": "Votre adresse e-mail a été vérifiée avec succès. Vous pouvez maintenant vous connecter.",
+      "goToLogin": "Se connecter",
+
+      "expiredTitle": "Lien expiré ⏳",
+      "expiredText": "Votre lien de vérification a expiré. Vous pouvez en demander un nouveau.",
+      "resendLink": "Renvoyer un e-mail de vérification",
+      "resendSuccess": "Si un compte est associé à cet e-mail, un lien de vérification a été envoyé.",
+
+      "resend": {
+        "title": "Renvoyer l’e-mail de vérification",
+        "description": "Entrez votre adresse e-mail pour recevoir un nouveau lien de confirmation.",
+        "button": "Renvoyer l’e-mail",
+        "loading": "Envoi en cours...",
+        "neutral": "Si un compte est associé à cet e-mail, un lien de vérification a été envoyé.",
+        "success": "Un nouvel e-mail de vérification a été envoyé.",
+        "label": "Adresse e-mail",
+        "placeholder": "Entrez votre adresse e-mail"
+      },
+
+      "invalidTitle": "Lien invalide ❌",
+      "invalidText": "Le lien de vérification est invalide ou a déjà été utilisé.",
+      "resendNeutral": "Si un compte est associé à cet e-mail, un lien de vérification a été envoyé.",
+
+      "errorText": "Une erreur est survenue pendant la vérification.",
+      "successToast": "Votre e-mail a bien été vérifié 🎬",
+      "success": "E-mail confirmé avec succès 🎉",
+
+      "errors": {
+        "tokenMissing": "L’adresse e-mail est requise.",
+        "invalidLink": "Le lien de vérification est invalide.",
+        "expiredLink": "Le lien de vérification a expiré. Veuillez demander un nouvel e-mail.",
+        "emailAlreadyVerified": "Votre e-mail est déjà vérifié."
+      }
+    },
+    "email": {
+      "verification": {
+        "subject": "Confirmez votre adresse e-mail",
+        "title": "Confirmez votre adresse e-mail",
+        "intro": "Merci de vous être inscrit sur <strong>Watchlisty</strong> 🎬 !<br />Pour activer votre compte, cliquez ci-dessous :",
+        "button": "Confirmer mon e-mail",
+        "expiry": "Ce lien expirera dans <strong>24 heures</strong>.",
+        "footer": "À bientôt 👋,<br />L’équipe <strong>Watchlisty</strong>",
+        "rights": "Tous droits réservés."
       }
     }
   },
@@ -662,6 +787,7 @@
       "number": "1 chiffre",
       "special": "1 caractère spécial"
     },
+    "success": "Profil mis à jour avec succès !",
     "validation": {
       "pseudoMin": "Le pseudo doit contenir au moins 2 caractères",
       "pseudoMax": "Le pseudo ne peut pas dépasser 30 caractères",

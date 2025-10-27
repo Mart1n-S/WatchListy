@@ -11,6 +11,7 @@ import { AuthProvider } from "@/components/providers/AuthProvider";
 import ReduxProvider from "@/lib/redux/Provider";
 import AuthSync from "@/components/auth/AuthSync";
 import { locales, type Locale } from "@/i18n/locales";
+import { Toaster } from "react-hot-toast";
 
 // --- Font Google ---
 const montserrat = Montserrat({
@@ -124,15 +125,16 @@ export default async function LocaleRootLayout({
       >
         <ReduxProvider>
           <AuthProvider>
-              <NextIntlClientProvider locale={locale} messages={messages}>
-                <AuthSync>  
-                  <Header />
-                  <main id="content" className="flex-grow pt-10">
-                    {children}
-                  </main>
-                  <Footer />
-                </AuthSync>
-              </NextIntlClientProvider>
+            <NextIntlClientProvider locale={locale} messages={messages}>
+              <AuthSync>
+                <Header />
+                <main id="content" className="flex-grow pt-10">
+                  {children}
+                  <Toaster position="top-right" />
+                </main>
+                <Footer />
+              </AuthSync>
+            </NextIntlClientProvider>
           </AuthProvider>
         </ReduxProvider>
       </body>

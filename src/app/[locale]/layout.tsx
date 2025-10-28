@@ -1,10 +1,8 @@
 import type { Metadata } from "next";
-import { Montserrat } from "next/font/google";
-import "../globals.css";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
-
+import { HtmlLangUpdater } from "@/components/utils/HtmlLangUpdater";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/components/providers/AuthProvider";
@@ -12,13 +10,6 @@ import ReduxProvider from "@/lib/redux/Provider";
 import AuthSync from "@/components/auth/AuthSync";
 import { locales, type Locale } from "@/i18n/locales";
 import { Toaster } from "react-hot-toast";
-
-// --- Font Google ---
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["400", "500", "700"],
-  variable: "--font-montserrat",
-});
 
 // --- Génération statique des locales ---
 export function generateStaticParams() {
@@ -121,31 +112,20 @@ export default async function LocaleRootLayout({
   const messages = await getMessages({ locale });
 
   return (
-    <html lang={locale} className="dark" suppressHydrationWarning>
-      <head>
-        <meta name="color-scheme" content="dark" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
-        <meta charSet="utf-8" />
-      </head>
-
-      <body
-        className={`${montserrat.className} antialiased min-h-dvh bg-gray-900 text-gray-100`}
-      >
-        <ReduxProvider>
-          <AuthProvider>
-            <NextIntlClientProvider locale={locale} messages={messages}>
-              <AuthSync>
-                <Header />
-                <main id="content" className="flex-grow pt-10">
-                  {children}
-                  <Toaster position="top-right" />
-                </main>
-                <Footer />
-              </AuthSync>
-            </NextIntlClientProvider>
-          </AuthProvider>
-        </ReduxProvider>
-      </body>
-    </html>
+    <ReduxProvider>
+      <AuthProvider>
+        <NextIntlClientProvider locale={locale} messages={messages}>
+          <AuthSync>
+            <HtmlLangUpdater locale={locale} />
+            <Header />
+            <main id="content" className="flex-grow pt-10">
+              {children}
+              <Toaster position="top-right" />
+            </main>
+            <Footer />
+          </AuthSync>
+        </NextIntlClientProvider>
+      </AuthProvider>
+    </ReduxProvider>
   );
 }

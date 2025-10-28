@@ -15,6 +15,11 @@
     "ogTitle": "WatchListy | Organisez vos films et séries",
     "ogDescription": "Découvrez WatchListy, l'application idéale pour gérer, suivre et découvrir vos films et séries préférés."
   },
+  "notFound": {
+    "title": "Page non trouvée",
+    "description": "La page que vous cherchez semble avoir été déplacée, supprimée ou n’a jamais existé.",
+    "backHome": "Retour à l’accueil"
+  },
   "layout": {
     "header": {
       "home": "Accueil",

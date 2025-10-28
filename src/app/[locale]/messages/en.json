@@ -15,6 +15,11 @@
     "ogTitle": "WatchListy | Organize your movies and shows",
     "ogDescription": "Discover WatchListy, the best app to manage, track, and explore your favorite movies and series."
   },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you’re looking for seems to have been moved, deleted, or never existed.",
+    "backHome": "Back to homepage"
+  },
   "layout": {
     "header": {
       "home": "Home",

@@ -1,4 +1,20 @@
 {
+  "meta": {
+    "title": "WatchListy | Gestion intelligente de vos films",
+    "description": "Organisez, suivez et découvrez vos films et séries préférés avec WatchListy. La solution ultime pour les cinéphiles.",
+    "keywords": [
+      "films",
+      "séries",
+      "watchlist",
+      "cinéma",
+      "organisation",
+      "suivi",
+      "application",
+      "gestion de films"
+    ],
+    "ogTitle": "WatchListy | Organisez vos films et séries",
+    "ogDescription": "Découvrez WatchListy, l'application idéale pour gérer, suivre et découvrir vos films et séries préférés."
+  },
   "layout": {
     "header": {
       "home": "Accueil",

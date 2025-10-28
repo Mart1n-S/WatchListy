@@ -3,7 +3,7 @@ import { Montserrat } from "next/font/google";
 import "../globals.css";
 import { notFound } from "next/navigation";
 import { NextIntlClientProvider } from "next-intl";
-import { getMessages } from "next-intl/server";
+import { getMessages, getTranslations } from "next-intl/server";
 
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
@@ -25,77 +25,88 @@ export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-// --- Metadata (inchangé) ---
+// --- Variables globales ---
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 const googleVerification =
   process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "";
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteUrl),
-  title: {
-    default: "WatchListy | Gestion intelligente de vos films",
-    template: "%s | WatchListy",
-  },
-  description:
-    "Organisez, suivez et découvrez vos films et séries préférés avec WatchListy. La solution ultime pour les cinéphiles.",
-  keywords: [
-    "films",
-    "séries",
-    "watchlist",
-    "cinéma",
-    "organisation",
-    "suivi",
-    "application",
-    "gestion de films",
-  ],
-  authors: [{ name: "WatchListy Team", url: siteUrl }],
-  creator: "WatchListy",
-  publisher: "WatchListy",
-  verification: { google: googleVerification },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
+/* -------------------------------------------------------------------------- */
+/*               MÉTADONNÉES DYNAMIQUES SELON LA LOCALE (SEO)                 */
+/* -------------------------------------------------------------------------- */
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+
+  // Vérifie que la locale est valide
+  if (!locales.includes(locale as Locale)) notFound();
+
+  // Charge les traductions du namespace "meta"
+  const t = await getTranslations({ locale, namespace: "meta" });
+
+  return {
+    metadataBase: new URL(siteUrl),
+    title: {
+      default: t("title"),
+      template: `%s | WatchListy`,
+    },
+    description: t("description"),
+    keywords: (t.raw("keywords") as string[]) || [],
+    authors: [{ name: "WatchListy Team", url: siteUrl }],
+    creator: "WatchListy",
+    publisher: "WatchListy",
+    verification: { google: googleVerification },
+    robots: {
       index: true,
       follow: true,
-      "max-snippet": -1,
-      "max-image-preview": "large",
-      "max-video-preview": -1,
-    },
-  },
-  alternates: {
-    canonical: "/",
-    languages: { "fr-FR": "/fr", "en-US": "/en" },
-  },
-  openGraph: {
-    title: "WatchListy | Gestion intelligente de vos films",
-    description:
-      "Organisez, suivez et découvrez vos films et séries préférés avec WatchListy.",
-    url: siteUrl,
-    siteName: "WatchListy",
-    type: "website",
-    locale: "fr_FR",
-    images: [
-      {
-        url: "/og-image.jpg",
-        width: 1200,
-        height: 630,
-        alt: "WatchListy - Organisez vos films et séries",
+      googleBot: {
+        index: true,
+        follow: true,
+        "max-snippet": -1,
+        "max-image-preview": "large",
+        "max-video-preview": -1,
       },
-    ],
-  },
-  other: { "theme-color": "#7C3AED" },
-  icons: {
-    icon: [
-      { url: "/watchlisty-icon.svg", sizes: "16x16", type: "image/svg+xml" },
-      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
-      { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
-    ],
-  },
-  manifest: "/site.webmanifest",
-};
+    },
+    alternates: {
+      canonical: `/${locale}`,
+      languages: {
+        "fr-FR": "/fr",
+        "en-US": "/en",
+      },
+    },
+    openGraph: {
+      title: t("ogTitle") || t("title"),
+      description: t("ogDescription") || t("description"),
+      url: `${siteUrl}/${locale}`,
+      siteName: "WatchListy",
+      type: "website",
+      locale: locale === "fr" ? "fr_FR" : "en_US",
+      images: [
+        {
+          url: "/og-image.jpg",
+          width: 1200,
+          height: 630,
+          alt: "WatchListy Image",
+        },
+      ],
+    },
+    other: { "theme-color": "#7C3AED" },
+    manifest: "/site.webmanifest",
+    icons: {
+      icon: [
+        { url: "/watchlisty-icon.svg", sizes: "16x16", type: "image/svg+xml" },
+        { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+        { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
+      ],
+    },
+  };
+}
 
-// --- Layout localisé ---
+/* -------------------------------------------------------------------------- */
+/*                                LAYOUT UI                                   */
+/* -------------------------------------------------------------------------- */
 export default async function LocaleRootLayout({
   children,
   params,
@@ -103,13 +114,10 @@ export default async function LocaleRootLayout({
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
-  const { locale } = (await params) as { locale: Locale };
+  const { locale } = await params;
 
-  if (!locales.includes(locale)) {
-    notFound();
-  }
+  if (!locales.includes(locale as Locale)) notFound();
 
-  // Messages typés via `getMessages()` (de next-intl)
   const messages = await getMessages({ locale });
 
   return (

@@ -613,8 +613,7 @@
       "subtitle": "Access your watchlists and recommendations.",
       "fields": {
         "email": {
-          "label": "Email address",
-          "placeholder": "your.email@example.com"
+          "label": "Email address"
         },
         "password": {
           "label": "Password",
@@ -651,12 +650,10 @@
       "subtitle": "Join Watchlisty and start managing your movies and shows.",
       "fields": {
         "email": {
-          "label": "Email address",
-          "placeholder": "your.email@example.com"
+          "label": "Email address"
         },
         "pseudo": {
-          "label": "Username",
-          "placeholder": "Your username"
+          "label": "Pseudo"
         },
         "password": {
           "label": "Password",
@@ -768,6 +765,10 @@
   },
 
   "profile": {
+    "meta": {
+      "title": "My Profile",
+      "description": "Manage your personal information and preferences on WatchListy."
+    },
     "loading": "Loading your profile...",
     "title": "My Profile",
     "subtitle": "Manage your personal information and preferences",
@@ -780,6 +781,10 @@
   },
 
   "ProfileEdit": {
+    "meta": {
+      "title": "Edit My Profile",
+      "description": "Update your personal information and preferences on WatchListy."
+    },
     "title": "Edit my profile",
     "subtitle": "Update your personal information and preferences",
     "chooseAvatar": "Choose an avatar",

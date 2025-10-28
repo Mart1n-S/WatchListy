@@ -614,8 +614,7 @@
       "subtitle": "Accédez à vos listes et recommandations.",
       "fields": {
         "email": {
-          "label": "Adresse email",
-          "placeholder": "votre.email@exemple.com"
+          "label": "Adresse email"
         },
         "password": {
           "label": "Mot de passe",
@@ -652,12 +651,10 @@
       "subtitle": "Rejoignez Watchlisty et commencez à gérer vos films et séries.",
       "fields": {
         "email": {
-          "label": "Adresse e-mail",
-          "placeholder": "votre.email@exemple.com"
+          "label": "Adresse e-mail"
         },
         "pseudo": {
-          "label": "Pseudo",
-          "placeholder": "Votre pseudo"
+          "label": "Pseudo"
         },
         "password": {
           "label": "Mot de passe",
@@ -769,6 +766,10 @@
   },
 
   "profile": {
+    "meta": {
+      "title": "Mon profil",
+      "description": "Gérez vos informations personnelles et vos préférences sur WatchListy."
+    },
     "loading": "Préparation de votre profil...",
     "title": "Mon profil",
     "subtitle": "Gérez vos informations personnelles et vos préférences",
@@ -781,6 +782,10 @@
   },
 
   "ProfileEdit": {
+    "meta": {
+      "title": "Modifier mon profil",
+      "description": "Mettez à jour vos informations personnelles et vos préférences sur WatchListy."
+    },
     "title": "Modifier mon profil",
     "subtitle": "Mettez à jour vos informations personnelles et vos préférences",
     "chooseAvatar": "Choisissez un avatar",

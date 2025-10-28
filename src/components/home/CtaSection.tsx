@@ -11,7 +11,7 @@ export function CtaSection() {
 
   return (
     <section
-      className="relative py-20 px-6 sm:px-10 overflow-hidden"
+      className="relative py-20 px-4 sm:px-10 overflow-hidden"
       style={gradientBackground}
     >
       {/* Halo décoratif */}
@@ -25,7 +25,7 @@ export function CtaSection() {
           whileInView="visible"
           viewport={{ once: true, margin: "-80px" }}
           transition={{ duration: 0.6 }}
-          className="rounded-3xl border border-gray-800 bg-gray-900/60 backdrop-blur-sm p-10 text-center shadow-lg"
+          className="rounded-3xl border border-gray-800 bg-gray-900/60 backdrop-blur-sm p-6 sm:p-10 text-center shadow-lg"
         >
           {/* Badge */}
           <motion.span
@@ -61,9 +61,7 @@ export function CtaSection() {
             transition={{ delay: 0.15 }}
             className="mb-6 text-sm text-gray-400"
           >
-            <span className="font-semibold text-blue-400">
-              12,345+
-            </span>{" "}
+            <span className="font-semibold text-blue-400">12,345+</span>{" "}
             {t("trustedText")}
           </motion.div>
 

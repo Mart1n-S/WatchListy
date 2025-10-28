@@ -1,7 +1,6 @@
-// src/components/home/FeatureCard.tsx
 "use client";
 import { motion } from "framer-motion";
-import { fadeInUp } from "../../lib/animation";
+import { fadeInUp } from "@/lib/animation";
 
 export function FeatureCard({
   icon,
@@ -23,7 +22,9 @@ export function FeatureCard({
         {icon}
       </div>
       <h3 className="text-xl font-semibold mb-3 text-center">{title}</h3>
-      <p className="text-gray-600 dark:text-gray-300 text-center">{description}</p>
+      <p className="text-gray-600 dark:text-gray-300 text-center">
+        {description}
+      </p>
     </motion.div>
   );
 }

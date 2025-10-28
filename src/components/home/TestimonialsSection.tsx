@@ -50,7 +50,7 @@ export function TestimonialsSection() {
   ];
 
   return (
-    <section className="py-20 px-6 sm:px-10 bg-gray-900">
+    <section className="py-20 px-4 sm:px-10 bg-gray-900">
       <div className="max-w-6xl mx-auto">
         {/* En-tête */}
         <motion.div
@@ -61,12 +61,8 @@ export function TestimonialsSection() {
           transition={{ duration: 0.6 }}
           className="text-center mb-16"
         >
-          <h2 className="text-3xl md:text-4xl font-bold mb-4">
-            {t("title")}
-          </h2>
-          <p className="text-gray-300 max-w-2xl mx-auto">
-            {t("subtitle")}
-          </p>
+          <h2 className="text-3xl md:text-4xl font-bold mb-4">{t("title")}</h2>
+          <p className="text-gray-300 max-w-2xl mx-auto">{t("subtitle")}</p>
         </motion.div>
 
         {/* Cartes témoignages */}
@@ -85,9 +81,7 @@ export function TestimonialsSection() {
               className="h-full rounded-2xl border border-gray-800 bg-gray-800/60 backdrop-blur-sm p-6 shadow-sm"
             >
               <Stars count={t.rating} />
-              <p className="mt-4 text-gray-200 leading-relaxed">
-                “{t.quote}”
-              </p>
+              <p className="mt-4 text-gray-200 leading-relaxed">“{t.quote}”</p>
               <footer className="mt-6 flex items-center justify-between">
                 <div>
                   <div className="font-semibold">{t.name}</div>

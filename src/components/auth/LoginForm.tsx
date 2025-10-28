@@ -172,7 +172,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="bg-gray-900/60 border border-gray-800 rounded-2xl shadow-xl p-8 backdrop-blur-sm">
+    <div className="bg-gray-900/60 border border-gray-800 rounded-2xl shadow-xl p-4 backdrop-blur-sm">
       {/* Erreur formulaire (globale) */}
       {formError && (
         <div
@@ -206,7 +206,6 @@ export default function LoginForm() {
               onChange={onChange}
               aria-invalid={!!fieldErrors.email}
               aria-describedby={fieldErrors.email ? "email-error" : undefined}
-              placeholder={t("fields.email.placeholder")}
               className={`block w-full pl-10 pr-3 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
                 ${
                   fieldErrors.email
@@ -246,7 +245,6 @@ export default function LoginForm() {
               aria-describedby={
                 fieldErrors.password ? "password-error" : undefined
               }
-              placeholder="••••••••"
               className={`block w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
                 ${
                   fieldErrors.password

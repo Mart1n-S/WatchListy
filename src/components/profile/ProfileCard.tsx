@@ -33,8 +33,8 @@ export default function ProfileCard({ user }: ProfileCardProps) {
   };
 
   return (
-    <div className="w-full py-8 px-4 sm:px-6 lg:px-8">
-      <div className="bg-gradient-to-br from-slate-900/60 to-slate-800/40 border border-slate-700/50 rounded-3xl p-8 w-full shadow-2xl shadow-slate-900/30 backdrop-blur-sm">
+    <div className="w-full py-8">
+      <div className="bg-gradient-to-br from-slate-900/60 to-slate-800/40 border border-slate-700/50 rounded-3xl p-4 w-full shadow-2xl shadow-slate-900/30 backdrop-blur-sm">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
           {/* === SECTION GAUCHE : AVATAR + INFOS === */}
           <div className="flex flex-col sm:flex-row items-center gap-6 flex-1 min-w-0">

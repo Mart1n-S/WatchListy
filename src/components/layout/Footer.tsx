@@ -27,7 +27,7 @@ export default function Footer() {
 
   return (
     <footer className="w-full mt-auto bg-gray-900/50 border-t border-gray-800">
-      <div className="max-w-7xl mx-auto px-6 py-12">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 py-12">
         <div className="grid grid-cols-1 gap-10 mb-10">
           {/* Section Marque */}
           <div>
@@ -47,19 +47,39 @@ export default function Footer() {
             <p className="text-gray-300 mb-4">{t("brand.description")}</p>
 
             <div className="flex space-x-4">
-              <Link href="#" aria-label="GitHub" className="text-gray-400 hover:text-blue-400 transition">
+              <Link
+                href="#"
+                aria-label="GitHub"
+                className="text-gray-400 hover:text-blue-400 transition"
+              >
                 <FiGithub size={20} />
               </Link>
-              <Link href="#" aria-label="Twitter" className="text-gray-400 hover:text-blue-400 transition">
+              <Link
+                href="#"
+                aria-label="Twitter"
+                className="text-gray-400 hover:text-blue-400 transition"
+              >
                 <FiTwitter size={20} />
               </Link>
-              <Link href="#" aria-label="Instagram" className="text-gray-400 hover:text-blue-400 transition">
+              <Link
+                href="#"
+                aria-label="Instagram"
+                className="text-gray-400 hover:text-blue-400 transition"
+              >
                 <FiInstagram size={20} />
               </Link>
-              <Link href="#" aria-label="Facebook" className="text-gray-400 hover:text-blue-400 transition">
+              <Link
+                href="#"
+                aria-label="Facebook"
+                className="text-gray-400 hover:text-blue-400 transition"
+              >
                 <FiFacebook size={20} />
               </Link>
-              <Link href="#" aria-label="Email" className="text-gray-400 hover:text-blue-400 transition">
+              <Link
+                href="#"
+                aria-label="Email"
+                className="text-gray-400 hover:text-blue-400 transition"
+              >
                 <FiMail size={20} />
               </Link>
             </div>
@@ -67,7 +87,9 @@ export default function Footer() {
 
           {/* Section Liens utiles */}
           <div>
-            <h4 className="font-semibold mb-4 text-gray-50">{t("usefulLinks.title")}</h4>
+            <h4 className="font-semibold mb-4 text-gray-50">
+              {t("usefulLinks.title")}
+            </h4>
             <ul className="space-y-2">
               {[
                 { name: t("usefulLinks.home"), href: "/" },
@@ -88,13 +110,18 @@ export default function Footer() {
 
           {/* Section Légal */}
           <div>
-            <h4 className="font-semibold mb-4 text-gray-50">{t("legal.title")}</h4>
+            <h4 className="font-semibold mb-4 text-gray-50">
+              {t("legal.title")}
+            </h4>
             <ul className="space-y-2">
               {[
                 { name: t("legal.terms"), href: "/legal/terms" },
                 { name: t("legal.privacy"), href: "/legal/privacy" },
                 { name: t("legal.cookies"), href: "/legal/cookies" },
-                { name: t("legal.accessibility"), href: "/legal/accessibility" },
+                {
+                  name: t("legal.accessibility"),
+                  href: "/legal/accessibility",
+                },
               ].map((item) => (
                 <li key={item.name}>
                   <Link
@@ -111,7 +138,9 @@ export default function Footer() {
 
         {/* Newsletter */}
         <div className="border-t border-gray-800 pt-8 mb-8">
-          <h4 className="font-semibold mb-2 text-gray-50">{t("newsletter.title")}</h4>
+          <h4 className="font-semibold mb-2 text-gray-50">
+            {t("newsletter.title")}
+          </h4>
           <label htmlFor="newsletter" className="text-gray-300 mb-4 max-w-md">
             {t("newsletter.description")}
           </label>
@@ -123,9 +152,11 @@ export default function Footer() {
               className="flex-grow px-4 py-2 rounded-lg border border-gray-700 bg-gray-800 text-gray-100 placeholder-gray-400
                          focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"
             />
-            <button className="px-6 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-emerald-500 text-white
+            <button
+              className="px-6 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-emerald-500 text-white
                                hover:from-blue-700 hover:to-emerald-600 transition-all
-                               focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900">
+                               focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"
+            >
               {t("newsletter.button")}
             </button>
           </div>
@@ -134,7 +165,9 @@ export default function Footer() {
         {/* Copyright */}
         <div className="pt-8 border-t border-gray-800 text-center text-gray-400 text-sm">
           <p>
-            © {new Date().getFullYear()} <span className="font-semibold">WatchListy</span>. {t("copyright.rights")}
+            © {new Date().getFullYear()}{" "}
+            <span className="font-semibold">WatchListy</span>.{" "}
+            {t("copyright.rights")}
           </p>
 
           <p className="mt-2">{t("copyright.madeWith")}</p>
@@ -148,7 +181,8 @@ export default function Footer() {
               className="ml-1 text-sky-400 hover:underline"
             >
               The Movie Database (TMDB)
-            </a>.
+            </a>
+            .
           </p>
         </div>
       </div>

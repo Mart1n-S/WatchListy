@@ -183,7 +183,7 @@ export default function RegisterForm() {
   const avatars = Array.from({ length: 6 }, (_, i) => `avatar${i + 1}.svg`);
 
   return (
-    <div className="bg-gray-900/60 border border-gray-800 rounded-2xl shadow-xl p-8 backdrop-blur-sm">
+    <div className="bg-gray-900/60 border border-gray-800 rounded-2xl shadow-xl p-4 backdrop-blur-sm">
       <form className="space-y-6" onSubmit={onSubmit} noValidate>
         {/* === Sélection de l'avatar === */}
         <fieldset>
@@ -252,7 +252,6 @@ export default function RegisterForm() {
               value={values.email}
               autoComplete="email"
               onChange={(e) => handleChange("email", e.target.value)}
-              placeholder={t("fields.email.placeholder")}
               className={`block w-full pl-10 pr-3 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
                 ${
                   fieldErrors.email
@@ -286,7 +285,6 @@ export default function RegisterForm() {
               type="text"
               value={values.pseudo}
               onChange={(e) => handleChange("pseudo", e.target.value)}
-              placeholder={t("fields.pseudo.placeholder")}
               className={`block w-full pl-10 pr-3 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
               ${
                 fieldErrors.pseudo
@@ -401,7 +399,6 @@ export default function RegisterForm() {
               type={showPassword.password ? "text" : "password"}
               value={values.password}
               onChange={(e) => handleChange("password", e.target.value)}
-              placeholder="••••••••"
               className={`block w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500
               ${
                 fieldErrors.password
@@ -464,7 +461,6 @@ export default function RegisterForm() {
               type={showPassword.confirm ? "text" : "password"}
               value={values.confirmPassword}
               onChange={(e) => handleChange("confirmPassword", e.target.value)}
-              placeholder="••••••••"
               className={`block w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500
               ${
                 fieldErrors.confirmPassword

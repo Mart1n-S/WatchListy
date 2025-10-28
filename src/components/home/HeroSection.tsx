@@ -18,7 +18,7 @@ export function HeroSection() {
 
   return (
     <section
-      className="relative flex flex-col items-center justify-center text-center px-6 py-20 md:py-32 overflow-hidden"
+      className="relative flex flex-col items-center justify-center text-center px-4 py-20 md:py-32 overflow-hidden"
       style={gradientBackground}
       aria-labelledby="hero-title"
     >

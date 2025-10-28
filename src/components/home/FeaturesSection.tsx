@@ -3,8 +3,9 @@
 import { motion } from "framer-motion";
 import { FiSearch, FiCheckCircle, FiStar, FiFilm } from "react-icons/fi";
 import { FaImdb } from "react-icons/fa";
-import { fadeInUp, staggerContainer } from "@/lib/animation";
+import { staggerContainer } from "@/lib/animation";
 import { useTranslations } from "next-intl";
+import { FeatureCard } from "@/components/home/FeatureCard";
 
 export function FeaturesSection() {
   const t = useTranslations("home.features");
@@ -65,8 +66,9 @@ export function FeaturesSection() {
   ];
 
   return (
-    <section className="py-20 px-6 sm:px-10 bg-gray-900" id="features">
+    <section className="py-20 px-4 sm:px-10 bg-gray-900" id="features">
       <div className="max-w-6xl mx-auto">
+        {/* Titre section */}
         <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -83,6 +85,7 @@ export function FeaturesSection() {
           })}
         </motion.h2>
 
+        {/* Sous-titre */}
         <motion.p
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
@@ -93,6 +96,7 @@ export function FeaturesSection() {
           {t("subtitle")}
         </motion.p>
 
+        {/* Grid des features */}
         <motion.div
           variants={staggerContainer}
           initial="hidden"
@@ -101,21 +105,13 @@ export function FeaturesSection() {
           className="grid gap-10 md:grid-cols-2 lg:grid-cols-3"
         >
           {features.map((feature, index) => (
-            <motion.div
+            <FeatureCard
               key={index}
-              variants={fadeInUp}
-              className={`p-8 rounded-2xl border border-gray-800 bg-gradient-to-br ${feature.gradient} backdrop-blur-sm`}
-            >
-              <div className="mb-6 flex items-center justify-center w-14 h-14 rounded-xl bg-gray-800 shadow-md">
-                {feature.icon}
-              </div>
-              <h3 className="text-xl font-semibold mb-3 text-center">
-                {feature.title}
-              </h3>
-              <p className="text-gray-300 text-center">
-                {feature.description}
-              </p>
-            </motion.div>
+              icon={feature.icon}
+              title={feature.title}
+              description={feature.description}
+              gradient={feature.gradient}
+            />
           ))}
         </motion.div>
       </div>

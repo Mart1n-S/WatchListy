@@ -170,7 +170,7 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
   return (
     <form
       onSubmit={handleSubmit}
-      className="bg-gray-900/60 border border-gray-800 rounded-3xl p-8 backdrop-blur-sm shadow-xl space-y-8"
+      className="bg-gray-900/60 border border-gray-800 rounded-3xl p-4 backdrop-blur-sm shadow-xl space-y-8"
     >
       {/* === AVATARS === */}
       <div>
@@ -480,18 +480,19 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
       </div>
 
       {/* === BOUTONS === */}
-      <div className="flex items-center justify-end gap-4 mt-8">
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-end gap-4 mt-8">
         <button
           type="button"
           onClick={() => router.push("/profile")}
-          className="px-6 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium transition hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+          className="w-full sm:w-auto px-6 py-3 rounded-lg bg-gray-700 hover:bg-gray-600 text-gray-200 font-medium transition hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"
         >
           {t("cancel")}
         </button>
+
         <button
           type="submit"
           disabled={loading}
-          className="px-8 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition disabled:opacity-60 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+          className="w-full sm:w-auto px-8 py-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition disabled:opacity-60 hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"
         >
           {loading ? t("saving") : t("save")}
         </button>

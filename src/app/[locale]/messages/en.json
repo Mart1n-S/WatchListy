@@ -1,4 +1,25 @@
 {
+  "meta": {
+    "title": "WatchListy | Smart movie management",
+    "description": "Organize, track, and discover your favorite movies and shows with WatchListy. The ultimate app for movie lovers.",
+    "keywords": [
+      "movies",
+      "shows",
+      "watchlist",
+      "cinema",
+      "organization",
+      "tracking",
+      "app",
+      "movie management"
+    ],
+    "ogTitle": "WatchListy | Organize your movies and shows",
+    "ogDescription": "Discover WatchListy, the best app to manage, track, and explore your favorite movies and series."
+  },
+  "notFound": {
+    "title": "Page not found",
+    "description": "The page you’re looking for seems to have been moved, deleted, or never existed.",
+    "backHome": "Back to homepage"
+  },
   "layout": {
     "header": {
       "home": "Home",
@@ -592,8 +613,7 @@
       "subtitle": "Access your watchlists and recommendations.",
       "fields": {
         "email": {
-          "label": "Email address",
-          "placeholder": "your.email@example.com"
+          "label": "Email address"
         },
         "password": {
           "label": "Password",
@@ -630,12 +650,10 @@
       "subtitle": "Join Watchlisty and start managing your movies and shows.",
       "fields": {
         "email": {
-          "label": "Email address",
-          "placeholder": "your.email@example.com"
+          "label": "Email address"
         },
         "pseudo": {
-          "label": "Username",
-          "placeholder": "Your username"
+          "label": "Pseudo"
         },
         "password": {
           "label": "Password",
@@ -747,6 +765,10 @@
   },
 
   "profile": {
+    "meta": {
+      "title": "My Profile",
+      "description": "Manage your personal information and preferences on WatchListy."
+    },
     "loading": "Loading your profile...",
     "title": "My Profile",
     "subtitle": "Manage your personal information and preferences",
@@ -759,6 +781,10 @@
   },
 
   "ProfileEdit": {
+    "meta": {
+      "title": "Edit My Profile",
+      "description": "Update your personal information and preferences on WatchListy."
+    },
     "title": "Edit my profile",
     "subtitle": "Update your personal information and preferences",
     "chooseAvatar": "Choose an avatar",

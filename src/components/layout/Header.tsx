@@ -42,14 +42,13 @@ export default function Header() {
     return pathname === localized || pathname.startsWith(`${localized}/`);
   };
 
-
   // --- Éléments de navigation traduits ---
   const navItems = [{ name: t("home"), href: "/" }];
   if (session) navItems.push({ name: t("profile"), href: "/profile" });
 
   return (
     <header className="fixed top-0 left-0 w-full bg-gray-900/90 backdrop-blur-sm shadow-sm z-50 border-b border-gray-800">
-      <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
+      <div className="max-w-7xl mx-auto p-4 sm:px-6 sm:py-4 flex justify-between items-center">
         {/* Logo */}
         <Link
           href={`/${currentLocale}`}
@@ -166,7 +165,7 @@ export default function Header() {
               transition={{ type: "spring", damping: 24, stiffness: 220 }}
               className="md:hidden fixed inset-y-0 right-0 w-full sm:w-3/4 max-w-sm h-dvh overflow-y-auto bg-gray-900 shadow-xl z-[100]"
             >
-              <div className="p-6 min-h-full flex flex-col">
+              <div className="p-4 min-h-full flex flex-col">
                 {/* Header Mobile */}
                 <div className="flex justify-between items-center mb-8">
                   <Link
@@ -225,7 +224,7 @@ export default function Header() {
                         await signOut({ callbackUrl: `/${currentLocale}` });
                         dispatch(clearUser());
                       }}
-                      className="w-full px-6 py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-red-500/20 hover:shadow-red-500/30 group relative overflow-hidden hover:cursor-pointer"
+                      className="w-full px-4 py-3 rounded-xl bg-gradient-to-r from-red-600 to-rose-600 hover:from-red-500 hover:to-rose-500 text-white font-semibold transition-all duration-300 transform hover:scale-[1.02] active:scale-[0.98] shadow-lg shadow-red-500/20 hover:shadow-red-500/30 group relative overflow-hidden hover:cursor-pointer"
                     >
                       <span className="relative">{t("logout")}</span>
                     </button>

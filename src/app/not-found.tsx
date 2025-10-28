@@ -3,7 +3,7 @@ import Link from "next/link";
 import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { locales, type Locale, defaultLocale } from "@/i18n/locales";
-// TODO: voir si c'est pas trop du bidouillage
+
 /* -------------------------------------------------------------------------- */
 /*                         MÉTADONNÉES DYNAMIQUES SEO                         */
 /* -------------------------------------------------------------------------- */
@@ -37,6 +37,9 @@ export async function generateMetadata({
       description: t("description"),
       type: "website",
     },
+    icons: {
+      icon: "/watchlisty-icon.svg",
+    },
   };
 }
 
@@ -68,7 +71,7 @@ export default async function NotFoundPage({
   });
 
   return (
-    <div className="flex flex-col items-center justify-center min-h-[80vh] text-center px-6">
+    <div className="flex flex-col items-center justify-center min-h-[80vh] text-center px-4">
       <h1 className="text-6xl font-bold text-violet-500 mb-4">404</h1>
       <h2 className="text-2xl font-semibold text-gray-100 mb-3">
         {t("title")}
@@ -77,10 +80,10 @@ export default async function NotFoundPage({
 
       <Link
         href={`/${locale}`}
-        className="px-6 py-3 rounded-lg bg-violet-600 text-white 
-                   hover:bg-violet-500 transition-colors 
-                   focus:outline-none focus:ring-2 focus:ring-indigo-500 
-                   focus:ring-offset-2 focus:ring-offset-gray-800 
+        className="w-full sm:w-auto inline-flex justify-center px-6 py-3 rounded-lg bg-violet-600 text-white
+                   hover:bg-violet-500 transition-colors
+                   focus:outline-none focus:ring-2 focus:ring-indigo-500
+                   focus:ring-offset-2 focus:ring-offset-gray-800
                    hover:cursor-pointer"
       >
         {t("backHome")}

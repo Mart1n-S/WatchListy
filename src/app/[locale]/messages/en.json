@@ -713,6 +713,80 @@
         "special": "At least one special character"
       }
     },
+    "reset": {
+      "meta": {
+        "title": "Password Reset Request",
+        "description": "Receive an email to reset your Watchlisty password."
+      },
+      "form": {
+        "meta": {
+          "title": "Reset Password",
+          "description": "Choose a new secure password for your Watchlisty account."
+        },
+        "title": "Reset your password",
+        "description": "Set a new password for your account.",
+        "submit": "Reset password",
+        "loading": "Resetting your password...",
+        "success": "Your password has been reset successfully.",
+
+        "passwordCriteria": {
+          "length": "8 to 30 characters",
+          "uppercase": "1 uppercase letter",
+          "lowercase": "1 lowercase letter",
+          "number": "1 number",
+          "special": "1 special character"
+        },
+
+        "fields": {
+          "email": {
+            "label": "Email address"
+          },
+          "password": {
+            "label": "New password",
+            "show": "Show password",
+            "hide": "Hide password"
+          },
+          "confirmPassword": {
+            "label": "Confirm password",
+            "show": "Show confirmation",
+            "hide": "Hide confirmation"
+          }
+        },
+
+        "validation": {
+          "emailInvalid": "The email address is not valid.",
+          "passwordMin": "The password must be at least 8 characters long.",
+          "passwordMax": "The password cannot exceed 30 characters.",
+          "passwordUpper": "The password must contain at least one uppercase letter.",
+          "passwordLower": "The password must contain at least one lowercase letter.",
+          "passwordNumber": "The password must contain at least one number.",
+          "passwordSpecial": "The password must contain at least one special character.",
+          "confirmPasswordRequired": "Password confirmation is required.",
+          "passwordsMismatch": "Passwords do not match.",
+          "tokenMissing": "The reset link is invalid or missing."
+        },
+        "errors": {
+          "emailRequired": "Email is required.",
+          "missingFields": "All fields are required.",
+          "passwordMismatch": "Passwords do not match.",
+          "tokenInvalid": "The reset link is invalid.",
+          "tokenExpired": "The reset link has expired. Please request a new one.",
+          "serverError": "An error occurred, please try again."
+        }
+      },
+      "request": {
+        "neutral": "If an account is associated with this email, a reset link has been sent."
+      },
+      "email": {
+        "subject": "Reset your password",
+        "title": "Password Reset",
+        "intro": "You requested to reset your password on <strong>Watchlisty</strong> 🎬.",
+        "button": "Reset my password",
+        "expiry": "This link will expire in <strong>10 minutes</strong>.",
+        "footer": "If you didn’t request this, you can safely ignore this email.",
+        "rights": "All rights reserved."
+      }
+    },
     "verify": {
       "loading": "Verifying your email...",
       "successTitle": "Email successfully verified 🎉",

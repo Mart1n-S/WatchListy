@@ -1,45 +1,38 @@
 "use client";
 
-import Image from "next/image";
 import { useState, useRef } from "react";
-import Link from "next/link";
-import { useRouter, usePathname } from "next/navigation";
-import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
-import { fetchGenres } from "@/lib/redux/thunks/fetchGenres";
-import { useEffect } from "react";
-import { HiEye, HiEyeOff, HiMail, HiLockClosed, HiUser } from "react-icons/hi";
+import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { HiEye, HiEyeOff, HiMail, HiLockClosed } from "react-icons/hi";
 import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 import { z } from "zod";
-import { RegisterSchema, type RegisterInput } from "@/lib/validators/register";
+// import Link from "next/link";
+
+import {
+  ResetPasswordSchema,
+  type ResetPasswordInput,
+} from "@/lib/validators/resetPassword";
 
 /** Gestion des erreurs par champ */
-type FieldErrors = Partial<Record<keyof RegisterInput, string>>;
+type FieldErrors = Partial<Record<keyof ResetPasswordInput, string>>;
 
-export default function RegisterForm() {
-  const t = useTranslations("auth.register");
+export default function ResetPasswordForm() {
+  const t = useTranslations("auth.reset.form");
   const tCommon = useTranslations("common");
-  const dispatch = useAppDispatch();
 
   const router = useRouter();
+  const searchParams = useSearchParams();
   const pathname = usePathname();
   const locale = pathname.startsWith("/en") ? "en" : "fr";
 
-  useEffect(() => {
-    dispatch(fetchGenres(locale));
-  }, [locale, dispatch]);
-
-  /** Récupération des genres depuis Redux */
-  const genres = useAppSelector((state) => state.genres);
+  const token = searchParams.get("token");
 
   /** État du formulaire */
-  const [values, setValues] = useState<RegisterInput>({
+  const [values, setValues] = useState<ResetPasswordInput>({
     email: "",
-    pseudo: "",
     password: "",
     confirmPassword: "",
-    avatar: "avatar1.svg",
-    preferences: { movies: [], tv: [] },
+    token: token || "",
   });
 
   const [fieldErrors, setFieldErrors] = useState<FieldErrors>({});
@@ -49,48 +42,47 @@ export default function RegisterForm() {
   });
   const [isLoading, setIsLoading] = useState(false);
 
+  /** Refs pour focus premier champ en erreur */
   const emailRef = useRef<HTMLInputElement | null>(null);
-  const pseudoRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const confirmRef = useRef<HTMLInputElement | null>(null);
 
   const focusFirstError = (errs: FieldErrors) => {
     if (errs.email) emailRef.current?.focus();
-    else if (errs.pseudo) pseudoRef.current?.focus();
     else if (errs.password) passwordRef.current?.focus();
     else if (errs.confirmPassword) confirmRef.current?.focus();
   };
 
-  /** Gestion d’un changement de champ générique */
-  const handleChange = <K extends keyof RegisterInput>(
+  /** Gestion des changements de champ */
+  const handleChange = <K extends keyof ResetPasswordInput>(
     field: K,
-    value: RegisterInput[K]
+    value: ResetPasswordInput[K]
   ) => {
     setValues((v) => ({ ...v, [field]: value }));
     setFieldErrors((f) => ({ ...f, [field]: undefined }));
   };
 
-  /** Vérifie les critères de sécurité du mot de passe */
+  /** Critères de sécurité du mot de passe */
   const passwordCriteria = [
     {
       label: t("passwordCriteria.length"),
-      valid: !!values.password?.match(/^.{8,30}$/),
+      valid: !!values.password.match(/^.{8,30}$/),
     },
     {
       label: t("passwordCriteria.uppercase"),
-      valid: !!values.password?.match(/[A-Z]/),
+      valid: !!values.password.match(/[A-Z]/),
     },
     {
       label: t("passwordCriteria.lowercase"),
-      valid: !!values.password?.match(/[a-z]/),
+      valid: !!values.password.match(/[a-z]/),
     },
     {
       label: t("passwordCriteria.number"),
-      valid: !!values.password?.match(/\d/),
+      valid: !!values.password.match(/\d/),
     },
     {
       label: t("passwordCriteria.special"),
-      valid: !!values.password?.match(/[!@#$%^&*(),.?\":{}|<>]/),
+      valid: !!values.password.match(/[^A-Za-z0-9]/),
     },
   ];
 
@@ -101,9 +93,9 @@ export default function RegisterForm() {
     setFieldErrors({});
 
     try {
-      const parsed = RegisterSchema.parse(values);
+      const parsed = ResetPasswordSchema.parse(values);
 
-      const res = await fetch("/api/auth/register", {
+      const res = await fetch("/api/auth/reset-password", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -114,12 +106,11 @@ export default function RegisterForm() {
 
       const data = await res.json();
 
-      // --- Gestion des erreurs backend ---
       if (!res.ok) {
         if (data.errors) {
           const translatedErrors: Record<string, string> = {};
           Object.entries(data.errors).forEach(([field, msgKey]) => {
-            const cleanKey = String(msgKey).replace(/^auth\.register\./, "");
+            const cleanKey = String(msgKey).replace(/^auth\.reset\.form\./, "");
             translatedErrors[field] = t(cleanKey);
           });
           setFieldErrors(translatedErrors);
@@ -128,26 +119,19 @@ export default function RegisterForm() {
         }
 
         if (data.error) {
-          const cleanKey = String(data.error).replace(/^auth\.register\./, "");
+          const cleanKey = String(data.error).replace(
+            /^auth\.reset\.form\./,
+            ""
+          );
           const msg = cleanKey.startsWith("common.")
             ? tCommon(cleanKey.replace(/^common\./, ""))
             : t(cleanKey);
-
-          if (cleanKey.includes("pseudoExists")) {
-            setFieldErrors({ pseudo: msg });
-            focusFirstError({ pseudo: msg });
-            return;
-          } else if (cleanKey.includes("emailExists")) {
-            setFieldErrors({ email: msg });
-            focusFirstError({ email: msg });
-            return;
-          }
 
           toast.error(msg, { position: "top-right", duration: 5000 });
           return;
         }
 
-        toast.error(t("errors.unexpected"), {
+        toast.error(t("errors.serverError"), {
           position: "top-right",
           duration: 5000,
         });
@@ -160,16 +144,14 @@ export default function RegisterForm() {
       if (err instanceof z.ZodError) {
         const errs: FieldErrors = {};
         err.issues.forEach((issue) => {
-          const k = issue.path[0] as keyof RegisterInput;
+          const k = issue.path[0] as keyof ResetPasswordInput;
           const msgKey = String(issue.message);
           errs[k] = t(msgKey);
         });
         setFieldErrors(errs);
         focusFirstError(errs);
-      } else if (err instanceof Error) {
-        toast.error(err.message, { position: "top-right", duration: 5000 });
       } else {
-        toast.error(t("errors.unexpected"), {
+        toast.error(t("errors.serverError"), {
           position: "top-right",
           duration: 5000,
         });
@@ -179,59 +161,9 @@ export default function RegisterForm() {
     }
   };
 
-  /** Liste d’avatars disponibles */
-  const avatars = Array.from({ length: 6 }, (_, i) => `avatar${i + 1}.svg`);
-
   return (
     <div className="bg-gray-900/60 border border-gray-800 rounded-2xl shadow-xl p-4 sm:p-6 backdrop-blur-sm">
       <form className="space-y-6" onSubmit={onSubmit} noValidate>
-        {/* === Sélection de l'avatar === */}
-        <fieldset>
-          <legend className="block text-gray-200 mb-3 font-medium text-lg">
-            {t("fields.avatar.label")}
-          </legend>
-          <div className="grid grid-cols-3 lg:grid-cols-3 gap-6">
-            {avatars.map((a, i) => {
-              const id = `avatar-${i}`;
-              const isSelected = values.avatar === a;
-              return (
-                <label
-                  key={a}
-                  htmlFor={id}
-                  className={`relative rounded-2xl p-2 flex flex-col items-center transition-all cursor-pointer border-2
-                    ${
-                      isSelected
-                        ? "border-indigo-500 bg-gray-800/70 ring-2 ring-indigo-600"
-                        : "border-gray-700 hover:border-indigo-400/50 hover:bg-gray-800/40"
-                    }
-                    focus-within:ring-2 focus-within:ring-indigo-400 focus-within:ring-offset-2 focus-within:ring-offset-gray-900
-                  `}
-                >
-                  <input
-                    type="radio"
-                    id={id}
-                    name="avatar"
-                    value={a}
-                    checked={isSelected}
-                    onChange={() => handleChange("avatar", a)}
-                    className="absolute opacity-0 pointer-events-none"
-                  />
-                  <Image
-                    src={`/images/avatars/${a}`}
-                    alt={`${t("fields.avatar.alt")} ${i + 1}`}
-                    width={80}
-                    height={80}
-                    className="rounded-full object-cover"
-                  />
-                </label>
-              );
-            })}
-          </div>
-          {fieldErrors.avatar && (
-            <p className="text-red-400 text-sm mt-2">{fieldErrors.avatar}</p>
-          )}
-        </fieldset>
-
         {/* Email */}
         <div>
           <label
@@ -247,10 +179,9 @@ export default function RegisterForm() {
             <input
               ref={emailRef}
               id="email"
-              name="email"
               type="email"
-              value={values.email}
               autoComplete="email"
+              value={values.email}
               onChange={(e) => handleChange("email", e.target.value)}
               className={`block w-full pl-10 pr-3 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
                 ${
@@ -265,120 +196,6 @@ export default function RegisterForm() {
             <p className="mt-2 text-sm text-red-300">{fieldErrors.email}</p>
           )}
         </div>
-
-        {/* Pseudo */}
-        <div>
-          <label
-            htmlFor="pseudo"
-            className="block text-sm font-medium text-gray-200 mb-2"
-          >
-            {t("fields.pseudo.label")}
-          </label>
-          <div className="relative group">
-            <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-              <HiUser className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-400 transition-colors" />
-            </div>
-            <input
-              ref={pseudoRef}
-              id="pseudo"
-              name="pseudo"
-              type="text"
-              value={values.pseudo}
-              onChange={(e) => handleChange("pseudo", e.target.value)}
-              className={`block w-full pl-10 pr-3 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
-              ${
-                fieldErrors.pseudo
-                  ? "border-red-600"
-                  : "border-gray-700 hover:border-gray-600"
-              }`}
-            />
-          </div>
-          {fieldErrors.pseudo && (
-            <p className="mt-2 text-sm text-red-300">{fieldErrors.pseudo}</p>
-          )}
-        </div>
-
-        {/* === Préférences - Films === */}
-        <fieldset>
-          <legend className="block text-gray-200 mb-2 font-medium">
-            {t("fields.preferences.movies")}
-          </legend>
-          <div className="flex flex-wrap gap-2">
-            {genres.movies.map((g) => {
-              const id = `movie-${g.id}`;
-              const selected = values.preferences.movies;
-              const isActive = selected.includes(g.id);
-              return (
-                <label
-                  key={g.id}
-                  htmlFor={id}
-                  className={`px-3 py-1 rounded-full text-sm cursor-pointer transition-all ${
-                    isActive
-                      ? "bg-indigo-600 text-white"
-                      : "bg-gray-700 text-gray-300 hover:bg-indigo-600"
-                  } focus-within:ring-2 focus-within:ring-indigo-400 focus-within:ring-offset-2 focus-within:ring-offset-gray-900`}
-                >
-                  <input
-                    id={id}
-                    type="checkbox"
-                    checked={isActive}
-                    onChange={() =>
-                      handleChange("preferences", {
-                        ...values.preferences,
-                        movies: isActive
-                          ? selected.filter((id) => id !== g.id)
-                          : [...selected, g.id],
-                      })
-                    }
-                    className="sr-only"
-                  />
-                  {g.name}
-                </label>
-              );
-            })}
-          </div>
-        </fieldset>
-
-        {/* === Préférences - Séries === */}
-        <fieldset>
-          <legend className="block text-gray-200 mb-2 font-medium">
-            {t("fields.preferences.tv")}
-          </legend>
-          <div className="flex flex-wrap gap-2">
-            {genres.tv.map((g) => {
-              const id = `tv-${g.id}`;
-              const selected = values.preferences.tv;
-              const isActive = selected.includes(g.id);
-              return (
-                <label
-                  key={g.id}
-                  htmlFor={id}
-                  className={`px-3 py-1 rounded-full text-sm cursor-pointer transition-all ${
-                    isActive
-                      ? "bg-emerald-600 text-white"
-                      : "bg-gray-700 text-gray-200 hover:bg-emerald-600"
-                  } focus-within:ring-2 focus-within:ring-emerald-400 focus-within:ring-offset-2 focus-within:ring-offset-gray-900`}
-                >
-                  <input
-                    id={id}
-                    type="checkbox"
-                    checked={isActive}
-                    onChange={() =>
-                      handleChange("preferences", {
-                        ...values.preferences,
-                        tv: isActive
-                          ? selected.filter((id) => id !== g.id)
-                          : [...selected, g.id],
-                      })
-                    }
-                    className="sr-only"
-                  />
-                  {g.name}
-                </label>
-              );
-            })}
-          </div>
-        </fieldset>
 
         {/* Mot de passe */}
         <div>
@@ -395,16 +212,16 @@ export default function RegisterForm() {
             <input
               ref={passwordRef}
               id="password"
-              name="password"
               type={showPassword.password ? "text" : "password"}
               value={values.password}
               onChange={(e) => handleChange("password", e.target.value)}
               className={`block w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500
-              ${
-                fieldErrors.password
-                  ? "border-red-600"
-                  : "border-gray-700 hover:border-gray-600"
-              }`}
+                ${
+                  fieldErrors.password
+                    ? "border-red-600"
+                    : "border-gray-700 hover:border-gray-600"
+                }
+              `}
             />
             <button
               type="button"
@@ -428,6 +245,7 @@ export default function RegisterForm() {
           {fieldErrors.password && (
             <p className="mt-2 text-sm text-red-300">{fieldErrors.password}</p>
           )}
+
           {values.password && (
             <ul className="mt-3 text-sm text-gray-400 space-y-1">
               {passwordCriteria.map((c) => (
@@ -457,16 +275,16 @@ export default function RegisterForm() {
             <input
               ref={confirmRef}
               id="confirmPassword"
-              name="confirmPassword"
               type={showPassword.confirm ? "text" : "password"}
               value={values.confirmPassword}
               onChange={(e) => handleChange("confirmPassword", e.target.value)}
               className={`block w-full pl-10 pr-12 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500
-              ${
-                fieldErrors.confirmPassword
-                  ? "border-red-600"
-                  : "border-gray-700 hover:border-gray-600"
-              }`}
+                ${
+                  fieldErrors.confirmPassword
+                    ? "border-red-600"
+                    : "border-gray-700 hover:border-gray-600"
+                }
+              `}
             />
             <button
               type="button"
@@ -528,7 +346,7 @@ export default function RegisterForm() {
           )}
         </button>
 
-        {/* Footer */}
+        {/* Footer
         <p className="text-center text-sm text-gray-400">
           {t("alreadyAccount")}{" "}
           <Link
@@ -537,7 +355,7 @@ export default function RegisterForm() {
           >
             {t("goToLogin")}
           </Link>
-        </p>
+        </p> */}
       </form>
     </div>
   );

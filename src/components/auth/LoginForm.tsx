@@ -172,7 +172,7 @@ export default function LoginForm() {
   };
 
   return (
-    <div className="bg-gray-900/60 border border-gray-800 rounded-2xl shadow-xl p-4 backdrop-blur-sm">
+    <div className="bg-gray-900/60 border border-gray-800 rounded-2xl shadow-xl p-4 sm:p-6 backdrop-blur-sm">
       {/* Erreur formulaire (globale) */}
       {formError && (
         <div

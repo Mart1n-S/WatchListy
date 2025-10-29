@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { usePathname } from "next/navigation";
+import { usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
@@ -9,6 +9,7 @@ import { HiChevronDown } from "react-icons/hi2";
 
 export default function LocaleSwitcher() {
   const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -25,21 +26,23 @@ export default function LocaleSwitcher() {
 
   const active = locales.find((l) => l.code === currentLocale)!;
 
-  // Génère le chemin localisé
+  // Génère le chemin localisé en préservant les query params (token, etc.)
   const getLocalizedPath = useCallback(
     (locale: string) => {
-      if (pathname.startsWith("/fr") || pathname.startsWith("/en")) {
-        return pathname.replace(/^\/(fr|en)/, `/${locale}`);
-      }
-      return `/${locale}${pathname}`;
+      const cleanPath = pathname.replace(/^\/(fr|en)/, ""); // retire la locale actuelle
+      const queryString = searchParams.toString(); // récupère ?token=xxxx
+      return `/${locale}${cleanPath}${queryString ? `?${queryString}` : ""}`;
     },
-    [pathname]
+    [pathname, searchParams]
   );
 
-  // Ferme en cliquant en dehors
+  // Ferme le menu quand on clique en dehors
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
-      if (dropdownRef.current && !dropdownRef.current.contains(e.target as Node)) {
+      if (
+        dropdownRef.current &&
+        !dropdownRef.current.contains(e.target as Node)
+      ) {
         setIsOpen(false);
       }
     };
@@ -62,11 +65,15 @@ export default function LocaleSwitcher() {
       setIsOpen(false);
     } else if (e.key === "ArrowDown") {
       e.preventDefault();
-      setFocusedIndex((prev) => (prev === null ? 0 : (prev + 1) % locales.length));
+      setFocusedIndex((prev) =>
+        prev === null ? 0 : (prev + 1) % locales.length
+      );
     } else if (e.key === "ArrowUp") {
       e.preventDefault();
       setFocusedIndex((prev) =>
-        prev === null ? locales.length - 1 : (prev - 1 + locales.length) % locales.length
+        prev === null
+          ? locales.length - 1
+          : (prev - 1 + locales.length) % locales.length
       );
     } else if (e.key === "Enter" && focusedIndex !== null) {
       e.preventDefault();

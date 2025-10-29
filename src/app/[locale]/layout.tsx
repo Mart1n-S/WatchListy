@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { Suspense } from "react";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
 import { HtmlLangUpdater } from "@/components/utils/HtmlLangUpdater";
@@ -11,19 +12,20 @@ import AuthSync from "@/components/auth/AuthSync";
 import { locales, type Locale } from "@/i18n/locales";
 import { Toaster } from "react-hot-toast";
 
-// --- Génération statique des locales ---
+/* -------------------------------------------------------------------------- */
+/*                 GÉNÉRATION STATIQUE DES PARAMÈTRES DE LOCALE               */
+/* -------------------------------------------------------------------------- */
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
-// --- Variables globales ---
+/* -------------------------------------------------------------------------- */
+/*                         MÉTADONNÉES DYNAMIQUES                             */
+/* -------------------------------------------------------------------------- */
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
 const googleVerification =
   process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "";
 
-/* -------------------------------------------------------------------------- */
-/*               MÉTADONNÉES DYNAMIQUES SELON LA LOCALE (SEO)                 */
-/* -------------------------------------------------------------------------- */
 export async function generateMetadata({
   params,
 }: {
@@ -39,10 +41,7 @@ export async function generateMetadata({
 
   return {
     metadataBase: new URL(siteUrl),
-    title: {
-      default: t("title"),
-      template: `%s | WatchListy`,
-    },
+    title: { default: t("title"), template: `%s | WatchListy` },
     description: t("description"),
     keywords: (t.raw("keywords") as string[]) || [],
     authors: [{ name: "WatchListy Team", url: siteUrl }],
@@ -62,10 +61,7 @@ export async function generateMetadata({
     },
     alternates: {
       canonical: `/${locale}`,
-      languages: {
-        "fr-FR": "/fr",
-        "en-US": "/en",
-      },
+      languages: { "fr-FR": "/fr", "en-US": "/en" },
     },
     openGraph: {
       title: t("ogTitle") || t("title"),
@@ -96,7 +92,7 @@ export async function generateMetadata({
 }
 
 /* -------------------------------------------------------------------------- */
-/*                                LAYOUT UI                                   */
+/*                               LAYOUT LOCALISÉ                              */
 /* -------------------------------------------------------------------------- */
 export default async function LocaleRootLayout({
   children,
@@ -106,7 +102,6 @@ export default async function LocaleRootLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-
   if (!locales.includes(locale as Locale)) notFound();
 
   const messages = await getMessages({ locale });
@@ -117,11 +112,32 @@ export default async function LocaleRootLayout({
         <NextIntlClientProvider locale={locale} messages={messages}>
           <AuthSync>
             <HtmlLangUpdater locale={locale} />
-            <Header />
+
+            <Suspense
+              fallback={
+                <div className="flex justify-center items-center py-4 text-gray-400">
+                  Chargement du header...
+                </div>
+              }
+            >
+              <Header />
+            </Suspense>
+
             <main id="content" className="flex-grow pt-10">
-              {children}
+              <Suspense
+                fallback={
+                  <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400 gap-4">
+                    <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                    <p>Chargement...</p>
+                  </div>
+                }
+              >
+                {children}
+              </Suspense>
+
               <Toaster position="top-right" />
             </main>
+
             <Footer />
           </AuthSync>
         </NextIntlClientProvider>

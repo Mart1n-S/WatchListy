@@ -23,6 +23,7 @@
   "layout": {
     "header": {
       "home": "Accueil",
+      "movies": "Films",
       "profile": "Profil",
       "login": "Connexion",
       "signup": "S’inscrire",
@@ -914,6 +915,50 @@
       "oldPasswordIncorrect": "L'ancien mot de passe est incorrect."
     }
   },
+
+  "movies": {
+    "meta": {
+      "title": "Films",
+      "description": "Explorez, recherchez et découvrez les films les plus populaires ou trouvez votre prochain coup de cœur sur WatchListy."
+    },
+    "noMovies": "Aucun film à afficher.",
+    "searchPlaceholder": "Rechercher un film...",
+    "noResults": "Aucun film trouvé.",
+    "searchButton": "Rechercher",
+    "clearSearch": "Effacer la recherche",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page",
+    "loading": "Chargement en cours...",
+    "errorFetching": "Impossible de récupérer les films pour le moment.",
+    "noPoster": "Pas d'affiche",
+    "noDescription": "Aucune description disponible.",
+    "searchLabel": "Recherche de films",
+    "filters": {
+      "title": "Filtres",
+      "genre": "Genre",
+      "allGenres": "Tous les genres",
+      "language": "Langue originale",
+      "allLanguages": "Toutes les langues",
+      "minRating": "Note minimale",
+      "removeFilter": "Supprimer le filtre",
+      "anyRating": "Aucune",
+      "sort": {
+        "label": "Trier par",
+        "popularityLabel": "Popularité",
+        "ratingLabel": "Note",
+        "dateLabel": "Date",
+        "popularityDesc": "Les plus populaires",
+        "popularityAsc": "Les moins populaires",
+        "ratingDesc": "Note décroissante",
+        "ratingAsc": "Note croissante",
+        "dateDesc": "Les plus récents",
+        "dateAsc": "Les plus anciens"
+      },
+      "clearAll": "Tout effacer"
+    }
+  },
+
   "common": {
     "errors": {
       "unauthorized": "Non autorisé.",

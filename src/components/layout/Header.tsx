@@ -44,7 +44,10 @@ export default function Header() {
 
   // --- Éléments de navigation traduits ---
   const navItems = [{ name: t("home"), href: "/" }];
-  if (session) navItems.push({ name: t("profile"), href: "/profile" });
+  if (session) {
+    navItems.push({ name: t("movies"), href: "/movies" });
+    navItems.push({ name: t("profile"), href: "/profile" });
+  }
 
   return (
     <header className="fixed top-0 left-0 w-full bg-gray-900/90 backdrop-blur-sm shadow-sm z-50 border-b border-gray-800">

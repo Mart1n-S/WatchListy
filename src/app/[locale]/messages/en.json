@@ -23,6 +23,7 @@
   "layout": {
     "header": {
       "home": "Home",
+      "movies": "Movies",
       "profile": "Profile",
       "login": "Login",
       "signup": "Sign up",
@@ -911,6 +912,48 @@
       "updateFailed": "Update failed.",
       "passwordIncomplete": "Password fields are incomplete.",
       "oldPasswordIncorrect": "Old password is incorrect."
+    }
+  },
+  "movies": {
+    "meta": {
+      "title": "Movies",
+      "description": "Explore, search, and discover the most popular movies or find your next favorite on WatchListy."
+    },
+    "noMovies": "No movies to display.",
+    "searchPlaceholder": "Search for a movie...",
+    "noResults": "No movies found.",
+    "searchButton": "Search",
+    "clearSearch": "Clear search",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "loading": "Loading movies...",
+    "errorFetching": "Failed to fetch movies. Please try again later.",
+    "noPoster": "No poster available",
+    "noDescription": "No description available.",
+    "searchLabel": "Movie search input",
+    "filters": {
+      "title": "Filters",
+      "genre": "Genre",
+      "allGenres": "All genres",
+      "language": "Original language",
+      "allLanguages": "All languages",
+      "minRating": "Min rating",
+      "removeFilter": "Remove filter",
+      "anyRating": "Any",
+      "sort": {
+        "label": "Sort by",
+        "popularityLabel": "Popularity",
+        "ratingLabel": "Rating",
+        "dateLabel": "Date",
+        "popularityDesc": "Most popular",
+        "popularityAsc": "Least popular",
+        "ratingDesc": "Highest rated",
+        "ratingAsc": "Lowest rated",
+        "dateDesc": "Newest first",
+        "dateAsc": "Oldest first"
+      },
+      "clearAll": "Clear all"
     }
   },
   "common": {

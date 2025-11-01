@@ -1,15 +1,20 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { FiPlayCircle } from "react-icons/fi";
+import { FiPlayCircle, FiTv } from "react-icons/fi";
 import type { TmdbVideo } from "@/types/tmdb";
 
+interface MediaVideosProps {
+  videos: TmdbVideo[];
+  type: "movie" | "tv";
+}
+
 /**
- * Affiche les bandes-annonces d’un film.
+ * Affiche les bandes-annonces (films ou séries).
  * Lecture seule — vidéos YouTube uniquement.
  */
-export default function MovieVideos({ videos }: { videos: TmdbVideo[] }) {
-  const t = useTranslations("movies");
+export default function MediaVideos({ videos, type }: MediaVideosProps) {
+  const t = useTranslations(type === "movie" ? "movies" : "series");
 
   // On garde uniquement les vidéos YouTube valides
   const trailers = videos.filter(
@@ -20,13 +25,26 @@ export default function MovieVideos({ videos }: { videos: TmdbVideo[] }) {
     <section className="mt-12 max-w-6xl mx-auto px-4">
       {/* --- Titre --- */}
       <h2 className="text-2xl font-semibold mb-4 flex items-center gap-2">
-        <FiPlayCircle className="w-5 h-5 text-indigo-400" />
-        {t("videos.title")}
+        {type === "movie" ? (
+          <FiPlayCircle className="w-5 h-5 text-indigo-400" />
+        ) : (
+          <FiTv className="w-5 h-5 text-indigo-400" />
+        )}
+        {t("videos.title", {
+          default: type === "movie" ? "Bandes-annonces" : "Vidéos",
+        })}
       </h2>
 
       {/* --- Aucune vidéo --- */}
       {trailers.length === 0 ? (
-        <p className="text-gray-400 text-center">{t("videos.noVideos")}</p>
+        <p className="text-gray-400 text-center">
+          {t("videos.noVideos", {
+            default:
+              type === "movie"
+                ? "Aucune bande-annonce disponible."
+                : "Aucune vidéo disponible.",
+          })}
+        </p>
       ) : (
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
           {trailers.slice(0, 6).map((video) => (

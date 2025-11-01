@@ -24,6 +24,7 @@
     "header": {
       "home": "Accueil",
       "movies": "Films",
+      "series": "Séries",
       "profile": "Profil",
       "login": "Connexion",
       "signup": "S’inscrire",
@@ -930,6 +931,7 @@
     "next": "Suivant",
     "page": "Page",
     "loading": "Chargement en cours...",
+    "loadingDetail": "Chargement des détails du film...",
     "errorFetching": "Impossible de récupérer les films pour le moment.",
     "noPoster": "Pas d'affiche",
     "noDescription": "Aucune description disponible.",
@@ -994,6 +996,91 @@
       "title": "Films recommandés",
       "noImage": "Pas d'affiche"
     },
+    "addToWatchlist": "Ajouter à ma Watchlist",
+    "alreadyInWatchlist": "Déjà dans la Watchlist",
+    "currentlyWatching": "En cours de visionnage",
+    "completed": "Déjà visionné",
+    "adding": "Ajout...",
+    "addedToWatchlist": "Ajouté avec succès à la Watchlist !",
+    "failedToAdd": "Erreur lors de l'ajout"
+  },
+
+  "series": {
+    "meta": {
+      "title": "Séries",
+      "description": "Explorez, recherchez et découvrez les séries les plus populaires ou trouvez votre prochain coup de cœur sur WatchListy."
+    },
+    "pageTitle": "Séries",
+    "noOverview": "Aucune description disponible.",
+    "loadingDetail": "Chargement des détails de la série...",
+    "noResults": "Aucune série trouvée.",
+    "searchButton": "Rechercher",
+    "searchPlaceholder": "Rechercher une série...",
+    "searchLabel": "Recherche de séries",
+    "loading": "Chargement en cours...",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page",
+    "noPoster": "Pas d'affiche",
+    "noDescription": "Aucune description disponible.",
+    "clearSearch": "Effacer la recherche",
+
+    "overview": {
+      "title": "Synopsis",
+      "noDescription": "Aucune description disponible.",
+      "originalLanguage": "Langue originale",
+      "status": "Statut",
+      "numberOfSeasons": "Nombre de saisons",
+      "numberOfEpisodes": "Nombre d’épisodes",
+      "statusValues": {
+        "Returning Series": "En cours",
+        "Ended": "Terminée",
+        "Canceled": "Annulée",
+        "Planned": "Prévue",
+        "In Production": "En production",
+        "Pilot": "Pilote"
+      }
+    },
+
+    "videos": {
+      "title": "Bandes-annonces",
+      "noVideos": "Aucune vidéo disponible."
+    },
+
+    "cast": {
+      "title": "Distribution",
+      "noCast": "Aucun acteur trouvé.",
+      "noImage": "Pas d'image"
+    },
+
+    "recommendations": {
+      "title": "Séries recommandées"
+    },
+
+    "filters": {
+      "title": "Filtres",
+      "genre": "Genre",
+      "allGenres": "Tous les genres",
+      "language": "Langue originale",
+      "allLanguages": "Toutes les langues",
+      "minRating": "Note minimale",
+      "removeFilter": "Supprimer le filtre",
+      "anyRating": "Aucune",
+      "sort": {
+        "label": "Trier par",
+        "popularityLabel": "Popularité",
+        "ratingLabel": "Note",
+        "dateLabel": "Date",
+        "popularityDesc": "Les plus populaires",
+        "popularityAsc": "Les moins populaires",
+        "ratingDesc": "Note décroissante",
+        "ratingAsc": "Note croissante",
+        "dateDesc": "Les plus récentes",
+        "dateAsc": "Les plus anciennes"
+      },
+      "clearAll": "Tout effacer"
+    },
+
     "addToWatchlist": "Ajouter à ma Watchlist",
     "alreadyInWatchlist": "Déjà dans la Watchlist",
     "currentlyWatching": "En cours de visionnage",

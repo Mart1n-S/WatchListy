@@ -3,15 +3,23 @@
 import { useEffect, useState } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
-import { FiMessageSquare, FiStar } from "react-icons/fi";
+import { FiMessageSquare, FiStar, FiTv } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Review } from "@/models/Review";
 
+interface MediaReviewsSectionProps {
+  mediaId: number;
+  type: "movie" | "tv";
+}
+
 /**
- * Affiche la liste des avis pour un film.
+ * Affiche la liste des avis pour un média (film ou série).
  * Lecture seule — pas de création/modification ici.
  */
-export default function MovieReviewsSection({ movieId }: { movieId: number }) {
+export default function MediaReviewsSection({
+  mediaId,
+  type,
+}: MediaReviewsSectionProps) {
   const t = useTranslations("review");
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
@@ -21,7 +29,7 @@ export default function MovieReviewsSection({ movieId }: { movieId: number }) {
   useEffect(() => {
     async function fetchReviews() {
       try {
-        const res = await fetch(`/api/reviews/${movieId}`, {
+        const res = await fetch(`/api/reviews/${mediaId}`, {
           next: { revalidate: 60 },
         });
         if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
@@ -38,11 +46,9 @@ export default function MovieReviewsSection({ movieId }: { movieId: number }) {
     }
 
     fetchReviews();
-  }, [movieId, t]);
+  }, [mediaId, type, t]);
 
-  // --- Gestion de l'affichage progressif ---
   const visibleReviews = reviews.slice(0, visibleCount);
-
   const showMore = () => setVisibleCount((prev) => prev + 3);
   const showLess = () => setVisibleCount(3);
 
@@ -51,8 +57,17 @@ export default function MovieReviewsSection({ movieId }: { movieId: number }) {
       {/* --- Titre --- */}
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-semibold flex items-center gap-2">
-          <FiMessageSquare className="w-5 h-5 text-indigo-400" />
-          {t("title", { defaultValue: "Avis des utilisateurs" })}
+          {type === "movie" ? (
+            <FiMessageSquare className="w-5 h-5 text-indigo-400" />
+          ) : (
+            <FiTv className="w-5 h-5 text-indigo-400" />
+          )}
+          {t("title", {
+            defaultValue:
+              type === "movie"
+                ? "Avis des spectateurs"
+                : "Avis des spectateurs (série)",
+          })}
         </h2>
         {!loading && !error && reviews.length > 0 && (
           <p className="text-slate-400 text-sm">
@@ -65,7 +80,7 @@ export default function MovieReviewsSection({ movieId }: { movieId: number }) {
         )}
       </div>
 
-      {/* --- Chargement --- */}
+      {/* --- États --- */}
       {loading && (
         <div className="space-y-4">
           {[...Array(3)].map((_, i) => (
@@ -84,15 +99,18 @@ export default function MovieReviewsSection({ movieId }: { movieId: number }) {
         </div>
       )}
 
-      {/* --- Erreur --- */}
       {!loading && error && (
         <p className="text-red-400 text-center py-6">{error}</p>
       )}
 
-      {/* --- Aucune review --- */}
       {!loading && !error && reviews.length === 0 && (
         <p className="text-gray-400 text-center py-6">
-          {t("noReviews", { defaultValue: "Aucun avis pour ce film." })}
+          {t("noReviews", {
+            defaultValue:
+              type === "movie"
+                ? "Aucun avis pour ce film."
+                : "Aucun avis pour cette série.",
+          })}
         </p>
       )}
 

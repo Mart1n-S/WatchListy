@@ -24,6 +24,7 @@
     "header": {
       "home": "Home",
       "movies": "Movies",
+      "series": "Series",
       "profile": "Profile",
       "login": "Login",
       "signup": "Sign up",
@@ -928,6 +929,7 @@
     "next": "Next",
     "page": "Page",
     "loading": "Loading movies...",
+    "loadingDetail": "Loading movie details...",
     "errorFetching": "Failed to fetch movies. Please try again later.",
     "noPoster": "No poster available",
     "noDescription": "No description available.",
@@ -1001,6 +1003,90 @@
     "failedToAdd": "Failed to add to Watchlist."
   },
 
+  "series": {
+    "meta": {
+      "title": "TV Shows",
+      "description": "Explore, search and discover the most popular TV shows or find your next favorite on WatchListy."
+    },
+    "pageTitle": "TV Shows",
+    "noOverview": "No description available.",
+    "loadingDetail": "Loading show details...",
+    "noResults": "No shows found.",
+    "searchButton": "Search",
+    "searchPlaceholder": "Search for a show...",
+    "searchLabel": "TV show search",
+    "loading": "Loading...",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "noPoster": "No poster",
+    "noDescription": "No description available.",
+    "clearSearch": "Clear search",
+
+    "overview": {
+      "title": "Overview",
+      "noDescription": "No description available.",
+      "originalLanguage": "Original language",
+      "status": "Status",
+      "numberOfSeasons": "Number of seasons",
+      "numberOfEpisodes": "Number of episodes",
+      "statusValues": {
+        "Returning Series": "Returning Series",
+        "Ended": "Ended",
+        "Canceled": "Canceled",
+        "Planned": "Planned",
+        "In Production": "In production",
+        "Pilot": "Pilot"
+      }
+    },
+
+    "videos": {
+      "title": "Trailers",
+      "noVideos": "No videos available."
+    },
+
+    "cast": {
+      "title": "Cast",
+      "noCast": "No cast found.",
+      "noImage": "No image"
+    },
+
+    "recommendations": {
+      "title": "Recommended Shows"
+    },
+
+    "filters": {
+      "title": "Filters",
+      "genre": "Genre",
+      "allGenres": "All genres",
+      "language": "Original language",
+      "allLanguages": "All languages",
+      "minRating": "Minimum rating",
+      "removeFilter": "Remove filter",
+      "anyRating": "Any",
+      "sort": {
+        "label": "Sort by",
+        "popularityLabel": "Popularity",
+        "ratingLabel": "Rating",
+        "dateLabel": "Date",
+        "popularityDesc": "Most popular",
+        "popularityAsc": "Least popular",
+        "ratingDesc": "Highest rated",
+        "ratingAsc": "Lowest rated",
+        "dateDesc": "Newest",
+        "dateAsc": "Oldest"
+      },
+      "clearAll": "Clear all"
+    },
+
+    "addToWatchlist": "Add to my Watchlist",
+    "alreadyInWatchlist": "Already in your Watchlist",
+    "currentlyWatching": "Currently viewing",
+    "completed": "Already viewed",
+    "adding": "Adding...",
+    "addedToWatchlist": "Added to your Watchlist !",
+    "failedToAdd": "Failed to add to Watchlist."
+  },
   "review": {
     "title": "Reviews",
     "loading": "Loading reviews...",

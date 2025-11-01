@@ -4,117 +4,114 @@ import { useState, useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useAppSelector } from "@/lib/redux/hooks";
-import ActiveFilters from "./ActiveFilters";
-import MovieSearchBar from "./MovieSearchBar";
-import MovieGrid from "./MovieGrid";
-import Pagination from "./Pagination";
-import MovieFilters from "./MovieFilters";
 import { AnimatePresence, motion } from "framer-motion";
 
-interface Movie {
+import MediaSearchBar from "./MediaSearchBar";
+import MediaFilters from "./MediaFilters";
+import MediaGrid from "./MediaGrid";
+import MediaActiveFilters from "./MediaActiveFilters";
+import MediaPagination from "./MediaPagination";
+
+interface Media {
   id: number;
   title: string;
   overview: string;
   poster_path: string | null;
-  release_date: string;
+  release_date?: string;
   vote_average: number;
 }
 
-interface MoviesClientProps {
-  initialMovies: Movie[];
-  initialPage: number;
-  totalPages: number;
+interface MediaListClientProps {
   locale: string;
+  type: "movie" | "tv";
 }
 
 /**
- * Composant principal de la page Films
- * Gère :
- * - Recherche
- * - Filtres avancés
- * - Pagination
- * - Synchronisation URL
+ * Composant principal pour les pages de films et séries.
+ * Gère recherche, filtres, pagination et affichage.
  */
-export default function MoviesClient({
-  initialMovies,
-  initialPage,
-  totalPages,
+export default function MediaListClient({
   locale,
-}: MoviesClientProps) {
-  const t = useTranslations("movies");
+  type,
+}: MediaListClientProps) {
+  const t = useTranslations(type === "movie" ? "movies" : "series");
   const router = useRouter();
   const searchParams = useSearchParams();
-  const genres = useAppSelector((state) => state.genres.movies);
 
   const language: "fr" | "en" = locale === "fr" ? "fr" : "en";
 
-  // --- ÉTATS ---
-  const [movies, setMovies] = useState<Movie[]>(initialMovies ?? []);
-  const [page, setPage] = useState(initialPage);
-  const [total, setTotal] = useState(totalPages);
+  // Genres selon type
+  const genres = useAppSelector((state) =>
+    type === "movie" ? state.genres.movies : state.genres.tv
+  );
+
+  // --- États ---
+  const [items, setItems] = useState<Media[]>([]);
+  const [page, setPage] = useState(1);
+  const [total, setTotal] = useState(1);
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  // --- UTILS ---
+  // --- Utils ---
   const getGenreName = (id: string) => {
     const genre = genres.find((g) => g.id === Number(id));
     return genre ? genre.name : id;
   };
 
-  // --- API FETCHERS ---
+  // --- Fetchers ---
 
-  /** Films populaires */
+  /** Populaires */
   const fetchPopular = useCallback(
     async (pageNumber: number) => {
       setLoading(true);
       setError(null);
       try {
         const res = await fetch(
-          `/api/tmdb/movies/popular?lang=${language}&page=${pageNumber}`
+          `/api/tmdb/${type}/popular?lang=${language}&page=${pageNumber}`
         );
         if (!res.ok) throw new Error(`Erreur API TMDB: ${res.status}`);
         const data = await res.json();
-        setMovies(data.results ?? []);
+        setItems(data.results ?? []);
         setTotal(data.total_pages ?? 1);
       } catch (err) {
         console.error("Erreur fetchPopular :", err);
-        setError(t("errorFetching"));
+        setError(t("errorFetching", { defaultValue: "Erreur de chargement." }));
       } finally {
         setLoading(false);
       }
     },
-    [language, t]
+    [type, language, t]
   );
 
-  /** Films via recherche */
+  /** Recherche */
   const fetchSearch = useCallback(
     async (searchTerm: string) => {
       setLoading(true);
       setError(null);
       try {
         const res = await fetch(
-          `/api/tmdb/movies/search?query=${encodeURIComponent(
+          `/api/tmdb/${type}/search?query=${encodeURIComponent(
             searchTerm
           )}&lang=${language}`
         );
         if (!res.ok) throw new Error(`Erreur API TMDB Search: ${res.status}`);
         const data = await res.json();
-        setMovies(data.results ?? []);
+        setItems(data.results ?? []);
         setTotal(data.total_pages ?? 1);
         setPage(1);
       } catch (err) {
         console.error("Erreur fetchSearch :", err);
-        setError(t("errorFetching"));
+        setError(t("errorFetching", { defaultValue: "Erreur de recherche." }));
       } finally {
         setLoading(false);
       }
     },
-    [language, t]
+    [type, language, t]
   );
 
-  /** Films via Discover (filtres) */
+  /** Discover (filtres) */
   const fetchDiscover = useCallback(
     async (pageNumber = 1, activeFilters = filters) => {
       setLoading(true);
@@ -127,25 +124,25 @@ export default function MoviesClient({
         for (const [key, value] of Object.entries(activeFilters)) {
           if (value) params.append(key, value);
         }
+
         const res = await fetch(
-          `/api/tmdb/movies/discover?${params.toString()}`
+          `/api/tmdb/${type}/discover?${params.toString()}`
         );
         if (!res.ok) throw new Error(`Erreur API TMDB Discover: ${res.status}`);
         const data = await res.json();
-        setMovies(data.results ?? []);
+        setItems(data.results ?? []);
         setTotal(data.total_pages ?? 1);
       } catch (err) {
         console.error("Erreur fetchDiscover :", err);
-        setError(t("errorFetching"));
+        setError(t("errorFetching", { defaultValue: "Erreur de filtrage." }));
       } finally {
         setLoading(false);
       }
     },
-    [filters, language, t]
+    [filters, language, t, type]
   );
 
-  // --- HANDLERS ---
-
+  // --- Handlers ---
   /** Recherche */
   const handleSearch = (searchTerm: string) => {
     setQuery(searchTerm);
@@ -159,20 +156,15 @@ export default function MoviesClient({
 
   const handleClearSearch = () => {
     setQuery("");
-
     // Reconstruit l'URL selon les filtres existants
     const params = new URLSearchParams();
     for (const [key, value] of Object.entries(filters)) {
       if (value) params.set(key, value);
     }
     router.push(`?${params.toString()}`);
-
     // Recharge selon contexte
-    if (Object.keys(filters).length > 0) {
-      fetchDiscover(1, filters);
-    } else {
-      fetchPopular(1);
-    }
+    if (Object.keys(filters).length > 0) fetchDiscover(1, filters);
+    else fetchPopular(1);
   };
 
   /** Changement de filtres */
@@ -211,7 +203,7 @@ export default function MoviesClient({
 
   // --- EFFETS ---
 
-  /** Met à jour l'URL quand les filtres changent */
+  /** Met à jour l'URL quand les filtres OU la recherche changent */
   useEffect(() => {
     const params = new URLSearchParams();
     if (query) params.set("query", query);
@@ -221,12 +213,11 @@ export default function MoviesClient({
     router.push(`?${params.toString()}`);
   }, [filters, query, router]);
 
-  /** Synchronise l'URL et recharge les films quand les filtres changent */
+  /** Synchronise l'URL et recharge quand des filtres sont actifs */
   useEffect(() => {
     const hasFilters = Object.keys(filters).length > 0;
     if (!hasFilters) return;
 
-    // Met à jour l'URL après le rendu
     const params = new URLSearchParams();
     if (query) params.set("query", query);
     for (const [key, value] of Object.entries(filters)) {
@@ -234,13 +225,34 @@ export default function MoviesClient({
     }
     router.push(`?${params.toString()}`);
 
-    // Recharge les films filtrés
     setQuery("");
     fetchDiscover(1, filters);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [filters]);
 
-  /** Restaure l’état depuis l’URL */
+  /** Déclenche un nouvel appel quand les filtres changent (sécurité double) */
+  useEffect(() => {
+    if (Object.keys(filters).length > 0) {
+      setQuery("");
+      fetchDiscover(1, filters);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [filters]);
+
+  /** Populaires si pas de recherche ni filtres */
+  useEffect(() => {
+    if (!query && Object.keys(filters).length === 0) fetchPopular(1);
+  }, [fetchPopular, query, filters]);
+
+  /** Recharge les résultats si une query est présente */
+  useEffect(() => {
+    if (query && query.trim() !== "") {
+      fetchSearch(query);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [query]);
+
+  /** Restaure depuis l’URL au montage */
   useEffect(() => {
     const params = Object.fromEntries(searchParams.entries());
     const filterKeys = [
@@ -265,39 +277,17 @@ export default function MoviesClient({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  /** Déclenche un nouvel appel quand les filtres changent */
-  useEffect(() => {
-    if (Object.keys(filters).length > 0) {
-      setQuery("");
-      fetchDiscover(1, filters);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [filters]);
-
-  /** Sécurité : films populaires si rien d’appliqué */
-  useEffect(() => {
-    if (!query && Object.keys(filters).length === 0) fetchPopular(1);
-  }, [fetchPopular, query, filters]);
-
-  /** Recharge les résultats si une query est présente au montage ou quand elle change */
-  useEffect(() => {
-    if (query && query.trim() !== "") {
-      fetchSearch(query);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [query]);
-
-  // --- RENDER ---
+  // --- Rendu ---
   return (
     <div className="text-white">
-      {/* Barre de recherche */}
-      <MovieSearchBar
+      <MediaSearchBar
         value={query}
         onSearch={handleSearch}
         onClear={handleClearSearch}
+        type={type}
       />
 
-      {/* Filtres affichés uniquement si pas de recherche */}
+      {/* Filtres uniquement si pas de recherche */}
       <AnimatePresence>
         {!query && (
           <motion.div
@@ -307,13 +297,18 @@ export default function MoviesClient({
             exit={{ opacity: 0 }}
             transition={{ duration: 0.25 }}
           >
-            <MovieFilters filters={filters} onChange={handleFilterChange} />
+            <MediaFilters
+              filters={filters}
+              onChange={handleFilterChange}
+              type={type}
+            />
 
-            <ActiveFilters
+            <MediaActiveFilters
               filters={filters}
               onClearFilter={handleClearFilter}
               onClearAll={handleClearAll}
               getGenreName={getGenreName}
+              type={type}
             />
           </motion.div>
         )}
@@ -322,25 +317,27 @@ export default function MoviesClient({
       {/* Loader / Erreur / Grille */}
       {loading && (
         <p className="text-slate-400 text-center mt-10 animate-pulse">
-          {t("loading")}
+          {t("loading", { defaultValue: "Chargement..." })}
         </p>
       )}
       {!loading && error && (
         <p className="text-red-400 text-center mt-10">{error}</p>
       )}
-      {!loading && !error && movies.length > 0 && (
-        <MovieGrid movies={movies} locale={locale} />
+      {!loading && !error && items.length > 0 && (
+        <MediaGrid items={items} locale={locale} type={type} />
       )}
-      {!loading && !error && movies.length === 0 && (
-        <p className="text-slate-400 text-center mt-10">{t("noResults")}</p>
+      {!loading && !error && items.length === 0 && (
+        <p className="text-slate-400 text-center mt-10">
+          {t("noResults", { defaultValue: "Aucun résultat trouvé." })}
+        </p>
       )}
 
-      {/* Pagination */}
-      {!loading && !error && movies.length > 0 && (
-        <Pagination
+      {!loading && !error && items.length > 0 && (
+        <MediaPagination
           page={page}
           totalPages={total}
           onPageChange={handlePageChange}
+          type={type}
         />
       )}
     </div>

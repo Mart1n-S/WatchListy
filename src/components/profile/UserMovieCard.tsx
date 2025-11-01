@@ -31,7 +31,7 @@ export default function UserMovieCard({
   const router = useRouter();
 
   const handleInfo = () => {
-    const typePath = item.itemType === "movie" ? "movies" : "tv";
+    const typePath = item.itemType === "movie" ? "movies" : "series";
     router.push(`/${locale}/${typePath}/${item.itemId}`);
   };
 

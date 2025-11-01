@@ -956,6 +956,58 @@
         "dateAsc": "Les plus anciens"
       },
       "clearAll": "Tout effacer"
+    },
+    "notFoundMessage": "Film introuvable ou erreur de chargement.",
+    "pageTitle": "Films",
+    "notFoundTitle": "Film introuvable",
+    "noOverview": "Aucune description disponible.",
+    "header": {
+      "runtime": "{minutes} min",
+      "releaseDate": "Date de sortie",
+      "rating": "Note",
+      "genres": "Genres"
+    },
+    "overview": {
+      "title": "Synopsis",
+      "noDescription": "Aucune description disponible.",
+      "originalLanguage": "Langue originale",
+      "status": "Statut",
+      "statusValues": {
+        "Rumored": "Rumeur",
+        "Planned": "Prévu",
+        "In Production": "En production",
+        "Post Production": "Post-production",
+        "Released": "Sorti",
+        "Canceled": "Annulé"
+      }
+    },
+    "cast": {
+      "title": "Casting",
+      "noImage": "Aucune image",
+      "noCast": "Aucun acteur trouvé pour ce film."
+    },
+    "videos": {
+      "title": "Bandes-annonces",
+      "noVideos": "Aucunes bandes-annonces disponibles."
+    },
+    "recommendations": {
+      "title": "Films recommandés",
+      "noImage": "Pas d'affiche"
+    }
+  },
+  "review": {
+    "title": "Avis",
+    "loading": "Chargement des avis...",
+    "noReviews": "Aucun avis pour ce film pour le moment.",
+    "alreadyExists": "Vous avez déjà rédigé un avis pour ce film.",
+    "notFound": "Avis introuvable.",
+    "fetchError": "Impossible de charger les avis. Veuillez réessayer plus tard.",
+    "invalidRating": "La note doit être comprise entre 1 et 10.",
+    "commentRequired": "Le commentaire est obligatoire.",
+    "commentTooLong": "Le commentaire ne peut pas dépasser 1000 caractères.",
+    "validation": {
+      "failed": "Échec de la validation de l'avis.",
+      "movieIdInvalid": "ID du film invalide."
     }
   },
 

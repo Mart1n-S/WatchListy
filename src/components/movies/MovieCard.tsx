@@ -36,6 +36,13 @@ export default function MovieCard({
     router.push(`/${locale}/movies/${movie.id}`);
   };
 
+  // Added keyboard accessibility to handle 'Enter' key press
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+    if (e.key === "Enter") {
+      handleClick();
+    }
+  };
+
   const year = movie.release_date
     ? new Date(movie.release_date).getFullYear()
     : "—";
@@ -43,9 +50,14 @@ export default function MovieCard({
   return (
     <motion.div
       onClick={handleClick}
+      onKeyDown={handleKeyDown}
       whileHover={{ scale: 1.03 }}
       whileTap={{ scale: 0.98 }}
-      className="relative bg-slate-900/60 border border-slate-700/40 rounded-2xl overflow-hidden shadow-md hover:shadow-indigo-500/20 transition-all duration-300 cursor-pointer group w-full"
+      className="
+        relative bg-slate-900/60 border border-slate-700/40 rounded-2xl overflow-hidden shadow-md hover:shadow-indigo-500/20 transition-all duration-300 cursor-pointer group w-full
+        focus:outline-none focus:ring-4 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-slate-900
+      "
+      tabIndex={0}
     >
       {/* --- Poster --- */}
       <div className="relative w-full aspect-[2/3] bg-slate-800 flex items-center justify-center">
@@ -79,7 +91,11 @@ export default function MovieCard({
       </div>
 
       {/* --- Overlay synopsis au survol --- */}
-      <div className="absolute inset-0 bg-slate-950/95 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center text-center p-4">
+      <div
+        className="
+          absolute inset-0 bg-slate-950/95 opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 flex items-center justify-center text-center p-4
+        "
+      >
         <p className="text-slate-300 text-sm line-clamp-6 leading-relaxed">
           {movie.overview || t("noDescription")}
         </p>

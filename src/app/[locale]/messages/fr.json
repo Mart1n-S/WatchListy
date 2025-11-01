@@ -1016,7 +1016,32 @@
     "validation": {
       "failed": "Échec de la validation de l'avis.",
       "movieIdInvalid": "ID du film invalide."
-    }
+    },
+    "form": {
+      "title": "Votre avis",
+      "editTitle": "Modifier votre avis",
+      "rating": "Note (sur 10)",
+      "comment": "Commentaire",
+      "submit": "Publier",
+      "update": "Mettre à jour",
+      "cancel": "Annuler",
+      "loading": "Envoi...",
+      "invalidRating": "Veuillez entrer une note entre 1 et 10.",
+      "commentRequired": "Veuillez entrer un commentaire.",
+      "created": "Avis ajouté !",
+      "updated": "Avis mis à jour !",
+      "alreadyExists": "Vous avez déjà commenté ce film.",
+      "validation": "Certains champs sont invalides.",
+      "error": "Erreur lors de l’ajout de l’avis.",
+      "delete": "Supprimer",
+      "deleted": "Avis supprimé avec succès.",
+      "deleteError": "Erreur lors de la suppression.",
+      "confirmDeleteTitle": "Supprimer l’avis",
+      "confirmDeleteMessage": "Voulez-vous vraiment supprimer votre avis ?"
+    },
+    "count": "{count, plural, one {# avis} other {# avis}}",
+    "showMore": "Voir plus",
+    "showLess": "Voir moins"
   },
 
   "userMovies": {
@@ -1036,6 +1061,7 @@
       "editButton": "Modifier",
       "deleteButton": "Supprimer",
       "cancelButton": "Annuler",
+      "noResult": "Aucun film ou série trouvé dans cette liste.",
       "watchlist": {
         "title": "Ma Watchlist",
         "description": "Les films et séries que je souhaite regarder plus tard.",
@@ -1051,6 +1077,10 @@
         "description": "Les films et séries que j’ai terminés.",
         "empty": "Vous n'avez terminé aucun film ou série. Terminez-en pour les voir ici."
       },
+      "loadingCount": "Chargement...",
+      "emptyCount": "Aucun élément",
+      "singleCount": "{count} élément",
+      "multiCount": "{count} éléments",
       "seeMore": "Voir",
       "confirmTitle": "Confirmer la suppression",
       "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet élément de votre liste ? Cette action est irréversible.",
@@ -1065,6 +1095,10 @@
       "watchlist": "À regarder",
       "watching": "En cours",
       "completed": "Terminé"
+    },
+    "search": {
+      "placeholder": "Rechercher un film ou une série...",
+      "clear": "Effacer"
     }
   },
 

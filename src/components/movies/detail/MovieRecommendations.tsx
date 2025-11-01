@@ -18,9 +18,12 @@ export default function MovieRecommendations({
 
   if (!recommendations?.length) return null;
 
-  // TMDB renvoie parfois des données partielles → on uniformise
+  // On uniformise et on garantit que "title" existe toujours
   const formattedRecommendations = recommendations.map((rec) => ({
-    ...rec,
+    id: rec.id,
+    title: rec.title || rec.name || "Sans titre",
+    poster_path: rec.poster_path ?? null,
+    release_date: rec.release_date || rec.first_air_date || "",
     vote_average: rec.vote_average ?? 0,
     overview: rec.overview ?? "",
   }));

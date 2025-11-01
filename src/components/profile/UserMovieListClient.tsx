@@ -7,6 +7,8 @@ import type { UserMovie } from "@/models/UserMovie";
 import type { EnrichedUserMovie } from "@/types/EnrichedUserMovie";
 import UserMovieCard from "./UserMovieCard";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
+import ReviewModal from "@/components/ui/ReviewModal";
+import UserMovieSearchBar from "@/components/profile/UserMovieSearchBar";
 import toast from "react-hot-toast";
 import { FiArrowLeft } from "react-icons/fi";
 import { useRouter } from "next/navigation";
@@ -20,7 +22,10 @@ export default function UserMovieListClient({ status, locale }: Props) {
   const t = useTranslations("userMovies.lists");
   const { lists, loading, deleteUserMovie } = useUserMovies();
   const [enrichedMovies, setEnrichedMovies] = useState<EnrichedUserMovie[]>([]);
+  const [reviewingMovie, setReviewingMovie] =
+    useState<EnrichedUserMovie | null>(null);
   const [pendingDelete, setPendingDelete] = useState<number | null>(null);
+  const [searchQuery, setSearchQuery] = useState("");
   const movies: UserMovie[] = lists[status];
   const router = useRouter();
 
@@ -63,9 +68,7 @@ export default function UserMovieListClient({ status, locale }: Props) {
   }, [movies, locale]);
 
   // --- Gestion de la suppression ---
-  const confirmDelete = (itemId: number) => {
-    setPendingDelete(itemId);
-  };
+  const confirmDelete = (itemId: number) => setPendingDelete(itemId);
 
   const handleConfirmDelete = async () => {
     if (!pendingDelete) return;
@@ -87,9 +90,7 @@ export default function UserMovieListClient({ status, locale }: Props) {
     setPendingDelete(null);
   };
 
-  const handleCancelDelete = () => {
-    setPendingDelete(null);
-  };
+  const handleCancelDelete = () => setPendingDelete(null);
 
   // --- Gestion du changement de statut ---
   const handleEdit = async (movie: EnrichedUserMovie) => {
@@ -100,9 +101,7 @@ export default function UserMovieListClient({ status, locale }: Props) {
         body: JSON.stringify({ status: movie.status }),
       });
 
-      if (!res.ok) {
-        throw new Error("Erreur lors de la mise à jour du statut");
-      }
+      if (!res.ok) throw new Error("Erreur lors de la mise à jour du statut");
 
       // Retirer l’élément si son statut ne correspond plus à la page actuelle
       setEnrichedMovies((prev) =>
@@ -117,6 +116,11 @@ export default function UserMovieListClient({ status, locale }: Props) {
       );
     }
   };
+
+  // --- Filtrage local ---
+  const filteredMovies = enrichedMovies.filter((m) =>
+    m.title?.toLowerCase().includes(searchQuery.toLowerCase())
+  );
 
   // --- Rendu principal ---
   return (
@@ -150,6 +154,9 @@ export default function UserMovieListClient({ status, locale }: Props) {
         </p>
       </div>
 
+      {/* --- Barre de recherche --- */}
+      <UserMovieSearchBar value={searchQuery} onChange={setSearchQuery} />
+
       {/* --- Loader --- */}
       {loading && (
         <div className="flex flex-col items-center justify-center min-h-[30vh] text-gray-400">
@@ -169,31 +176,39 @@ export default function UserMovieListClient({ status, locale }: Props) {
         </div>
       )}
 
-      {/* --- Grille des films --- */}
-      {enrichedMovies.length > 0 && (
-        <div
-          className="
-            grid
-            grid-cols-2
-            sm:grid-cols-3
-            md:grid-cols-4
-            lg:grid-cols-5
-            gap-5
-            sm:gap-6
-            mt-10
-          "
-        >
-          {enrichedMovies.map((item, i) => (
-            <UserMovieCard
-              key={item._id?.toString() ?? `${item.itemId}-${i}`}
-              item={item}
-              locale={locale}
-              onDelete={() => confirmDelete(item.itemId)}
-              onEdit={handleEdit}
-              index={i}
-            />
-          ))}
-        </div>
+      {/* --- Résultats filtrés --- */}
+      {!loading && enrichedMovies.length > 0 && (
+        <>
+          {filteredMovies.length > 0 ? (
+            <div
+              className="
+                grid grid-cols-2
+                sm:grid-cols-3
+                md:grid-cols-4
+                lg:grid-cols-5
+                gap-5 sm:gap-6 mt-10
+              "
+            >
+              {filteredMovies.map((item, i) => (
+                <UserMovieCard
+                  key={item._id?.toString() ?? `${item.itemId}-${i}`}
+                  item={item}
+                  locale={locale}
+                  onDelete={() => confirmDelete(item.itemId)}
+                  onEdit={handleEdit}
+                  onReview={(movie) => setReviewingMovie(movie)}
+                  index={i}
+                />
+              ))}
+            </div>
+          ) : (
+            <p className="text-center text-slate-400 mt-10">
+              {t("noResult", {
+                defaultValue: "Aucun film trouvé pour cette recherche.",
+              })}
+            </p>
+          )}
+        </>
       )}
 
       {/* --- Modal de confirmation de suppression --- */}
@@ -205,6 +220,13 @@ export default function UserMovieListClient({ status, locale }: Props) {
         message={t("confirmDelete", {
           defaultValue: "Voulez-vous vraiment supprimer cet élément ?",
         })}
+      />
+
+      {/* --- Modale de commentaire --- */}
+      <ReviewModal
+        isOpen={!!reviewingMovie}
+        onClose={() => setReviewingMovie(null)}
+        movieId={reviewingMovie?.itemId ?? 0}
       />
     </section>
   );

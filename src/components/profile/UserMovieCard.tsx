@@ -2,7 +2,7 @@
 
 import Image from "next/image";
 import { useRouter } from "next/navigation";
-import { FiStar, FiTrash2, FiInfo } from "react-icons/fi";
+import { FiStar, FiTrash2, FiInfo, FiMessageSquare } from "react-icons/fi";
 import type { EnrichedUserMovie } from "@/types/EnrichedUserMovie";
 import StatusPopover from "@/components/ui/StatusPopover";
 import { useTranslations } from "next-intl";
@@ -12,6 +12,7 @@ interface UserMovieCardProps {
   locale: string;
   onEdit: (movie: EnrichedUserMovie) => void;
   onDelete: (itemId: number) => void;
+  onReview: (movie: EnrichedUserMovie) => void;
   index?: number;
 }
 
@@ -24,6 +25,7 @@ export default function UserMovieCard({
   locale,
   onEdit,
   onDelete,
+  onReview,
   index,
 }: UserMovieCardProps) {
   const router = useRouter();
@@ -80,6 +82,17 @@ export default function UserMovieCard({
             <span>{year}</span>
           </div>
         </div>
+        {item.status === "completed" ? (
+          <div className="flex items-center justify-center mt-4 border-t border-slate-700/40 pt-3">
+            <button
+              title="Ajouter un avis"
+              onClick={() => onReview(item)}
+              className="text-green-400 hover:text-green-300 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-green-500/60 focus-visible:ring-offset-2 focus-visible:ring-offset-slate-900 active:scale-95 transition-all duration-150 rounded-full p-2 hover:cursor-pointer"
+            >
+              <FiMessageSquare className="w-5 h-5" />
+            </button>
+          </div>
+        ) : null}
 
         {/* --- Boutons d’action --- */}
         <div className="flex items-center justify-between mt-4 border-t border-slate-700/40 pt-3">

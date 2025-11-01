@@ -27,7 +27,7 @@ export async function middleware(req: NextRequest) {
     if (pathname.startsWith("/api")) {
         const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
 
-        // --- Cas spécial : genres → accessible sans authentification ---
+        // --- Cas public : genres (accessible sans auth) ---
         if (pathname.startsWith("/api/tmdb/genres")) {
             const res = NextResponse.next();
             res.headers.set("X-Cache-Layer", "Next-Fetch-Cache");
@@ -35,7 +35,7 @@ export async function middleware(req: NextRequest) {
             return res;
         }
 
-        // --- Autres endpoints TMDB → protégés ---
+        // --- Autres endpoints TMDB : protégés ---
         if (pathname.startsWith("/api/tmdb")) {
             if (!token) {
                 return NextResponse.json(
@@ -49,7 +49,7 @@ export async function middleware(req: NextRequest) {
             return res;
         }
 
-        // --- Autres routes API classiques ---
+        // --- Autres routes API ---
         return NextResponse.next();
     }
 
@@ -67,7 +67,7 @@ export async function middleware(req: NextRequest) {
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     const isAuth = !!token;
 
-    // --- Détermination de la locale et de la route ---
+    // --- Détermination de la locale et du chemin ---
     const currentLocale =
         locales.find((locale) => pathname.startsWith(`/${locale}`)) ||
         defaultLocale;
@@ -77,14 +77,15 @@ export async function middleware(req: NextRequest) {
     const isRegisterPage = pathWithoutLocale === "/register";
     const isProfilePage = pathWithoutLocale.startsWith("/profile");
     const isMoviesPage = pathWithoutLocale.startsWith("/movies");
+    const isSeriesPage = pathWithoutLocale.startsWith("/series");
 
     // --- Si connecté → bloque login/register ---
     if (isAuth && (isLoginPage || isRegisterPage)) {
         return NextResponse.redirect(new URL(`/${currentLocale}/profile`, origin));
     }
 
-    // --- Si non connecté → bloque profile & movies ---
-    if (!isAuth && (isProfilePage || isMoviesPage)) {
+    // --- Si non connecté → bloque profile, movies & series ---
+    if (!isAuth && (isProfilePage || isMoviesPage || isSeriesPage)) {
         return NextResponse.redirect(new URL(`/${currentLocale}/login`, origin));
     }
 

@@ -13,3 +13,19 @@ input[type="number"]::-webkit-outer-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
+
+@keyframes popover-slide {
+  0% {
+    opacity: 0;
+    transform: translateY(6px) scale(0.98);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+.animate-popover-slide {
+  animation: popover-slide 0.18s ease-out;
+}

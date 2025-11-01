@@ -12,40 +12,41 @@ const TMDB_BASE = process.env.TMDB_API_BASE!;
 const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN!;
 
 /**
- * GET /api/tmdb/movies/[id]?lang=fr
+ * GET /api/tmdb/[type]/[id]?lang=fr
+ * type ∈ ["movie", "tv"]
  */
 export async function GET(
     request: Request,
-    context: { params: Promise<{ id: string }> }
+    context: { params: Promise<{ type: string; id: string }> }
 ) {
     try {
-        const { id: movieId } = await context.params;
+        const { type, id } = await context.params;
         const { searchParams } = new URL(request.url);
         const lang = searchParams.get("lang") || "fr";
         const language = lang === "fr" ? "fr-FR" : "en-US";
 
-        if (!movieId) {
+        if (!id || (type !== "movie" && type !== "tv")) {
             return NextResponse.json(
-                { error: "Le paramètre 'id' est requis." },
+                { error: "Paramètres invalides. Attendu: /api/tmdb/{movie|tv}/{id}" },
                 { status: 400 }
             );
         }
 
         // --- Appels parallèles à TMDB ---
         const [detailsRes, creditsRes, videosRes, recsRes] = await Promise.all([
-            fetch(`${TMDB_BASE}/movie/${movieId}?language=${language}`, {
+            fetch(`${TMDB_BASE}/${type}/${id}?language=${language}`, {
                 headers: { Authorization: `Bearer ${TMDB_TOKEN}` },
                 next: { revalidate: 43200 },
             }),
-            fetch(`${TMDB_BASE}/movie/${movieId}/credits?language=${language}`, {
+            fetch(`${TMDB_BASE}/${type}/${id}/credits?language=${language}`, {
                 headers: { Authorization: `Bearer ${TMDB_TOKEN}` },
                 next: { revalidate: 43200 },
             }),
-            fetch(`${TMDB_BASE}/movie/${movieId}/videos?language=${language}`, {
+            fetch(`${TMDB_BASE}/${type}/${id}/videos?language=${language}`, {
                 headers: { Authorization: `Bearer ${TMDB_TOKEN}` },
                 next: { revalidate: 43200 },
             }),
-            fetch(`${TMDB_BASE}/movie/${movieId}/recommendations?language=${language}`, {
+            fetch(`${TMDB_BASE}/${type}/${id}/recommendations?language=${language}`, {
                 headers: { Authorization: `Bearer ${TMDB_TOKEN}` },
                 next: { revalidate: 43200 },
             }),
@@ -53,7 +54,7 @@ export async function GET(
 
         if (!detailsRes.ok) {
             return NextResponse.json(
-                { error: "Film introuvable sur TMDB." },
+                { error: `${type} introuvable sur TMDB.` },
                 { status: detailsRes.status }
             );
         }
@@ -77,9 +78,9 @@ export async function GET(
             recommendations.results?.slice(0, 10).map(
                 (r: TmdbRecommendation) => ({
                     id: r.id,
-                    title: r.title,
+                    title: r.title || r.name, // TV fallback
                     poster_path: r.poster_path,
-                    release_date: r.release_date,
+                    release_date: r.release_date || r.first_air_date,
                     overview: r.overview ?? "",
                     vote_average: r.vote_average ?? 0,
                 })
@@ -100,7 +101,7 @@ export async function GET(
             },
         });
     } catch (error) {
-        console.error("Erreur TMDB /movies/[id]:", error);
+        console.error("Erreur TMDB /[type]/[id]:", error);
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

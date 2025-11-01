@@ -4,31 +4,34 @@ import { useState, useEffect } from "react";
 import { FiSearch, FiX } from "react-icons/fi";
 import { useTranslations } from "next-intl";
 
-interface MovieSearchBarProps {
+interface MediaSearchBarProps {
   value: string;
   onSearch: (query: string) => void;
   onClear: () => void;
+  type: "movie" | "tv";
 }
 
 /**
- * Barre de recherche responsive :
- * - Desktop : loupe dans l'input + bouton "Rechercher"
- * - Mobile : pas de loupe dans l'input, bouton = simple icône de loupe
+ * Barre de recherche responsive (films ou séries)
+ * - Desktop : icône dans l'input + bouton "Rechercher"
+ * - Mobile : icône simple comme bouton
  */
-export default function MovieSearchBar({
+export default function MediaSearchBar({
   value,
   onSearch,
   onClear,
-}: MovieSearchBarProps) {
-  const t = useTranslations("movies");
+  type,
+}: MediaSearchBarProps) {
+  const t = useTranslations(type === "movie" ? "movies" : "series");
   const [query, setQuery] = useState(value || "");
   const [isMobile, setIsMobile] = useState(false);
 
-  // Synchronise l'état interne si la valeur parent (query) change
+  // Synchronisation avec la valeur externe
   useEffect(() => {
     setQuery(value || "");
   }, [value]);
 
+  // Détecte la taille d’écran pour ajuster le style
   useEffect(() => {
     const handleResize = () => setIsMobile(window.innerWidth < 640);
     handleResize();
@@ -52,18 +55,18 @@ export default function MovieSearchBar({
       className="w-full max-w-lg mx-auto flex items-center gap-2"
     >
       <div className="relative flex-grow">
-        <label htmlFor="movie-search" className="sr-only">
+        <label htmlFor={`${type}-search`} className="sr-only">
           {t("searchLabel")}
         </label>
 
-        {/* Icône de recherche (visible uniquement sur desktop) */}
+        {/* Icône de recherche visible sur desktop */}
         {!isMobile && (
           <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
         )}
 
         {/* Champ texte */}
         <input
-          id="movie-search"
+          id={`${type}-search`}
           type="text"
           value={query}
           onChange={(e) => setQuery(e.target.value)}
@@ -85,7 +88,7 @@ export default function MovieSearchBar({
           `}
         />
 
-        {/* Bouton pour effacer la recherche */}
+        {/* Bouton effacer */}
         {query && (
           <button
             type="button"
@@ -113,7 +116,7 @@ export default function MovieSearchBar({
         )}
       </div>
 
-      {/* Bouton de soumission */}
+      {/* Bouton rechercher */}
       <button
         type="submit"
         aria-label={t("searchButton")}

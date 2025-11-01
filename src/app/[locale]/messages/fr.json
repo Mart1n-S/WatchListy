@@ -24,6 +24,7 @@
     "header": {
       "home": "Accueil",
       "movies": "Films",
+      "series": "Séries",
       "profile": "Profil",
       "login": "Connexion",
       "signup": "S’inscrire",
@@ -930,6 +931,7 @@
     "next": "Suivant",
     "page": "Page",
     "loading": "Chargement en cours...",
+    "loadingDetail": "Chargement des détails du film...",
     "errorFetching": "Impossible de récupérer les films pour le moment.",
     "noPoster": "Pas d'affiche",
     "noDescription": "Aucune description disponible.",
@@ -993,8 +995,101 @@
     "recommendations": {
       "title": "Films recommandés",
       "noImage": "Pas d'affiche"
-    }
+    },
+    "addToWatchlist": "Ajouter à ma Watchlist",
+    "alreadyInWatchlist": "Déjà dans la Watchlist",
+    "currentlyWatching": "En cours de visionnage",
+    "completed": "Déjà visionné",
+    "adding": "Ajout...",
+    "addedToWatchlist": "Ajouté avec succès à la Watchlist !",
+    "failedToAdd": "Erreur lors de l'ajout"
   },
+
+  "series": {
+    "meta": {
+      "title": "Séries",
+      "description": "Explorez, recherchez et découvrez les séries les plus populaires ou trouvez votre prochain coup de cœur sur WatchListy."
+    },
+    "pageTitle": "Séries",
+    "noOverview": "Aucune description disponible.",
+    "loadingDetail": "Chargement des détails de la série...",
+    "noResults": "Aucune série trouvée.",
+    "searchButton": "Rechercher",
+    "searchPlaceholder": "Rechercher une série...",
+    "searchLabel": "Recherche de séries",
+    "loading": "Chargement en cours...",
+    "previous": "Précédent",
+    "next": "Suivant",
+    "page": "Page",
+    "noPoster": "Pas d'affiche",
+    "noDescription": "Aucune description disponible.",
+    "clearSearch": "Effacer la recherche",
+
+    "overview": {
+      "title": "Synopsis",
+      "noDescription": "Aucune description disponible.",
+      "originalLanguage": "Langue originale",
+      "status": "Statut",
+      "numberOfSeasons": "Nombre de saisons",
+      "numberOfEpisodes": "Nombre d’épisodes",
+      "statusValues": {
+        "Returning Series": "En cours",
+        "Ended": "Terminée",
+        "Canceled": "Annulée",
+        "Planned": "Prévue",
+        "In Production": "En production",
+        "Pilot": "Pilote"
+      }
+    },
+
+    "videos": {
+      "title": "Bandes-annonces",
+      "noVideos": "Aucune vidéo disponible."
+    },
+
+    "cast": {
+      "title": "Distribution",
+      "noCast": "Aucun acteur trouvé.",
+      "noImage": "Pas d'image"
+    },
+
+    "recommendations": {
+      "title": "Séries recommandées"
+    },
+
+    "filters": {
+      "title": "Filtres",
+      "genre": "Genre",
+      "allGenres": "Tous les genres",
+      "language": "Langue originale",
+      "allLanguages": "Toutes les langues",
+      "minRating": "Note minimale",
+      "removeFilter": "Supprimer le filtre",
+      "anyRating": "Aucune",
+      "sort": {
+        "label": "Trier par",
+        "popularityLabel": "Popularité",
+        "ratingLabel": "Note",
+        "dateLabel": "Date",
+        "popularityDesc": "Les plus populaires",
+        "popularityAsc": "Les moins populaires",
+        "ratingDesc": "Note décroissante",
+        "ratingAsc": "Note croissante",
+        "dateDesc": "Les plus récentes",
+        "dateAsc": "Les plus anciennes"
+      },
+      "clearAll": "Tout effacer"
+    },
+
+    "addToWatchlist": "Ajouter à ma Watchlist",
+    "alreadyInWatchlist": "Déjà dans la Watchlist",
+    "currentlyWatching": "En cours de visionnage",
+    "completed": "Déjà visionné",
+    "adding": "Ajout...",
+    "addedToWatchlist": "Ajouté avec succès à la Watchlist !",
+    "failedToAdd": "Erreur lors de l'ajout"
+  },
+
   "review": {
     "title": "Avis",
     "loading": "Chargement des avis...",
@@ -1008,6 +1103,89 @@
     "validation": {
       "failed": "Échec de la validation de l'avis.",
       "movieIdInvalid": "ID du film invalide."
+    },
+    "form": {
+      "title": "Votre avis",
+      "editTitle": "Modifier votre avis",
+      "rating": "Note (sur 10)",
+      "comment": "Commentaire",
+      "submit": "Publier",
+      "update": "Mettre à jour",
+      "cancel": "Annuler",
+      "loading": "Envoi...",
+      "invalidRating": "Veuillez entrer une note entre 1 et 10.",
+      "commentRequired": "Veuillez entrer un commentaire.",
+      "created": "Avis ajouté !",
+      "updated": "Avis mis à jour !",
+      "alreadyExists": "Vous avez déjà commenté ce film.",
+      "validation": "Certains champs sont invalides.",
+      "error": "Erreur lors de l’ajout de l’avis.",
+      "delete": "Supprimer",
+      "deleted": "Avis supprimé avec succès.",
+      "deleteError": "Erreur lors de la suppression.",
+      "confirmDeleteTitle": "Supprimer l’avis",
+      "confirmDeleteMessage": "Voulez-vous vraiment supprimer votre avis ?"
+    },
+    "count": "{count, plural, one {# avis} other {# avis}}",
+    "showMore": "Voir plus",
+    "showLess": "Voir moins"
+  },
+
+  "userMovies": {
+    "alreadyExists": "Ce film ou cette série est déjà dans votre liste.",
+    "notFound": "Film ou série introuvable dans votre liste.",
+    "validation": {
+      "failed": "Échec de la validation des données.",
+      "missingFields": "Tous les champs sont requis.",
+      "invalidStatus": "Statut invalide.",
+      "itemIdInvalid": "ID de l'élément invalide.",
+      "itemTypeInvalid": "Type d'élément invalide.",
+      "statusInvalid": "Statut invalide."
+    },
+    "lists": {
+      "loading": "Chargement de vos listes...",
+      "sectionTitle": "Mes listes de films et séries",
+      "editButton": "Modifier",
+      "deleteButton": "Supprimer",
+      "cancelButton": "Annuler",
+      "noResult": "Aucun film ou série trouvé dans cette liste.",
+      "watchlist": {
+        "title": "Ma Watchlist",
+        "description": "Les films et séries que je souhaite regarder plus tard.",
+        "empty": "Votre watchlist est vide. Ajoutez des films et séries pour les retrouver ici."
+      },
+      "watching": {
+        "title": "En cours de visionnage",
+        "description": "Les contenus que j’ai commencés à regarder.",
+        "empty": "Vous ne regardez actuellement aucun film ou série. Commencez à en regarder pour les voir ici."
+      },
+      "completed": {
+        "title": "Terminés",
+        "description": "Les films et séries que j’ai terminés.",
+        "empty": "Vous n'avez terminé aucun film ou série. Terminez-en pour les voir ici."
+      },
+      "loadingCount": "Chargement...",
+      "emptyCount": "Aucun élément",
+      "singleCount": "{count} élément",
+      "multiCount": "{count} éléments",
+      "seeMore": "Voir",
+      "confirmTitle": "Confirmer la suppression",
+      "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet élément de votre liste ? Cette action est irréversible.",
+      "updated": "Statut mis à jour avec succès.",
+      "updateFailed": "Échec de la mise à jour du statut.",
+      "deleted": "Élément supprimé avec succès de votre liste.",
+      "deleteFailed": "Échec de la suppression de l'élément de votre liste.",
+      "back": "Retour au profil"
+    },
+    "status": {
+      "edit": "Modifier le statut",
+      "watchlist": "À regarder",
+      "watching": "En cours",
+      "completed": "Terminé"
+    },
+    "search": {
+      "placeholder": "Rechercher un film ou une série...",
+      "clear": "Effacer"
     }
   },
 

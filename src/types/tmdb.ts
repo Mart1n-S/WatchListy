@@ -34,9 +34,11 @@ export interface TmdbCredit {
 
 export interface TmdbRecommendation {
     id: number;
-    title: string;
+    title?: string; // pour les films
+    name?: string; // pour les séries TV
     poster_path: string | null;
-    release_date: string;
+    release_date?: string; // pour les films
+    first_air_date?: string; // pour les séries TV
     overview: string;
     vote_average: number;
 }
@@ -76,7 +78,36 @@ export interface TmdbMovieDetails {
 }
 
 // ==========================
-//  Crédits du film
+//  Détails d’une série TV
+// ==========================
+
+export interface TmdbTvDetails {
+    id: number;
+    name: string;
+    original_name: string;
+    overview: string;
+    tagline: string | null;
+    status: string;
+    first_air_date: string;
+    last_air_date?: string;
+    number_of_seasons?: number;
+    number_of_episodes?: number;
+    episode_run_time?: number[];
+    poster_path: string | null;
+    backdrop_path: string | null;
+    genres: TmdbGenre[];
+    vote_average: number;
+    vote_count: number;
+    popularity: number;
+    original_language: string;
+    homepage: string | null;
+    production_companies?: TmdbProductionCompany[];
+    spoken_languages?: { iso_639_1: string; name: string }[];
+    networks?: { id: number; name: string; logo_path: string | null }[];
+}
+
+// ==========================
+//  Crédits TMDB (film ou série)
 // ==========================
 
 export interface TmdbCredits {
@@ -100,8 +131,20 @@ export interface TmdbMovieFull {
     fetchedAt: string;
 }
 
+export interface TmdbTvFull {
+    details: TmdbTvDetails;
+    credits: TmdbCredits;
+    videos: {
+        results: TmdbVideo[];
+    };
+    recommendations: {
+        results: TmdbRecommendation[];
+    };
+    fetchedAt: string;
+}
+
 // ==========================
-//  Réponses génériques TMDB
+//  Réponses paginées génériques TMDB
 // ==========================
 
 export interface TmdbPaginatedResponse<T> {
@@ -109,4 +152,18 @@ export interface TmdbPaginatedResponse<T> {
     total_pages: number;
     total_results: number;
     results: T[];
+}
+
+// ==========================
+//  Détails simplifiés d’un média (film ou série)
+// ==========================
+
+export interface TmdbItemDetails {
+    id: number;
+    title?: string; // Films
+    name?: string; // Séries TV
+    poster_path?: string | null;
+    release_date?: string; // Films
+    first_air_date?: string; // Séries TV
+    vote_average?: number;
 }

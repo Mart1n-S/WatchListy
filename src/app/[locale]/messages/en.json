@@ -24,6 +24,7 @@
     "header": {
       "home": "Home",
       "movies": "Movies",
+      "series": "Series",
       "profile": "Profile",
       "login": "Login",
       "signup": "Sign up",
@@ -928,6 +929,7 @@
     "next": "Next",
     "page": "Page",
     "loading": "Loading movies...",
+    "loadingDetail": "Loading movie details...",
     "errorFetching": "Failed to fetch movies. Please try again later.",
     "noPoster": "No poster available",
     "noDescription": "No description available.",
@@ -991,7 +993,99 @@
     "recommendations": {
       "title": "Recommended Movies",
       "noImage": "No poster"
-    }
+    },
+    "addToWatchlist": "Add to my Watchlist",
+    "alreadyInWatchlist": "Already in your Watchlist",
+    "currentlyWatching": "Currently viewing",
+    "completed": "Already viewed",
+    "adding": "Adding...",
+    "addedToWatchlist": "Added to your Watchlist !",
+    "failedToAdd": "Failed to add to Watchlist."
+  },
+
+  "series": {
+    "meta": {
+      "title": "TV Shows",
+      "description": "Explore, search and discover the most popular TV shows or find your next favorite on WatchListy."
+    },
+    "pageTitle": "TV Shows",
+    "noOverview": "No description available.",
+    "loadingDetail": "Loading show details...",
+    "noResults": "No shows found.",
+    "searchButton": "Search",
+    "searchPlaceholder": "Search for a show...",
+    "searchLabel": "TV show search",
+    "loading": "Loading...",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "noPoster": "No poster",
+    "noDescription": "No description available.",
+    "clearSearch": "Clear search",
+
+    "overview": {
+      "title": "Overview",
+      "noDescription": "No description available.",
+      "originalLanguage": "Original language",
+      "status": "Status",
+      "numberOfSeasons": "Number of seasons",
+      "numberOfEpisodes": "Number of episodes",
+      "statusValues": {
+        "Returning Series": "Returning Series",
+        "Ended": "Ended",
+        "Canceled": "Canceled",
+        "Planned": "Planned",
+        "In Production": "In production",
+        "Pilot": "Pilot"
+      }
+    },
+
+    "videos": {
+      "title": "Trailers",
+      "noVideos": "No videos available."
+    },
+
+    "cast": {
+      "title": "Cast",
+      "noCast": "No cast found.",
+      "noImage": "No image"
+    },
+
+    "recommendations": {
+      "title": "Recommended Shows"
+    },
+
+    "filters": {
+      "title": "Filters",
+      "genre": "Genre",
+      "allGenres": "All genres",
+      "language": "Original language",
+      "allLanguages": "All languages",
+      "minRating": "Minimum rating",
+      "removeFilter": "Remove filter",
+      "anyRating": "Any",
+      "sort": {
+        "label": "Sort by",
+        "popularityLabel": "Popularity",
+        "ratingLabel": "Rating",
+        "dateLabel": "Date",
+        "popularityDesc": "Most popular",
+        "popularityAsc": "Least popular",
+        "ratingDesc": "Highest rated",
+        "ratingAsc": "Lowest rated",
+        "dateDesc": "Newest",
+        "dateAsc": "Oldest"
+      },
+      "clearAll": "Clear all"
+    },
+
+    "addToWatchlist": "Add to my Watchlist",
+    "alreadyInWatchlist": "Already in your Watchlist",
+    "currentlyWatching": "Currently viewing",
+    "completed": "Already viewed",
+    "adding": "Adding...",
+    "addedToWatchlist": "Added to your Watchlist !",
+    "failedToAdd": "Failed to add to Watchlist."
   },
   "review": {
     "title": "Reviews",
@@ -1006,8 +1100,92 @@
     "validation": {
       "failed": "Review validation failed.",
       "movieIdInvalid": "Invalid movie ID."
+    },
+    "form": {
+      "title": "Add your review",
+      "editTitle": "Edit your review",
+      "rating": "Rating (out of 10)",
+      "comment": "Comment",
+      "submit": "Submit",
+      "update": "Update",
+      "cancel": "Cancel",
+      "loading": "Submitting...",
+      "invalidRating": "Please provide a rating between 1 and 10.",
+      "commentRequired": "Please enter a comment.",
+      "created": "Review added!",
+      "updated": "Review updated!",
+      "alreadyExists": "You have already reviewed this movie.",
+      "validation": "Certains champs sont invalides.",
+      "error": "Error adding review.",
+      "delete": "Delete",
+      "deleted": "Review deleted successfully.",
+      "deleteError": "Error deleting review.",
+      "confirmDeleteTitle": "Delete review",
+      "confirmDeleteMessage": "Are you sure you want to delete your review?"
+    },
+    "count": "{count, plural, one {# review} other {# reviews}}",
+    "showMore": "Show more reviews",
+    "showLess": "Show less reviews"
+  },
+
+  "userMovies": {
+    "alreadyExists": "This movie or series is already in your list.",
+    "notFound": "Movie or series not found in your list.",
+    "validation": {
+      "failed": "User movie validation failed.",
+      "missingFields": "All fields are required.",
+      "invalidStatus": "Invalid status value.",
+      "itemIdInvalid": "Invalid movie or series ID.",
+      "itemTypeInvalid": "Invalid item type.",
+      "statusInvalid": "Invalid status value."
+    },
+    "lists": {
+      "loading": "Loading your lists...",
+      "sectionTitle": "My lists of films and series",
+      "editButton": "Edit",
+      "deleteButton": "Delete",
+      "cancelButton": "Cancel",
+      "noResult": "No movie or series found in this list.",
+      "watchlist": {
+        "title": "My Watchlist",
+        "description": "The movies and series I want to watch later.",
+        "empty": "Your watchlist is empty. Add movies and series to find them here."
+      },
+      "watching": {
+        "title": "Currently Watching",
+        "description": "The content I have started watching.",
+        "empty": "You are not currently watching any movies or series. Start watching to see them here."
+      },
+      "completed": {
+        "title": "Completed",
+        "description": "The movies and series I have finished.",
+        "empty": "You have not completed any movies or series. Finish them to see them here."
+      },
+      "loadingCount": "Loading...",
+      "emptyCount": "No items",
+      "singleCount": "{count} items",
+      "multiCount": "{count} items",
+      "seeMore": "See more",
+      "confirmTitle": "Delete item",
+      "confirmDelete": "Are you sure you want to delete this item from your list? This action is irreversible.",
+      "updated": "Status updated successfully.",
+      "updateFailed": "Failed to update status.",
+      "deleted": "Item successfully deleted from your list.",
+      "deleteFailed": "Failed to delete item from your list.",
+      "back": "Back to profile"
+    },
+    "status": {
+      "edit": "Edit status",
+      "watchlist": "To watch",
+      "watching": "In progress",
+      "completed": "Finished"
+    },
+    "search": {
+      "placeholder": "Search for a movie or series...",
+      "clear": "Clear"
     }
   },
+
   "common": {
     "errors": {
       "unauthorized": "Unauthorized.",

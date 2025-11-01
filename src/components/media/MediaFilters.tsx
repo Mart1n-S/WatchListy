@@ -6,16 +6,30 @@ import { useAppSelector } from "@/lib/redux/hooks";
 import { FiFilter, FiChevronDown, FiChevronUp } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface MovieFiltersProps {
+interface MediaFiltersProps {
   filters: Record<string, string>;
   onChange: (
     update: (prev: Record<string, string>) => Record<string, string>
   ) => void;
+  type: "movie" | "tv";
 }
 
-export default function MovieFilters({ filters, onChange }: MovieFiltersProps) {
-  const t = useTranslations("movies");
-  const genres = useAppSelector((state) => state.genres.movies);
+/**
+ * Filtres avancés pour films et séries.
+ * S'adapte dynamiquement selon le type.
+ */
+export default function MediaFilters({
+  filters,
+  onChange,
+  type,
+}: MediaFiltersProps) {
+  const t = useTranslations(type === "movie" ? "movies" : "series");
+
+  // Genres selon le type
+  const genres = useAppSelector((state) =>
+    type === "movie" ? state.genres.movies : state.genres.tv
+  );
+
   const [isOpen, setIsOpen] = useState(false);
   const [isClient, setIsClient] = useState(false);
   const [isDesktop, setIsDesktop] = useState(false);
@@ -79,7 +93,7 @@ export default function MovieFilters({ filters, onChange }: MovieFiltersProps) {
         </button>
       </div>
 
-      {/* --- Contenu des filtres (desktop + mobile) --- */}
+      {/* --- Contenu des filtres --- */}
       {isClient && (
         <AnimatePresence initial={false}>
           {shouldShowFilters && (
@@ -190,10 +204,22 @@ export default function MovieFilters({ filters, onChange }: MovieFiltersProps) {
                     <option value="vote_average.asc">
                       🔼 {t("filters.sort.ratingAsc")}
                     </option>
-                    <option value="release_date.desc">
+                    <option
+                      value={
+                        type === "movie"
+                          ? "release_date.desc"
+                          : "first_air_date.desc"
+                      }
+                    >
                       🕒 {t("filters.sort.dateDesc")}
                     </option>
-                    <option value="release_date.asc">
+                    <option
+                      value={
+                        type === "movie"
+                          ? "release_date.asc"
+                          : "first_air_date.asc"
+                      }
+                    >
                       ⏳ {t("filters.sort.dateAsc")}
                     </option>
                   </select>

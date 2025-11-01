@@ -3,21 +3,23 @@
 import { FiChevronLeft, FiChevronRight } from "react-icons/fi";
 import { useTranslations } from "next-intl";
 
-interface PaginationProps {
+interface MediaPaginationProps {
   page: number;
   totalPages: number;
   onPageChange: (page: number) => void;
+  type: "movie" | "tv";
 }
 
 /**
- * Contrôles de pagination pour la navigation entre les pages de films.
+ * Contrôles de pagination réutilisables (films & séries)
  */
-export default function Pagination({
+export default function MediaPagination({
   page,
   totalPages,
   onPageChange,
-}: PaginationProps) {
-  const t = useTranslations("movies");
+  type,
+}: MediaPaginationProps) {
+  const t = useTranslations(type === "movie" ? "movies" : "series");
 
   const handlePrevious = () => {
     if (page > 1) onPageChange(page - 1);
@@ -69,7 +71,13 @@ export default function Pagination({
           transition-all 
           duration-200 
           disabled:opacity-50 
-          disabled:cursor-not-allowed hover:cursor-pointer focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
+          disabled:cursor-not-allowed 
+          hover:cursor-pointer 
+          focus:outline-none 
+          focus:ring-2 
+          focus:ring-indigo-500 
+          focus:ring-offset-2 
+          focus:ring-offset-gray-900
         `}
       >
         <span>{t("next")}</span>

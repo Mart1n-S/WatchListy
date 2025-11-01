@@ -11,28 +11,30 @@ import {
 import { useTranslations } from "next-intl";
 import { motion, AnimatePresence } from "framer-motion";
 
-interface ActiveFiltersProps {
+interface MediaActiveFiltersProps {
   filters: Record<string, string>;
   onClearFilter: (key: string) => void;
   onClearAll: () => void;
   getGenreName: (id: string) => string;
+  type: "movie" | "tv";
 }
 
 /**
- * Affiche les filtres actifs sous forme de tags cliquables (avec animation)
+ * Affiche les filtres actifs (films ou séries) sous forme de tags cliquables animés.
  */
-export default function ActiveFilters({
+export default function MediaActiveFilters({
   filters,
   onClearFilter,
   onClearAll,
   getGenreName,
-}: ActiveFiltersProps) {
-  const t = useTranslations("movies");
+  type,
+}: MediaActiveFiltersProps) {
+  const t = useTranslations(type === "movie" ? "movies" : "series");
 
   const activeEntries = Object.entries(filters).filter(([, v]) => v);
   if (activeEntries.length === 0) return null;
 
-  /** Traduction lisible pour les tris */
+  /** Génère un label lisible pour le tri */
   const getSortLabel = (value: string) => {
     switch (value) {
       case "popularity.desc":
@@ -64,6 +66,7 @@ export default function ActiveFilters({
           </>
         );
       case "release_date.desc":
+      case "first_air_date.desc":
         return (
           <>
             <FiArrowDown className="inline w-4 h-4 mr-1" />
@@ -71,6 +74,7 @@ export default function ActiveFilters({
           </>
         );
       case "release_date.asc":
+      case "first_air_date.asc":
         return (
           <>
             <FiArrowUp className="inline w-4 h-4 mr-1" />
@@ -115,7 +119,7 @@ export default function ActiveFilters({
               </span>
             </span>
 
-            {/* bouton pour supprimer le filtre */}
+            {/* Bouton supprimer un filtre */}
             <button
               onClick={() => onClearFilter(key)}
               aria-label={t("filters.removeFilter")}
@@ -141,7 +145,7 @@ export default function ActiveFilters({
         ))}
       </AnimatePresence>
 
-      {/* Bouton pour tout effacer */}
+      {/* Bouton tout effacer */}
       <motion.button
         whileHover={{ scale: 1.05 }}
         whileTap={{ scale: 0.95 }}

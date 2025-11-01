@@ -8,7 +8,7 @@ export async function generateMetadata({
   params: Promise<{ locale: string }>;
 }): Promise<Metadata> {
   const { locale } = await params;
-  const t = await getTranslations({ locale, namespace: "movies.meta" });
+  const t = await getTranslations({ locale, namespace: "series.meta" });
 
   return {
     title: t("title"),
@@ -16,7 +16,7 @@ export async function generateMetadata({
   };
 }
 
-export default async function MoviesPage({
+export default async function SeriesPage({
   params,
 }: {
   params: Promise<{ locale: string }>;
@@ -25,7 +25,7 @@ export default async function MoviesPage({
 
   return (
     <div className="min-h-screen pt-20 pb-10 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
-      <MediaListClient locale={locale} type="movie" />
+      <MediaListClient locale={locale} type="tv" />
     </div>
   );
 }

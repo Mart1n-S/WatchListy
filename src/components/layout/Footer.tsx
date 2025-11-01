@@ -178,7 +178,7 @@ export default function Footer() {
               href="https://www.themoviedb.org"
               target="_blank"
               rel="noopener noreferrer"
-              className="ml-1 text-sky-400 hover:underline"
+              className="ml-1 text-sky-400 hover:text-sky-500 underline"
             >
               The Movie Database (TMDB)
             </a>

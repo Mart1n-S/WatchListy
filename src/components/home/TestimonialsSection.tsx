@@ -7,10 +7,7 @@ import { useTranslations } from "next-intl";
 
 function Stars({ count }: { count: number }) {
   return (
-    <div
-      className="flex items-center gap-1 text-yellow-400"
-      aria-label={`${count} sur 5`}
-    >
+    <div className="flex items-center gap-1 text-yellow-400">
       {Array.from({ length: 5 }).map((_, i) => (
         <FaStar key={i} className={i < count ? "opacity-100" : "opacity-30"} />
       ))}

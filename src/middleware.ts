@@ -10,16 +10,11 @@ const intlMiddleware = createMiddleware({
     defaultLocale,
 });
 
-// --- Middleware principal (fusion i18n + Auth + Cache TMDB) ---
+// --- Middleware principal ---
 export async function middleware(req: NextRequest) {
     const { pathname, origin } = req.nextUrl;
 
-    // Ignore les routes API (pas de locale)
-    if (pathname.startsWith("/api")) {
-        return NextResponse.next();
-    }
-
-    // Ignore les fichiers statiques et Next.js internes
+    // --- Ignore les fichiers statiques et internes ---
     if (
         pathname.startsWith("/_next") ||
         pathname.includes(".") ||
@@ -28,56 +23,76 @@ export async function middleware(req: NextRequest) {
         return NextResponse.next();
     }
 
-    // Gestion spéciale pour TMDB : ajout d’un header cache
-    if (pathname.startsWith("/api/tmdb/genres")) {
-        const res = NextResponse.next();
-        res.headers.set("X-Cache-Layer", "Next-Fetch-Cache");
-        console.log("🌀 [Middleware] Requête TMDB interceptée → cache actif");
-        return res;
+    // --- Gestion des routes API internes ---
+    if (pathname.startsWith("/api")) {
+        const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
+
+        // --- Cas spécial : genres → accessible sans authentification ---
+        if (pathname.startsWith("/api/tmdb/genres")) {
+            const res = NextResponse.next();
+            res.headers.set("X-Cache-Layer", "Next-Fetch-Cache");
+            console.log("🌀 [Middleware] Accès public TMDB genres (cache actif)");
+            return res;
+        }
+
+        // --- Autres endpoints TMDB → protégés ---
+        if (pathname.startsWith("/api/tmdb")) {
+            if (!token) {
+                return NextResponse.json(
+                    { error: "Accès non autorisé" },
+                    { status: 401 }
+                );
+            }
+
+            const res = NextResponse.next();
+            res.headers.set("X-Cache-Layer", "Next-Fetch-Cache");
+            return res;
+        }
+
+        // --- Autres routes API classiques ---
+        return NextResponse.next();
     }
 
-    // Vérifie si une locale est déjà dans l’URL (ex: /fr, /en)
+    // --- Vérifie la présence d’une locale ---
     const hasLocale = locales.some(
         (locale) => pathname === `/${locale}` || pathname.startsWith(`/${locale}/`)
     );
 
-    // Si aucune locale → redirige vers la locale par défaut
     if (!hasLocale) {
         req.nextUrl.pathname = `/${defaultLocale}${pathname}`;
         return NextResponse.redirect(req.nextUrl);
     }
 
-    // Authentification NextAuth
+    // --- Vérification de l’authentification ---
     const token = await getToken({ req, secret: process.env.NEXTAUTH_SECRET });
     const isAuth = !!token;
 
-    // Déterminer la locale et la route sans préfixe
-    const currentLocale = locales.find((locale) =>
-        pathname.startsWith(`/${locale}`)
-    )!;
+    // --- Détermination de la locale et de la route ---
+    const currentLocale =
+        locales.find((locale) => pathname.startsWith(`/${locale}`)) ||
+        defaultLocale;
     const pathWithoutLocale = pathname.replace(`/${currentLocale}`, "");
 
     const isLoginPage = pathWithoutLocale === "/login";
     const isRegisterPage = pathWithoutLocale === "/register";
     const isProfilePage = pathWithoutLocale.startsWith("/profile");
+    const isMoviesPage = pathWithoutLocale.startsWith("/movies");
 
-    // Redirige si utilisateur connecté → évite /login
+    // --- Si connecté → bloque login/register ---
     if (isAuth && (isLoginPage || isRegisterPage)) {
-        return NextResponse.redirect(
-            new URL(`/${currentLocale}/profile`, origin)
-        );
+        return NextResponse.redirect(new URL(`/${currentLocale}/profile`, origin));
     }
 
-    // Redirige si utilisateur non connecté → bloque /profile/*
-    if (!isAuth && isProfilePage) {
+    // --- Si non connecté → bloque profile & movies ---
+    if (!isAuth && (isProfilePage || isMoviesPage)) {
         return NextResponse.redirect(new URL(`/${currentLocale}/login`, origin));
     }
 
-    // Passe la main au middleware i18n pour gestion automatique
+    // --- Passe la main à l’i18n ---
     return intlMiddleware(req);
 }
 
 // --- Configuration du middleware ---
 export const config = {
-    matcher: ["/((?!_next|.*\\..*).*)"], // intercepte toutes les routes sauf assets
+    matcher: ["/((?!_next|.*\\..*).*)"],
 };

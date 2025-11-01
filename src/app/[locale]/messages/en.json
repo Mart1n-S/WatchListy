@@ -23,6 +23,7 @@
   "layout": {
     "header": {
       "home": "Home",
+      "movies": "Movies",
       "profile": "Profile",
       "login": "Login",
       "signup": "Sign up",
@@ -911,6 +912,100 @@
       "updateFailed": "Update failed.",
       "passwordIncomplete": "Password fields are incomplete.",
       "oldPasswordIncorrect": "Old password is incorrect."
+    }
+  },
+  "movies": {
+    "meta": {
+      "title": "Movies",
+      "description": "Explore, search, and discover the most popular movies or find your next favorite on WatchListy."
+    },
+    "noMovies": "No movies to display.",
+    "searchPlaceholder": "Search for a movie...",
+    "noResults": "No movies found.",
+    "searchButton": "Search",
+    "clearSearch": "Clear search",
+    "previous": "Previous",
+    "next": "Next",
+    "page": "Page",
+    "loading": "Loading movies...",
+    "errorFetching": "Failed to fetch movies. Please try again later.",
+    "noPoster": "No poster available",
+    "noDescription": "No description available.",
+    "searchLabel": "Movie search input",
+    "filters": {
+      "title": "Filters",
+      "genre": "Genre",
+      "allGenres": "All genres",
+      "language": "Original language",
+      "allLanguages": "All languages",
+      "minRating": "Min rating",
+      "removeFilter": "Remove filter",
+      "anyRating": "Any",
+      "sort": {
+        "label": "Sort by",
+        "popularityLabel": "Popularity",
+        "ratingLabel": "Rating",
+        "dateLabel": "Date",
+        "popularityDesc": "Most popular",
+        "popularityAsc": "Least popular",
+        "ratingDesc": "Highest rated",
+        "ratingAsc": "Lowest rated",
+        "dateDesc": "Newest first",
+        "dateAsc": "Oldest first"
+      },
+      "clearAll": "Clear all"
+    },
+    "notFoundMessage": "Movie not found or failed to load.",
+    "pageTitle": "Movies",
+    "notFoundTitle": "Movie not found",
+    "noOverview": "No description available.",
+    "header": {
+      "runtime": "{minutes} min",
+      "releaseDate": "Release date",
+      "rating": "Rating",
+      "genres": "Genres"
+    },
+    "overview": {
+      "title": "Overview",
+      "noDescription": "No description available.",
+      "originalLanguage": "Original language",
+      "status": "Status",
+      "statusValues": {
+        "Rumored": "Rumored",
+        "Planned": "Planned",
+        "In Production": "In production",
+        "Post Production": "Post production",
+        "Released": "Released",
+        "Canceled": "Canceled"
+      }
+    },
+    "cast": {
+      "title": "Cast",
+      "noImage": "No image",
+      "noCast": "No cast found for this movie."
+    },
+    "videos": {
+      "title": "Trailers",
+      "noVideos": "No trailers available."
+    },
+    "recommendations": {
+      "title": "Recommended Movies",
+      "noImage": "No poster"
+    }
+  },
+  "review": {
+    "title": "Reviews",
+    "loading": "Loading reviews...",
+    "noReviews": "No reviews for this movie yet.",
+    "alreadyExists": "You have already submitted a review for this movie.",
+    "notFound": "Review not found.",
+    "fetchError": "Failed to fetch reviews. Please try again later.",
+    "invalidRating": "The rating must be between 1 and 10.",
+    "commentRequired": "Comment is required.",
+    "commentTooLong": "Comment cannot exceed 1000 characters.",
+    "validation": {
+      "failed": "Review validation failed.",
+      "movieIdInvalid": "Invalid movie ID."
     }
   },
   "common": {

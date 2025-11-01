@@ -16,7 +16,16 @@ const withPWA = withPWAInit({
 const nextConfig: NextConfig = {
   reactStrictMode: true,
   images: {
-    domains: ["watch-listy-one.vercel.app"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "watch-listy-one.vercel.app",
+      },
+      {
+        protocol: "https",
+        hostname: "image.tmdb.org",
+      },
+    ],
   },
 };
 

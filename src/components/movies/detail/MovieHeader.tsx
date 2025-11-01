@@ -1,8 +1,18 @@
 "use client";
 
 import Image from "next/image";
-import { FiCalendar, FiClock, FiStar } from "react-icons/fi";
+import {
+  FiCalendar,
+  FiClock,
+  FiStar,
+  FiPlusCircle,
+  FiLoader,
+} from "react-icons/fi";
+import { useTranslations } from "next-intl";
+import { useUserMovies } from "@/hooks/useUserMovies";
 import type { TmdbMovieDetails } from "@/types/tmdb";
+import { useState, useMemo } from "react";
+import toast from "react-hot-toast";
 
 interface MovieHeaderProps {
   details: TmdbMovieDetails;
@@ -21,9 +31,56 @@ function formatRuntime(minutes: number): string {
 }
 
 export default function MovieHeader({ details, locale }: MovieHeaderProps) {
+  const t = useTranslations("movies");
+  const { movies, addUserMovie } = useUserMovies();
+  const [isAdding, setIsAdding] = useState(false);
+
+  const userEntry = useMemo(
+    () => movies.find((m) => m.itemId === details.id && m.itemType === "movie"),
+    [movies, details.id]
+  );
+
+  const buttonLabel = useMemo(() => {
+    if (!userEntry)
+      return t("addToWatchlist", { defaultValue: "Ajouter à ma Watchlist" });
+    switch (userEntry.status) {
+      case "watchlist":
+        return t("alreadyInWatchlist", {
+          defaultValue: "Déjà dans la Watchlist",
+        });
+      case "watching":
+        return t("currentlyWatching", {
+          defaultValue: "En cours de visionnage",
+        });
+      case "completed":
+        return t("completed", { defaultValue: "Déjà visionné" });
+      default:
+        return "Déjà ajouté";
+    }
+  }, [userEntry, t]);
+
+  const handleAddToWatchlist = async () => {
+    try {
+      setIsAdding(true);
+      const success = await addUserMovie(details.id, "movie", "watchlist");
+
+      if (success) {
+        toast.success(
+          t("addedToWatchlist", { defaultValue: "Ajouté à la Watchlist ✅" })
+        );
+      } else {
+        toast.error(
+          t("failedToAdd", { defaultValue: "Erreur lors de l’ajout" })
+        );
+      }
+    } finally {
+      setIsAdding(false);
+    }
+  };
+
   return (
     <section className="relative mb-8">
-      {/* --- Backdrop (image de fond) --- */}
+      {/* --- Backdrop --- */}
       {details.backdrop_path && (
         <div className="relative h-[60vh] w-full">
           <Image
@@ -52,9 +109,11 @@ export default function MovieHeader({ details, locale }: MovieHeaderProps) {
             </div>
           )}
 
-          {/* --- Informations principales --- */}
+          {/* --- Infos --- */}
           <div className="flex flex-col justify-end">
-            <h1 className="text-3xl font-bold mb-2">{details.title}</h1>
+            <h1 className="text-3xl font-bold mb-2 text-white">
+              {details.title}
+            </h1>
 
             {details.tagline && (
               <p className="italic text-gray-400 mb-4">“{details.tagline}”</p>
@@ -99,6 +158,40 @@ export default function MovieHeader({ details, locale }: MovieHeaderProps) {
                 ))}
               </div>
             )}
+
+            {/* --- Bouton --- */}
+            <div className="mt-6">
+              <button
+                disabled={!!userEntry || isAdding}
+                onClick={handleAddToWatchlist}
+                className={`
+                  w-full px-6 py-3 rounded-xl font-semibold text-white text-sm flex items-center justify-center gap-2
+                  transition-all duration-300 transform
+                  shadow-lg shadow-indigo-500/20 hover:shadow-indigo-500/30
+                  hover:scale-[1.02] active:scale-[0.98]
+                  focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
+                  relative overflow-hidden
+                  ${
+                    userEntry
+                      ? "bg-gray-700 cursor-not-allowed opacity-80"
+                      : "bg-gradient-to-r from-indigo-600 to-purple-600 hover:from-indigo-500 hover:to-purple-500 hover:cursor-pointer"
+                  }
+                `}
+              >
+                <div className="absolute inset-0 bg-gradient-to-r from-white/10 to-white/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+                {isAdding ? (
+                  <>
+                    <FiLoader className="w-5 h-5 animate-spin" />
+                    {t("adding", { defaultValue: "Ajout..." })}
+                  </>
+                ) : (
+                  <>
+                    {!userEntry && <FiPlusCircle className="w-5 h-5" />}
+                    <span>{buttonLabel}</span>
+                  </>
+                )}
+              </button>
+            </div>
           </div>
         </div>
       </div>

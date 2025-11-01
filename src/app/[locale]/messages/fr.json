@@ -993,8 +993,16 @@
     "recommendations": {
       "title": "Films recommandés",
       "noImage": "Pas d'affiche"
-    }
+    },
+    "addToWatchlist": "Ajouter à ma Watchlist",
+    "alreadyInWatchlist": "Déjà dans la Watchlist",
+    "currentlyWatching": "En cours de visionnage",
+    "completed": "Déjà visionné",
+    "adding": "Ajout...",
+    "addedToWatchlist": "Ajouté avec succès à la Watchlist !",
+    "failedToAdd": "Erreur lors de l'ajout"
   },
+
   "review": {
     "title": "Avis",
     "loading": "Chargement des avis...",
@@ -1008,6 +1016,55 @@
     "validation": {
       "failed": "Échec de la validation de l'avis.",
       "movieIdInvalid": "ID du film invalide."
+    }
+  },
+
+  "userMovies": {
+    "alreadyExists": "Ce film ou cette série est déjà dans votre liste.",
+    "notFound": "Film ou série introuvable dans votre liste.",
+    "validation": {
+      "failed": "Échec de la validation des données.",
+      "missingFields": "Tous les champs sont requis.",
+      "invalidStatus": "Statut invalide.",
+      "itemIdInvalid": "ID de l'élément invalide.",
+      "itemTypeInvalid": "Type d'élément invalide.",
+      "statusInvalid": "Statut invalide."
+    },
+    "lists": {
+      "loading": "Chargement de vos listes...",
+      "sectionTitle": "Mes listes de films et séries",
+      "editButton": "Modifier",
+      "deleteButton": "Supprimer",
+      "cancelButton": "Annuler",
+      "watchlist": {
+        "title": "Ma Watchlist",
+        "description": "Les films et séries que je souhaite regarder plus tard.",
+        "empty": "Votre watchlist est vide. Ajoutez des films et séries pour les retrouver ici."
+      },
+      "watching": {
+        "title": "En cours de visionnage",
+        "description": "Les contenus que j’ai commencés à regarder.",
+        "empty": "Vous ne regardez actuellement aucun film ou série. Commencez à en regarder pour les voir ici."
+      },
+      "completed": {
+        "title": "Terminés",
+        "description": "Les films et séries que j’ai terminés.",
+        "empty": "Vous n'avez terminé aucun film ou série. Terminez-en pour les voir ici."
+      },
+      "seeMore": "Voir",
+      "confirmTitle": "Confirmer la suppression",
+      "confirmDelete": "Êtes-vous sûr de vouloir supprimer cet élément de votre liste ? Cette action est irréversible.",
+      "updated": "Statut mis à jour avec succès.",
+      "updateFailed": "Échec de la mise à jour du statut.",
+      "deleted": "Élément supprimé avec succès de votre liste.",
+      "deleteFailed": "Échec de la suppression de l'élément de votre liste.",
+      "back": "Retour au profil"
+    },
+    "status": {
+      "edit": "Modifier le statut",
+      "watchlist": "À regarder",
+      "watching": "En cours",
+      "completed": "Terminé"
     }
   },
 

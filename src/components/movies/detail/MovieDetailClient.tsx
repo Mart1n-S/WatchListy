@@ -27,7 +27,7 @@ export default function MovieDetailClient({
     async function fetchMovie() {
       try {
         const lang = locale === "fr" ? "fr" : "en";
-        const res = await fetch(`/api/tmdb/movies/${id}?lang=${lang}`);
+        const res = await fetch(`/api/tmdb/movie/${id}?lang=${lang}`);
         if (!res.ok) throw new Error("Failed to fetch movie");
         const data = await res.json();
         setMovie(data);

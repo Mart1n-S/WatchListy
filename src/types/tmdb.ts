@@ -34,9 +34,11 @@ export interface TmdbCredit {
 
 export interface TmdbRecommendation {
     id: number;
-    title: string;
+    title?: string;           // pour les films
+    name?: string;            // pour les séries TV
     poster_path: string | null;
-    release_date: string;
+    release_date?: string;    // pour les films
+    first_air_date?: string;  // pour les séries TV
     overview: string;
     vote_average: number;
 }
@@ -109,4 +111,17 @@ export interface TmdbPaginatedResponse<T> {
     total_pages: number;
     total_results: number;
     results: T[];
+}
+
+// ==========================
+//  Détails d’un élément (film ou série TV)
+// ==========================
+export interface TmdbItemDetails {
+    id: number;
+    title?: string;             // Films
+    name?: string;              // Séries TV
+    poster_path?: string | null;
+    release_date?: string;      // Films
+    first_air_date?: string;    // Séries TV
+    vote_average?: number;
 }

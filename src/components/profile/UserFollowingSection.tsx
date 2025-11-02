@@ -12,18 +12,30 @@ import { FiUserPlus, FiUserMinus, FiLoader } from "react-icons/fi";
 import Image from "next/image";
 import Link from "next/link";
 import toast from "react-hot-toast";
+import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 
 export default function UserFollowingSection() {
   const t = useTranslations("profile.following");
   const locale = useLocale();
   const dispatch = useAppDispatch();
   const { users, loading } = useAppSelector((state) => state.following);
+
   const [pseudo, setPseudo] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Gestion de la confirmation Unfollow
+  const [confirmOpen, setConfirmOpen] = useState(false);
+  const [selectedUser, setSelectedUser] = useState<{
+    id: string;
+    pseudo: string;
+  } | null>(null);
+
   useEffect(() => {
-    dispatch(fetchFollowingUsers());
-  }, [dispatch]);
+    // Si la liste est vide, on la recharge (utile après F5 ou session froide)
+    if (users.length === 0) {
+      dispatch(fetchFollowingUsers());
+    }
+  }, [dispatch, users.length]);
 
   // Ajouter un utilisateur à suivre
   const handleFollow = async (e: React.FormEvent) => {
@@ -45,14 +57,26 @@ export default function UserFollowingSection() {
     setIsSubmitting(false);
   };
 
-  // Se désabonner
-  const handleUnfollow = async (userId: string, pseudo: string) => {
-    const success = await dispatch(unfollowUser(userId));
+  // Ouvre la modale de confirmation
+  const confirmUnfollow = (userId: string, pseudo: string) => {
+    setSelectedUser({ id: userId, pseudo });
+    setConfirmOpen(true);
+  };
+
+  // Confirme la suppression
+  const handleConfirmUnfollow = async () => {
+    if (!selectedUser) return;
+    const { id, pseudo } = selectedUser;
+
+    const success = await dispatch(unfollowUser(id));
     if (success) {
       toast.success(t("success.unfollowed", { pseudo }));
     } else {
       toast.error(t("errors.unfollowFailed"));
     }
+
+    setConfirmOpen(false);
+    setSelectedUser(null);
   };
 
   return (
@@ -61,6 +85,11 @@ export default function UserFollowingSection() {
         <h2 className="text-xl font-semibold text-white mb-4">
           {t("title", { defaultValue: "Abonnements" })}
         </h2>
+
+        {/* Affiche le nombre de personnes suivies */}
+        <p className="text-gray-400 mb-4">
+          {t("count", { count: users.length })}
+        </p>
 
         {/* Formulaire d'ajout */}
         <form onSubmit={handleFollow} className="flex items-center gap-3 mb-6">
@@ -124,8 +153,8 @@ export default function UserFollowingSection() {
                 </Link>
 
                 <button
-                  onClick={() => handleUnfollow(user._id, user.pseudo)}
-                  className="flex items-center gap-2 px-4 py-2 rounded-md bg-rose-600 hover:bg-rose-500 text-white text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                  onClick={() => confirmUnfollow(user._id, user.pseudo)}
+                  className="flex items-center gap-2 px-4 py-2 rounded-md bg-rose-600 hover:bg-rose-500 text-white text-sm font-medium transition-colors duration-200 focus:outline-none focus:ring-2 focus:ring-rose-500 focus:ring-offset-2 focus:ring-offset-gray-900 hover:cursor-pointer"
                 >
                   <FiUserMinus className="w-4 h-4" />
                   {t("buttons.unfollow")}
@@ -135,6 +164,19 @@ export default function UserFollowingSection() {
           </ul>
         )}
       </div>
+
+      {/* --- Modale de confirmation --- */}
+      <ConfirmDeleteModal
+        isOpen={confirmOpen}
+        title={t("confirmUnfollow.title")}
+        message={
+          selectedUser
+            ? t("confirmUnfollow.message", { pseudo: selectedUser.pseudo })
+            : ""
+        }
+        onConfirm={handleConfirmUnfollow}
+        onCancel={() => setConfirmOpen(false)}
+      />
     </section>
   );
 }

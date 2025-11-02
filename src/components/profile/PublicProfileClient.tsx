@@ -3,17 +3,26 @@
 import { useEffect, useState, useCallback } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
-import { FiCalendar, FiFilm, FiTv } from "react-icons/fi";
-import { useAppSelector } from "@/lib/redux/hooks";
+import {
+  FiCalendar,
+  FiFilm,
+  FiTv,
+  FiUserPlus,
+  FiUserMinus,
+} from "react-icons/fi";
+import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
+import { followUser, unfollowUser } from "@/lib/redux/thunks/followThunks";
 import type { Genre } from "@/lib/redux/slices/genresSlice";
 import type { UserMovie } from "@/models/UserMovie";
 import MediaCard from "@/components/media/MediaCard";
+import toast from "react-hot-toast";
 
 interface PublicProfileClientProps {
   pseudo: string;
 }
 
 interface PublicUser {
+  _id: string;
   pseudo: string;
   avatar?: string | null;
   created_at?: string | null;
@@ -51,12 +60,20 @@ export default function PublicProfileClient({
 }: PublicProfileClientProps) {
   const t = useTranslations("publicProfile");
   const locale = useLocale() as string;
+  const dispatch = useAppDispatch();
+
   const genres = useAppSelector((state) => state.genres);
+  const following = useAppSelector((state) => state.following.users);
+  const currentUser = useAppSelector((state) => state.user.name);
 
   const [data, setData] = useState<PublicProfileResponse | null>(null);
   const [mediaCache, setMediaCache] = useState<Record<string, TmdbDetails>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  /** Vérifie si l’utilisateur courant suit déjà ce profil */
+  const isFollowing = following.some((u) => u.pseudo === pseudo);
 
   /** Récupère le nom du genre à partir de son ID */
   const getGenreName = (id: number, type: "movie" | "tv"): string => {
@@ -75,7 +92,6 @@ export default function PublicProfileClient({
           const res = await fetch(
             `/api/tmdb/${item.itemType}/${item.itemId}?lang=${locale}`
           );
-
           if (!res.ok) continue;
 
           const data = await res.json();
@@ -132,7 +148,31 @@ export default function PublicProfileClient({
     fetchProfile();
   }, [pseudo, t, loadMediaDetails]);
 
-  // --- État de chargement ---
+  /** Gère le suivi / désabonnement */
+  const handleToggleFollow = async () => {
+    if (!data) return;
+    if (data.user.pseudo === currentUser) {
+      toast.error(t("errors.selfFollow"));
+      return;
+    }
+
+    setIsSubmitting(true);
+    try {
+      if (isFollowing) {
+        const ok = await dispatch(unfollowUser(data.user._id!));
+        if (ok)
+          toast.success(t("success.unfollowed", { pseudo: data.user.pseudo }));
+      } else {
+        const ok = await dispatch(followUser(data.user.pseudo));
+        if (ok)
+          toast.success(t("success.followed", { pseudo: data.user.pseudo }));
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // --- Chargement / Erreur ---
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-[50vh] text-gray-400">
@@ -165,6 +205,7 @@ export default function PublicProfileClient({
           className="rounded-full shadow-md mb-4 object-cover border border-slate-700"
         />
         <h1 className="text-3xl font-bold">{user.pseudo}</h1>
+
         {user.created_at && (
           <p className="text-gray-400 text-sm flex items-center gap-1 mt-1">
             <FiCalendar className="w-4 h-4" />
@@ -174,6 +215,25 @@ export default function PublicProfileClient({
               day: "numeric",
             })}
           </p>
+        )}
+
+        {/* --- Bouton Suivre / Ne plus suivre --- */}
+        {currentUser !== user.pseudo && (
+          <button
+            onClick={handleToggleFollow}
+            disabled={isSubmitting}
+            className={`mt-4 flex items-center gap-2 px-5 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900
+              ${
+                isFollowing
+                  ? "bg-rose-600 hover:bg-rose-500 text-white focus:ring-rose-500 hover:cursor-pointer"
+                  : "bg-indigo-600 hover:bg-indigo-500 text-white focus:ring-indigo-500 hover:cursor-pointer"
+              } ${
+              isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:scale-105"
+            }`}
+          >
+            {isFollowing ? <FiUserMinus /> : <FiUserPlus />}
+            {isFollowing ? t("buttons.unfollow") : t("buttons.follow")}
+          </button>
         )}
       </div>
 

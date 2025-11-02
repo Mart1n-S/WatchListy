@@ -1,8 +1,16 @@
 "use client";
 
 import Image from "next/image";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { FiUser, FiCalendar, FiEdit3, FiFilm, FiTv } from "react-icons/fi";
+import {
+  FiUser,
+  FiCalendar,
+  FiEdit3,
+  FiFilm,
+  FiTv,
+  FiUsers,
+} from "react-icons/fi";
 import { useAppSelector } from "@/lib/redux/hooks";
 import { Genre } from "@/lib/redux/slices/genresSlice";
 import { useTranslations, useLocale } from "next-intl";
@@ -26,6 +34,21 @@ export default function ProfileCard({ user }: ProfileCardProps) {
   const genres = useAppSelector((state) => state.genres);
   const t = useTranslations("profile");
   const locale = useLocale();
+  const [followersCount, setFollowersCount] = useState<number | null>(null);
+
+  useEffect(() => {
+    async function fetchFollowers() {
+      try {
+        const res = await fetch("/api/users/followers/");
+        if (!res.ok) throw new Error("Failed to fetch followers");
+        const data = await res.json();
+        setFollowersCount(data.count ?? 0);
+      } catch (err) {
+        console.error("Erreur récupération followers:", err);
+      }
+    }
+    fetchFollowers();
+  }, []);
 
   const getGenreName = (id: number, type: "movie" | "tv") => {
     const list: Genre[] = type === "movie" ? genres.movies : genres.tv;
@@ -36,7 +59,7 @@ export default function ProfileCard({ user }: ProfileCardProps) {
     <div className="w-full py-8">
       <div className="bg-gradient-to-br from-slate-900/60 to-slate-800/40 border border-slate-700/50 rounded-3xl p-4 sm:p-6 w-full shadow-2xl shadow-slate-900/30 backdrop-blur-sm">
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
-          {/* === SECTION GAUCHE : AVATAR + INFOS === */}
+          {/* === SECTION GAUCHE === */}
           <div className="flex flex-col sm:flex-row items-center gap-6 flex-1 min-w-0">
             <div className="relative">
               <div className="absolute inset-0 bg-gradient-to-r from-indigo-500 to-purple-600 rounded-full blur-md opacity-60 animate-pulse"></div>
@@ -78,6 +101,23 @@ export default function ProfileCard({ user }: ProfileCardProps) {
                             day: "numeric",
                           })
                         : ""}
+                    </span>
+                  </div>
+                )}
+
+                {/* === NOMBRE DE FOLLOWERS === */}
+                {followersCount !== null && (
+                  <div className="flex items-center gap-2 text-slate-300">
+                    <FiUsers className="w-4 h-4 text-emerald-400" />
+                    <span className="text-sm">
+                      {followersCount}{" "}
+                      {followersCount <= 1
+                        ? t("followerLabel.singular", {
+                            defaultValue: "abonné",
+                          })
+                        : t("followerLabel.plural", {
+                            defaultValue: "abonnés",
+                          })}
                     </span>
                   </div>
                 )}

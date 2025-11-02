@@ -51,6 +51,7 @@ export async function GET(
         return NextResponse.json(
             {
                 user: {
+                    _id: user._id.toString(),
                     pseudo: user.pseudo,
                     avatar: user.avatar,
                     created_at: user.created_at,

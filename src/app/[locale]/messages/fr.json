@@ -855,6 +855,10 @@
     "movieGenres": "Genres de films favoris",
     "tvGenres": "Genres de séries favoris",
     "edit": "Modifier",
+    "followerLabel": {
+      "singular": "abonné",
+      "plural": "abonnés"
+    },
 
     "following": {
       "title": "Abonnements",
@@ -876,7 +880,12 @@
         "emptyPseudo": "Veuillez entrer un pseudo.",
         "followFailed": "Impossible de suivre cet utilisateur.",
         "unfollowFailed": "Impossible de se désabonner."
-      }
+      },
+      "confirmUnfollow": {
+        "title": "Confirmer le désabonnement",
+        "message": "Voulez-vous vraiment vous désabonner de {pseudo} ?"
+      },
+      "count": "Nombre d'abonnements : {count}"
     }
   },
 
@@ -1238,7 +1247,8 @@
     "loading": "Chargement du profil...",
     "errors": {
       "fetchFailed": "Impossible de charger le profil utilisateur.",
-      "notFound": "Utilisateur introuvable."
+      "notFound": "Utilisateur introuvable.",
+      "selfFollow": "Vous ne pouvez pas vous suivre vous-même."
     },
     "preferences": {
       "title": "Préférences",
@@ -1251,6 +1261,15 @@
       "completed": "Terminés",
       "empty": "Aucun élément dans cette catégorie.",
       "item": "Élément #{id}"
+    },
+
+    "buttons": {
+      "follow": "Suivre",
+      "unfollow": "Ne plus suivre"
+    },
+    "success": {
+      "followed": "{pseudo} a été ajouté à vos abonnements.",
+      "unfollowed": "{pseudo} a été retiré de vos abonnements."
     }
   },
 

@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 import ProfileClient from "@/components/profile/ProfileClient";
+import ProfileBackground from "@/components/ui/ProfileBackground";
 
 export async function generateMetadata({
   params,
@@ -25,11 +26,14 @@ export default async function ProfilePage({
   const t = await getTranslations({ locale, namespace: "profile" });
 
   return (
-    <div className="min-h-screen relative">
-      <div className="pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto relative z-10">
+    <div className="relative min-h-screen bg-transparent">
+      {/* --- Fond global --- */}
+      <ProfileBackground />
+
+      {/* --- Contenu principal --- */}
+      <div className="relative z-10 pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-2">{t("title")}</h1>
         <p className="text-slate-400 mb-6">{t("subtitle")}</p>
-
         <ProfileClient />
       </div>
     </div>

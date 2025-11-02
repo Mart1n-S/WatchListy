@@ -853,7 +853,39 @@
     "memberSince": "Member since",
     "movieGenres": "Favorite movie genres",
     "tvGenres": "Favorite TV genres",
-    "edit": "Edit"
+    "edit": "Edit",
+    "followerLabel": {
+      "singular": "follower",
+      "plural": "followers"
+    },
+
+    "following": {
+      "title": "Following",
+      "loading": "Loading your followed users...",
+      "empty": "You are not following anyone yet.",
+      "placeholders": {
+        "enterPseudo": "Enter a username..."
+      },
+      "buttons": {
+        "follow": "Follow",
+        "unfollow": "Unfollow",
+        "loading": "Adding..."
+      },
+      "success": {
+        "followed": "{pseudo} has been added to your following list.",
+        "unfollowed": "You have unfollowed {pseudo}."
+      },
+      "errors": {
+        "emptyPseudo": "Please enter a username.",
+        "followFailed": "Could not follow this user.",
+        "unfollowFailed": "Could not unfollow this user."
+      },
+      "confirmUnfollow": {
+        "title": "Confirm Unfollow",
+        "message": "Are you sure you want to unfollow {pseudo}?"
+      },
+      "count": "Number of subscriptions : {count}"
+    }
   },
 
   "ProfileEdit": {
@@ -1187,6 +1219,54 @@
     "search": {
       "placeholder": "Search for a movie or series...",
       "clear": "Clear"
+    }
+  },
+
+  "Follow": {
+    "validation": {
+      "pseudoMin": "The username must be at least 3 characters long.",
+      "pseudoMax": "The username is too long.",
+      "pseudoInvalid": "The username can only contain letters, numbers, or _."
+    },
+    "errors": {
+      "invalidData": "Invalid data provided.",
+      "currentUserNotFound": "Current user not found.",
+      "userNotFound": "No user found with this username.",
+      "invalidUserId": "Invalid user ID.",
+      "selfFollow": "You cannot follow yourself."
+    }
+  },
+
+  "publicProfile": {
+    "meta": {
+      "title": "Public Profile",
+      "description": "Discover {pseudo}'s watchlist and preferences"
+    },
+    "loading": "Loading profile...",
+    "errors": {
+      "fetchFailed": "Could not load user profile.",
+      "notFound": "User not found."
+    },
+    "preferences": {
+      "title": "Preferences",
+      "movies": "Favorite movie genres",
+      "tv": "Favorite TV genres"
+    },
+    "lists": {
+      "watchlist": "Watchlist",
+      "watching": "Currently watching",
+      "completed": "Completed",
+      "empty": "No items in this category.",
+      "item": "Item #{id}"
+    },
+
+    "buttons": {
+      "follow": "Follow",
+      "unfollow": "Unfollow"
+    },
+    "success": {
+      "followed": "{pseudo} has been added to your subscriptions.",
+      "unfollowed": "{pseudo} has been removed from your subscriptions."
     }
   },
 

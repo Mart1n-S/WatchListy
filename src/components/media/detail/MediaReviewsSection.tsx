@@ -1,8 +1,9 @@
 "use client";
 
 import { useState } from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 import Image from "next/image";
+import Link from "next/link";
 import { FiMessageSquare, FiStar, FiTv } from "react-icons/fi";
 import { motion, AnimatePresence } from "framer-motion";
 import type { Review } from "@/models/Review";
@@ -21,6 +22,7 @@ export default function MediaReviewsSection({
   type,
 }: MediaReviewsSectionProps) {
   const t = useTranslations("review");
+  const locale = useLocale();
   const [visibleCount, setVisibleCount] = useState(3);
 
   const visibleReviews = reviews.slice(0, visibleCount);
@@ -81,31 +83,44 @@ export default function MediaReviewsSection({
                   transition={{ duration: 0.25 }}
                   className="bg-gray-900/40 rounded-xl p-4 shadow-sm hover:bg-gray-900/60 transition-all"
                 >
+                  {/* --- En-tête review --- */}
                   <div className="flex items-center gap-3 mb-2">
-                    {review.userImage ? (
-                      <Image
-                        src={`/images/avatars/${review.userImage}`}
-                        alt={review.userName}
-                        width={40}
-                        height={40}
-                        className="rounded-full object-cover"
-                      />
-                    ) : (
-                      <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-gray-300">
-                        {review.userName?.charAt(0).toUpperCase()}
+                    <Link
+                      href={`/${locale}/users/${review.userName}`}
+                      className="flex items-center gap-3 hover:text-indigo-400 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-indigo-500 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-900 transition-colors"
+                    >
+                      {review.userImage ? (
+                        <Image
+                          src={`/images/avatars/${review.userImage}`}
+                          alt={review.userName}
+                          width={40}
+                          height={40}
+                          className="rounded-full object-cover"
+                        />
+                      ) : (
+                        <div className="w-10 h-10 rounded-full bg-gray-700 flex items-center justify-center text-gray-300">
+                          {review.userName?.charAt(0).toUpperCase()}
+                        </div>
+                      )}
+
+                      <div className="flex flex-col">
+                        <p className="font-semibold text-gray-200 hover:text-indigo-400">
+                          {review.userName}
+                        </p>
+                        <p className="text-xs text-gray-500">
+                          {new Date(review.updated_at).toLocaleDateString(
+                            locale,
+                            {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            }
+                          )}
+                        </p>
                       </div>
-                    )}
+                    </Link>
 
-                    <div className="flex-1">
-                      <p className="font-semibold text-gray-200">
-                        {review.userName}
-                      </p>
-                      <p className="text-xs text-gray-500">
-                        {new Date(review.updated_at).toLocaleDateString()}
-                      </p>
-                    </div>
-
-                    <div className="flex items-center gap-1 text-yellow-400">
+                    <div className="ml-auto flex items-center gap-1 text-yellow-400">
                       <FiStar className="w-4 h-4 fill-yellow-400" />
                       <span className="font-medium">
                         {review.rating.toFixed(1)}

@@ -1,7 +1,6 @@
 "use client";
 
 import { useSession } from "next-auth/react";
-import ProfileBackground from "@/components/ui/ProfileBackground";
 import ProfileEditForm from "@/components/profile/ProfileEditForm";
 
 export default function ProfileEditClient() {
@@ -18,7 +17,6 @@ export default function ProfileEditClient() {
 
   return (
     <>
-      <ProfileBackground />
       <ProfileEditForm user={session.user} />
     </>
   );

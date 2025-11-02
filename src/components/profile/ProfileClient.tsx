@@ -3,8 +3,8 @@
 import { useSession } from "next-auth/react";
 import { useAppSelector } from "@/lib/redux/hooks";
 import ProfileCard from "@/components/profile/ProfileCard";
-import ProfileBackground from "@/components/ui/ProfileBackground";
 import UserListsSection from "@/components/profile/UserListsSection";
+import UserFollowingSection from "@/components/profile/UserFollowingSection";
 import { useTranslations } from "next-intl";
 
 export default function ProfileClient() {
@@ -25,9 +25,11 @@ export default function ProfileClient() {
 
   return (
     <>
-      <ProfileBackground />
       <ProfileCard user={user} />
       <UserListsSection />
+      <div className="mt-10">
+        <UserFollowingSection />
+      </div>
     </>
   );
 }

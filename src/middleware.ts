@@ -78,6 +78,7 @@ export async function middleware(req: NextRequest) {
     const isProfilePage = pathWithoutLocale.startsWith("/profile");
     const isMoviesPage = pathWithoutLocale.startsWith("/movies");
     const isSeriesPage = pathWithoutLocale.startsWith("/series");
+    const isUsersPublicPage = pathWithoutLocale.startsWith("/users");
 
     // --- Si connecté → bloque login/register ---
     if (isAuth && (isLoginPage || isRegisterPage)) {
@@ -85,7 +86,7 @@ export async function middleware(req: NextRequest) {
     }
 
     // --- Si non connecté → bloque profile, movies & series ---
-    if (!isAuth && (isProfilePage || isMoviesPage || isSeriesPage)) {
+    if (!isAuth && (isProfilePage || isMoviesPage || isSeriesPage || isUsersPublicPage)) {
         return NextResponse.redirect(new URL(`/${currentLocale}/login`, origin));
     }
 

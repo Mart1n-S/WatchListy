@@ -1,4 +1,4 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit'
+import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 interface UserState {
     id: string | null;
@@ -8,6 +8,7 @@ interface UserState {
     role: string | null;
     createdAt: string | null;
     isAuthenticated: boolean;
+    followingIds?: string[];
     preferences?: {
         movies?: number[];
         tv?: number[];
@@ -22,30 +23,35 @@ const initialState: UserState = {
     role: null,
     createdAt: null,
     isAuthenticated: false,
+    followingIds: [],
     preferences: {
         movies: [],
         tv: [],
     },
-}
+};
 
 export const userSlice = createSlice({
-    name: 'user',
+    name: "user",
     initialState,
     reducers: {
         setUser: (state, action: PayloadAction<UserState>) => {
             return { ...state, ...action.payload, isAuthenticated: true };
         },
         clearUser: (state) => {
-            state.id = null
-            state.name = null
-            state.email = null
-            state.image = null
-            state.role = null
-            state.createdAt = null
-            state.isAuthenticated = false
+            state.id = null;
+            state.name = null;
+            state.email = null;
+            state.image = null;
+            state.role = null;
+            state.createdAt = null;
+            state.isAuthenticated = false;
+            state.followingIds = [];
+        },
+        setFollowingIds: (state, action: PayloadAction<string[]>) => {
+            state.followingIds = action.payload;
         },
     },
-})
+});
 
-export const { setUser, clearUser } = userSlice.actions
-export default userSlice.reducer
+export const { setUser, clearUser, setFollowingIds } = userSlice.actions;
+export default userSlice.reducer;

@@ -1142,6 +1142,9 @@
       "itemTypeInvalid": "Type d'élément invalide.",
       "statusInvalid": "Statut invalide."
     },
+    "fetch": {
+      "failed": "Échec de la récupération des éléments de la liste."
+    },
     "lists": {
       "loading": "Chargement de vos listes...",
       "sectionTitle": "Mes listes de films et séries",
@@ -1149,6 +1152,7 @@
       "deleteButton": "Supprimer",
       "cancelButton": "Annuler",
       "noResult": "Aucun film ou série trouvé dans cette liste.",
+      "tmdbFailed": "Impossible de récupérer les informations du film ou de la série.",
       "watchlist": {
         "title": "Ma Watchlist",
         "description": "Les films et séries que je souhaite regarder plus tard.",

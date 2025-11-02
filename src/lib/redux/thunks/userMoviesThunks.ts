@@ -36,9 +36,6 @@ export const updateUserMovieStatusThunk =
 
             if (!oldMovie) return false;
 
-            // Optimistic
-            dispatch(updateUserMovieStatus({ itemId, newStatus }));
-
             try {
                 const res = await fetch(`/api/user-movies/${itemId}`, {
                     method: "PATCH",
@@ -47,11 +44,12 @@ export const updateUserMovieStatusThunk =
                 });
 
                 if (!res.ok) throw new Error("update_failed");
+
+                // Met à jour Redux uniquement après succès serveur
+                dispatch(updateUserMovieStatus({ itemId, newStatus }));
                 return true;
             } catch (err) {
                 console.error("Erreur lors de la mise à jour :", err);
-                // rollback
-                dispatch(updateUserMovieStatus({ itemId, newStatus: oldMovie.status }));
                 return false;
             }
         };
@@ -61,30 +59,23 @@ export const deleteUserMovieThunk =
     (itemId: number) =>
         async (dispatch: AppDispatch, getState: () => RootState): Promise<boolean> => {
             const { userMovies } = getState();
+            const movieExists = [
+                ...userMovies.watchlist,
+                ...userMovies.watching,
+                ...userMovies.completed,
+            ].some((m) => m.itemId === itemId);
 
-            const backup = {
-                watchlist: [...userMovies.watchlist],
-                watching: [...userMovies.watching],
-                completed: [...userMovies.completed],
-            };
-
-            // Optimistic delete
-            dispatch(removeUserMovie(itemId));
+            if (!movieExists) return false;
 
             try {
                 const res = await fetch(`/api/user-movies/${itemId}`, { method: "DELETE" });
                 if (!res.ok) throw new Error("delete_failed");
+
+                // Supprime du store seulement après confirmation serveur
+                dispatch(removeUserMovie(itemId));
                 return true;
             } catch (err) {
                 console.error("Erreur lors de la suppression :", err);
-                // rollback complet
-                dispatch(
-                    setUserMovies([
-                        ...backup.watchlist,
-                        ...backup.watching,
-                        ...backup.completed,
-                    ])
-                );
                 return false;
             }
         };

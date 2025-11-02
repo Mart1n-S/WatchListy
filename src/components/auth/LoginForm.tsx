@@ -176,6 +176,7 @@ export default function LoginForm() {
       {/* Erreur formulaire (globale) */}
       {formError && (
         <div
+          data-testid="form-error"
           className="mb-6 rounded-lg border border-red-700 bg-red-900/40 text-red-200 px-4 py-3"
           role="alert"
         >

@@ -72,7 +72,7 @@ export function CtaSection() {
             className="flex flex-col sm:flex-row items-center justify-center gap-3"
           >
             <Link
-              href="/signup"
+              href="/register"
               className="inline-flex items-center justify-center rounded-xl px-5 py-3 bg-gradient-to-r text-white font-medium shadow from-blue-600 to-emerald-500 hover:from-blue-700 hover:to-emerald-600 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"
             >
               <FiUserPlus className="mr-2" />

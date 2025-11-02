@@ -90,3 +90,15 @@ npm start
 * [Next.js Documentation](https://nextjs.org/docs)
 * [Tailwind CSS Documentation](https://tailwindcss.com/docs)
 ---
+
+Lancer les tests Playwright :
+
+```bash
+npx playwright test
+```
+
+Générer le rapport de couverture des tests :
+
+```bash
+npx playwright show-report
+```

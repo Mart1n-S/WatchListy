@@ -61,7 +61,7 @@ async function seedUsers() {
                 password: hashedPassword,
                 avatar: userInput.avatar,
                 created_at: new Date(),
-                verified_at: i === 0 ? new Date() : null,
+                verified_at: new Date(),
                 blocked_at: null,
                 role: i === 0 ? "admin" : "user",
                 preferences: {

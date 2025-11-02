@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useTranslations } from "next-intl";
 import Image from "next/image";
 import { FiMessageSquare, FiStar, FiTv } from "react-icons/fi";
@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import type { Review } from "@/models/Review";
 
 interface MediaReviewsSectionProps {
-  mediaId: number;
+  reviews: Review[];
   type: "movie" | "tv";
 }
 
@@ -17,36 +17,11 @@ interface MediaReviewsSectionProps {
  * Lecture seule — pas de création/modification ici.
  */
 export default function MediaReviewsSection({
-  mediaId,
+  reviews,
   type,
 }: MediaReviewsSectionProps) {
   const t = useTranslations("review");
-  const [reviews, setReviews] = useState<Review[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
   const [visibleCount, setVisibleCount] = useState(3);
-
-  useEffect(() => {
-    async function fetchReviews() {
-      try {
-        const res = await fetch(`/api/reviews/${mediaId}`, {
-          next: { revalidate: 60 },
-        });
-        if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
-        const data = await res.json();
-        setReviews(data);
-      } catch (err) {
-        console.error("Erreur lors du chargement des avis :", err);
-        setError(
-          t("fetchError", { defaultValue: "Impossible de charger les avis." })
-        );
-      } finally {
-        setLoading(false);
-      }
-    }
-
-    fetchReviews();
-  }, [mediaId, type, t]);
 
   const visibleReviews = reviews.slice(0, visibleCount);
   const showMore = () => setVisibleCount((prev) => prev + 3);
@@ -69,7 +44,7 @@ export default function MediaReviewsSection({
                 : "Avis des spectateurs (série)",
           })}
         </h2>
-        {!loading && !error && reviews.length > 0 && (
+        {reviews.length > 0 && (
           <p className="text-slate-400 text-sm">
             {t("count", {
               count: reviews.length,
@@ -81,29 +56,7 @@ export default function MediaReviewsSection({
       </div>
 
       {/* --- États --- */}
-      {loading && (
-        <div className="space-y-4">
-          {[...Array(3)].map((_, i) => (
-            <div
-              key={i}
-              className="bg-gray-900/40 rounded-xl p-4 animate-pulse flex items-start gap-4"
-            >
-              <div className="w-10 h-10 rounded-full bg-gray-700" />
-              <div className="flex-1 space-y-2">
-                <div className="h-3 w-1/3 bg-gray-700 rounded" />
-                <div className="h-3 w-1/2 bg-gray-700 rounded" />
-                <div className="h-3 w-full bg-gray-700 rounded mt-2" />
-              </div>
-            </div>
-          ))}
-        </div>
-      )}
-
-      {!loading && error && (
-        <p className="text-red-400 text-center py-6">{error}</p>
-      )}
-
-      {!loading && !error && reviews.length === 0 && (
+      {reviews.length === 0 && (
         <p className="text-gray-400 text-center py-6">
           {t("noReviews", {
             defaultValue:
@@ -115,7 +68,7 @@ export default function MediaReviewsSection({
       )}
 
       {/* --- Liste des reviews --- */}
-      {!loading && !error && reviews.length > 0 && (
+      {reviews.length > 0 && (
         <>
           <div className="space-y-6">
             <AnimatePresence>

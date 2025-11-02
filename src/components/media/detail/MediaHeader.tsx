@@ -18,6 +18,7 @@ interface MediaHeaderProps {
   details: TmdbMovieDetails | TmdbTvDetails;
   locale: string;
   type: "movie" | "tv";
+  localRating: number | null;
 }
 
 function formatRuntime(minutes?: number | number[]): string | null {
@@ -37,6 +38,7 @@ export default function MediaHeader({
   details,
   locale,
   type,
+  localRating,
 }: MediaHeaderProps) {
   const t = useTranslations(type === "movie" ? "movies" : "series");
   const { movies, addUserMovie } = useUserMovies();
@@ -76,9 +78,7 @@ export default function MediaHeader({
 
       if (success) {
         toast.success(
-          t("addedToWatchlist", {
-            defaultValue: "Ajouté à la Watchlist",
-          })
+          t("addedToWatchlist", { defaultValue: "Ajouté à la Watchlist" })
         );
       } else {
         toast.error(
@@ -181,10 +181,21 @@ export default function MediaHeader({
                   </div>
                 )}
 
-              {/* Note */}
-              <div className="flex items-center gap-1">
-                <FiStar className="w-4 h-4 text-yellow-400" />
-                <span>{details.vote_average.toFixed(1)} / 10</span>
+              {/* Notes */}
+              <div className="flex flex-col sm:flex-row sm:items-center gap-1 sm:gap-4 text-yellow-400">
+                {/* TMDB */}
+                <div className="flex items-center gap-1">
+                  <FiStar className="w-4 h-4 fill-yellow-400" />
+                  <span>{details.vote_average.toFixed(1)} / 10 TMDB</span>
+                </div>
+
+                {/* Watchlisty */}
+                {localRating !== null && (
+                  <div className="flex items-center gap-1 text-purple-400">
+                    <FiStar className="w-4 h-4 fill-purple-400" />
+                    <span>{localRating.toFixed(1)} / 10 Watchlisty</span>
+                  </div>
+                )}
               </div>
             </div>
 

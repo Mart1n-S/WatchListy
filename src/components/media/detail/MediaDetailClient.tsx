@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useMemo } from "react";
 import { useTranslations } from "next-intl";
 import MediaHeader from "@/components/media/detail/MediaHeader";
 import MediaOverview from "@/components/media/detail/MediaOverview";
@@ -9,6 +9,7 @@ import MediaVideos from "@/components/media/detail/MediaVideos";
 import MediaRecommendations from "@/components/media/detail/MediaRecommendations";
 import MediaReviewsSection from "@/components/media/detail/MediaReviewsSection";
 import type { TmdbMovieFull, TmdbTvFull } from "@/types/tmdb";
+import type { Review } from "@/models/Review";
 
 interface MediaDetailClientProps {
   id: string;
@@ -26,22 +27,32 @@ export default function MediaDetailClient({
   type,
 }: MediaDetailClientProps) {
   const [media, setMedia] = useState<TmdbMovieFull | TmdbTvFull | null>(null);
+  const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const t = useTranslations(type === "movie" ? "movies" : "series");
 
   useEffect(() => {
-    async function fetchMedia() {
+    async function fetchData() {
       try {
         setError(null);
         setLoading(true);
         const lang = locale === "fr" ? "fr" : "en";
 
-        const res = await fetch(`/api/tmdb/${type}/${id}?lang=${lang}`);
-        if (!res.ok) throw new Error(`Échec du chargement TMDB pour ${type}`);
+        // Fetch TMDB details
+        const [tmdbRes, reviewsRes] = await Promise.all([
+          fetch(`/api/tmdb/${type}/${id}?lang=${lang}`),
+          fetch(`/api/reviews/${id}`),
+        ]);
 
-        const data = await res.json();
-        setMedia(data);
+        if (!tmdbRes.ok) throw new Error(`Échec TMDB`);
+        if (!reviewsRes.ok) throw new Error(`Échec reviews`);
+
+        const tmdbData = await tmdbRes.json();
+        const reviewsData: Review[] = await reviewsRes.json();
+
+        setMedia(tmdbData);
+        setReviews(reviewsData);
       } catch (err) {
         console.error(`Erreur lors du chargement du ${type}:`, err);
         setError(
@@ -57,8 +68,16 @@ export default function MediaDetailClient({
       }
     }
 
-    fetchMedia();
+    fetchData();
   }, [id, locale, type, t]);
+
+  // --- Calcul de la moyenne locale ---
+  const localRating = useMemo(() => {
+    if (!reviews.length) return null;
+    const avg =
+      reviews.reduce((acc, review) => acc + review.rating, 0) / reviews.length;
+    return Number(avg.toFixed(1));
+  }, [reviews]);
 
   // --- Loader ---
   if (loading) {
@@ -96,11 +115,16 @@ export default function MediaDetailClient({
 
   return (
     <div className="bg-gray-950 text-white pb-12">
-      <MediaHeader details={details} locale={locale} type={type} />
+      <MediaHeader
+        details={details}
+        locale={locale}
+        type={type}
+        localRating={localRating}
+      />
       <MediaOverview details={details} type={type} />
       <MediaVideos videos={videos.results} type={type} />
       <MediaCast cast={credits.cast} type={type} />
-      <MediaReviewsSection mediaId={Number(id)} type={type} />
+      <MediaReviewsSection reviews={reviews} type={type} />
       <MediaRecommendations
         recommendations={recommendations.results}
         locale={locale}

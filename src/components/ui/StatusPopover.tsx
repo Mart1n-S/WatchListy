@@ -39,7 +39,7 @@ export default function StatusPopover({
   ];
 
   return (
-    <div ref={popoverRef} className="relative z-50">
+    <div ref={popoverRef} className="relative">
       {/* --- Bouton principal --- */}
       <button
         title={t("edit")}
@@ -60,8 +60,8 @@ export default function StatusPopover({
           className="
       absolute bottom-12 left-1/2 -translate-x-1/2 w-36
       bg-slate-800 border border-slate-700
-      rounded-lg shadow-xl z-[60]
-      overflow-hidden animate-popover-slide
+      rounded-lg shadow-xl
+      overflow-hidden animate-popover-slide z-0
     "
         >
           {STATUSES.map((status) => (

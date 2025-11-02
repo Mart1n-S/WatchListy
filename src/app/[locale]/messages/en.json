@@ -1139,6 +1139,9 @@
       "itemTypeInvalid": "Invalid item type.",
       "statusInvalid": "Invalid status value."
     },
+    "fetch": {
+      "failed": "Could not load your lists."
+    },
     "lists": {
       "loading": "Loading your lists...",
       "sectionTitle": "My lists of films and series",
@@ -1146,6 +1149,7 @@
       "deleteButton": "Delete",
       "cancelButton": "Cancel",
       "noResult": "No movie or series found in this list.",
+      "tmdbFailed": "Failed to retrieve movie or series information.",
       "watchlist": {
         "title": "My Watchlist",
         "description": "The movies and series I want to watch later.",

@@ -19,8 +19,8 @@ export interface UserMovie {
     itemId: number;        // ID TMDB (film ou série)
     itemType: ItemType;    // "movie" ou "tv"
     status: UserMovieStatus; // "watchlist", "watching" ou "completed"
-    created_at: Date;
-    updated_at: Date;
+    created_at: string | Date;
+    updated_at: string | Date;
 }
 
 /**

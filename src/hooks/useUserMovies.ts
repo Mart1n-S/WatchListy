@@ -1,171 +1,92 @@
 "use client";
 
-import { useState, useEffect, useCallback, useMemo } from "react";
+import { useAppSelector, useAppDispatch } from "@/lib/redux/hooks";
+import {
+    fetchUserMovies,
+    addUserMovieThunk,
+    deleteUserMovieThunk,
+    updateUserMovieStatusThunk,
+} from "@/lib/redux/thunks/userMoviesThunks";
+import { useCallback, useEffect, useMemo } from "react";
 import type { UserMovie } from "@/models/UserMovie";
 
-/**
- * Hook pour gérer la liste personnelle de films/séries de l’utilisateur.
- */
+const CACHE_DURATION = 10 * 60 * 1000; // 10 minutes
+
 export function useUserMovies() {
-    const [movies, setMovies] = useState<UserMovie[]>([]);
-    const [loading, setLoading] = useState<boolean>(false);
-    const [error, setError] = useState<string | null>(null);
+    const dispatch = useAppDispatch();
+    const { watchlist, watching, completed, loading, error, lastFetched } =
+        useAppSelector((state) => state.userMovies);
 
-    /**
-     * Récupère toutes les entrées de la liste de l’utilisateur.
-     */
-    const fetchUserMovies = useCallback(async () => {
-        try {
-            setLoading(true);
-            setError(null);
+    // --- Chargement initial avec cache ---
+    useEffect(() => {
+        const isStale = !lastFetched || Date.now() - lastFetched > CACHE_DURATION;
 
-            const res = await fetch("/api/user-movies", {
-                cache: "no-store",
-                credentials: "include",
-            });
-            if (!res.ok) throw new Error("Failed to fetch user movies");
-
-            const data = (await res.json()) as UserMovie[];
-            setMovies(data);
-        } catch (err) {
-            console.error("Erreur lors du chargement des user movies :", err);
-            setError("common.errors.internalServerError");
-        } finally {
-            setLoading(false);
+        if (isStale) {
+            dispatch(fetchUserMovies());
         }
-    }, []);
+    }, [dispatch, lastFetched]);
 
-    /**
-     * Ajoute un contenu à la liste.
-     */
+    // --- Ajouter un film/série ---
     const addUserMovie = useCallback(
         async (
             itemId: number,
             itemType: "movie" | "tv",
             status: "watchlist" | "watching" | "completed"
-        ) => {
-            try {
-                setError(null);
+        ): Promise<boolean> => {
+            const newMovie: Omit<UserMovie, 'created_at' | 'updated_at'> & {
+                created_at: string;
+                updated_at: string;
+            } = {
+                itemId,
+                itemType,
+                status,
+                userId: "", // géré côté serveur
+                created_at: new Date().toISOString(), // Convertir en string
+                updated_at: new Date().toISOString(), // Convertir en string
+            };
 
-                const res = await fetch("/api/user-movies", {
-                    method: "POST",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify({ itemId, itemType, status }),
-                });
-
-                if (!res.ok) {
-                    const { error } = await res.json();
-                    throw new Error(error || "userMovies.validation.failed");
-                }
-
-                const newEntry = (await res.json()) as UserMovie;
-
-                // MAJ locale sans refetch
-                setMovies((prev) => [...prev, newEntry]);
-
-                return true;
-            } catch (err) {
-                console.error("Erreur lors de l’ajout du film :", err);
-                setError("userMovies.validation.failed");
-                return false;
-            }
+            return await dispatch(addUserMovieThunk(newMovie));
         },
-        []
+        [dispatch]
     );
 
-
-    /**
-     * Met à jour le statut d’un contenu existant.
-     */
+    // --- Mettre à jour le statut ---
     const updateUserMovie = useCallback(
         async (
             itemId: number,
             status: "watchlist" | "watching" | "completed"
-        ) => {
-            try {
-                setError(null);
-
-                const res = await fetch(`/api/user-movies/${itemId}`, {
-                    method: "PATCH",
-                    headers: { "Content-Type": "application/json" },
-                    credentials: "include",
-                    body: JSON.stringify({ status }),
-                });
-
-                if (!res.ok) {
-                    const { error } = await res.json();
-                    throw new Error(error || "userMovies.validation.failed");
-                }
-
-                await fetchUserMovies();
-                return true;
-            } catch (err) {
-                console.error("Erreur lors de la mise à jour du statut :", err);
-                setError("userMovies.validation.failed");
-                return false;
-            }
+        ): Promise<boolean> => {
+            return await dispatch(updateUserMovieStatusThunk(itemId, status));
         },
-        [fetchUserMovies]
+        [dispatch]
     );
 
-    /**
-     * Supprime un contenu de la liste.
-     */
-    const deleteUserMovie = useCallback(async (itemId: number) => {
-        try {
-            setError(null);
-
-            const res = await fetch(`/api/user-movies/${itemId}`, {
-                method: "DELETE",
-                credentials: "include",
-            });
-
-            if (!res.ok) {
-                const { error } = await res.json();
-                throw new Error(error || "userMovies.notFound");
-            }
-
-            setMovies((prev) => prev.filter((m) => m.itemId !== itemId));
-            return true;
-        } catch (err) {
-            console.error("Erreur lors de la suppression du film :", err);
-            setError("userMovies.notFound");
-            return false;
-        }
-    }, []);
-
-    /**
-     * Permet de filtrer les films selon leur statut
-     */
-    const byStatus = useCallback(
-        (status: "watchlist" | "watching" | "completed") =>
-            movies.filter((m) => m.status === status),
-        [movies]
+    // --- Supprimer un film/série ---
+    const deleteUserMovie = useCallback(
+        async (itemId: number): Promise<boolean> => {
+            return await dispatch(deleteUserMovieThunk(itemId));
+        },
+        [dispatch]
     );
 
-    // Mémorisation pour éviter des re-rendus inutiles
+    // --- Regrouper les listes ---
     const lists = useMemo(
         () => ({
-            watchlist: byStatus("watchlist"),
-            watching: byStatus("watching"),
-            completed: byStatus("completed"),
+            watchlist,
+            watching,
+            completed,
         }),
-        [byStatus]
+        [watchlist, watching, completed]
     );
 
-    useEffect(() => {
-        fetchUserMovies();
-    }, [fetchUserMovies]);
-
     return {
-        movies,
+        movies: [...watchlist, ...watching, ...completed],
         lists,
         loading,
         error,
         addUserMovie,
         updateUserMovie,
         deleteUserMovie,
-        refetch: fetchUserMovies,
+        refetch: () => dispatch(fetchUserMovies()),
     };
 }

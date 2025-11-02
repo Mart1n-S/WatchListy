@@ -44,7 +44,7 @@ const users: UserInput[] = [
 async function seedUsers() {
     let connection;
     try {
-        const { db, client } = await connectToDatabase("watchlisty");
+        const { db, client } = await connectToDatabase("watchlisty_recette");
         connection = client;
 
         await db.collection("users").createIndex({ email: 1 }, { unique: true });

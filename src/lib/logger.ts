@@ -8,12 +8,14 @@ import pino from "pino";
  */
 
 const isProd = process.env.NODE_ENV === "production";
+const isNextDev = !!process.env.NEXT_RUNTIME; // Next.js runtime check
 
 const logger = pino({
     level: "error",
     base: { env: process.env.NODE_ENV },
     timestamp: pino.stdTimeFunctions.isoTime,
-    transport: !isProd
+    // pas de transport dans next dev — évite les threads
+    transport: !isProd && !isNextDev
         ? {
             target: "pino-pretty",
             options: {
@@ -22,7 +24,7 @@ const logger = pino({
                 ignore: "pid,hostname",
             },
         }
-        : undefined, // prod = JSON brut
+        : undefined,
 });
 
 export default logger;

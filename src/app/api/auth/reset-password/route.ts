@@ -1,29 +1,25 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import bcrypt from "bcryptjs";
+import { ResetPasswordSchema } from "@/lib/validators/resetPassword";
+import { z } from "zod";
 
 /**
  * POST /api/auth/reset-password
- * Réinitialise le mot de passe si le token est valide
+ * Réinitialise le mot de passe si le token est valide et non expiré
  */
 export async function POST(req: Request) {
     try {
-        const { email, password, confirmPassword, token } = await req.json();
+        const json = await req.json();
 
-        if (!email || !password || !confirmPassword || !token) {
-            return NextResponse.json(
-                { error: "auth.reset.form.errors.missingFields" },
-                { status: 400 }
-            );
+        // Validation du corps de la requête via Zod
+        const parsed = ResetPasswordSchema.safeParse(json);
+        if (!parsed.success) {
+            const issue = parsed.error.issues[0];
+            return NextResponse.json({ error: issue.message }, { status: 400 });
         }
 
-        if (password !== confirmPassword) {
-            return NextResponse.json(
-                { error: "auth.reset.form.errors.passwordMismatch" },
-                { status: 400 }
-            );
-        }
-
+        const { email, password, token } = parsed.data;
         const { db } = await connectToDatabase();
 
         const user = await db.collection("users").findOne({
@@ -33,11 +29,12 @@ export async function POST(req: Request) {
 
         if (!user) {
             return NextResponse.json(
-                { error: "auth.reset.form.errors.tokenInvalid" },
+                { error: "auth.reset.form.errors.emailInvalid" },
                 { status: 400 }
             );
         }
 
+        // Vérifie l’expiration du token
         if (new Date(user.reset_token_expires) < new Date()) {
             return NextResponse.json(
                 { error: "auth.reset.form.errors.tokenExpired" },
@@ -48,6 +45,7 @@ export async function POST(req: Request) {
         // Hash du nouveau mot de passe
         const hashedPassword = await bcrypt.hash(password, 10);
 
+        // Mise à jour du mot de passe et suppression du token
         await db.collection("users").updateOne(
             { _id: user._id },
             {
@@ -62,6 +60,12 @@ export async function POST(req: Request) {
         );
     } catch (error) {
         console.error("Erreur lors de la réinitialisation :", error);
+
+        if (error instanceof z.ZodError) {
+            const issue = error.issues[0];
+            return NextResponse.json({ error: issue.message }, { status: 400 });
+        }
+
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

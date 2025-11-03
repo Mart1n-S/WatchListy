@@ -4,21 +4,56 @@ import { useState } from "react";
 import { useTranslations, useLocale } from "next-intl";
 import { HiMail } from "react-icons/hi";
 import toast from "react-hot-toast";
+import { z } from "zod";
+
+import { ResendSchema, type ResendInput } from "@/lib/validators/auth-email";
+import { useFieldValidation } from "@/lib/utils/useFieldValidation";
 
 export default function ResendForm() {
   const t = useTranslations("auth.verify");
   const tCommon = useTranslations("common");
   const locale = useLocale();
 
-  const [email, setEmail] = useState("");
+  /** État du formulaire */
+  const [values, setValues] = useState<ResendInput>({ email: "" });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [loading, setLoading] = useState(false);
 
+  /** Hook de validation champ-par-champ (focusout + live) */
+  const { handleChangeValidation } = useFieldValidation(
+    ResendSchema,
+    values,
+    setErrors,
+    t
+  );
+
+  /** Gestion du changement d’un champ */
+  const handleChange = <K extends keyof ResendInput>(
+    field: K,
+    value: ResendInput[K]
+  ) => {
+    setValues((prev) => ({ ...prev, [field]: value }));
+    handleChangeValidation(field, value);
+  };
+
+  /** Soumission du formulaire */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setErrors({});
 
-    if (!email) {
-      toast.error(t("errors.tokenMissing"));
-      return;
+    // Validation complète avant envoi
+    try {
+      ResendSchema.parse(values);
+    } catch (err: unknown) {
+      if (err instanceof z.ZodError) {
+        const fieldErrors: Record<string, string> = {};
+        for (const issue of err.issues) {
+          const key = issue.path[0] as keyof ResendInput;
+          fieldErrors[key as string] = t(issue.message);
+        }
+        setErrors(fieldErrors);
+        return;
+      }
     }
 
     setLoading(true);
@@ -29,7 +64,7 @@ export default function ResendForm() {
           "Content-Type": "application/json",
           "Accept-Language": locale,
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify(values),
       });
 
       const data = await res.json();
@@ -41,9 +76,7 @@ export default function ResendForm() {
             const cleanKey = String(msgKey).replace(/^auth\.verify\./, "");
             translatedErrors[field] = t(cleanKey);
           });
-
-          const firstError = Object.values(translatedErrors)[0];
-          toast.error(firstError, { position: "top-right", duration: 5000 });
+          setErrors(translatedErrors);
           return;
         }
 
@@ -64,15 +97,16 @@ export default function ResendForm() {
         return;
       }
 
+      // Succès
       if (data.message) {
         const cleanKey = String(data.message).replace(/^auth\.verify\./, "");
-        const msg = t(cleanKey);
-        toast.success(msg, { duration: 6000, position: "top-right" });
+        toast.success(t(cleanKey), { duration: 6000, position: "top-right" });
       } else {
         toast.success(t("resend.neutral"), { duration: 6000 });
       }
 
-      setEmail("");
+      setValues({ email: "" });
+      setErrors({});
     } catch (err) {
       console.error("Erreur lors du renvoi d’e-mail:", err);
       toast.error(t("errorText"), { position: "top-right" });
@@ -101,12 +135,20 @@ export default function ResendForm() {
             id="email"
             name="email"
             type="email"
-            value={email}
+            value={values.email}
             placeholder={t("resend.placeholder")}
-            onChange={(e) => setEmail(e.target.value)}
-            className="block w-full pl-10 pr-3 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border border-gray-700 hover:border-gray-600 transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+            onChange={(e) => handleChange("email", e.target.value)}
+            className={`block w-full pl-10 pr-3 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border ${
+              errors.email
+                ? "border-red-600"
+                : "border-gray-700 hover:border-gray-600"
+            } transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900`}
           />
         </div>
+
+        {errors.email && (
+          <p className="text-red-400 text-start text-sm mt-1">{errors.email}</p>
+        )}
       </div>
 
       {/* Bouton d’envoi */}

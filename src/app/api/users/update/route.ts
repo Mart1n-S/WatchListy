@@ -7,7 +7,7 @@ import { hash, compare } from "bcryptjs";
 import { ObjectId } from "mongodb";
 
 /**
- * PATCH /api/user/update
+ * PATCH /api/users/update
  * Permet à l'utilisateur connecté de modifier :
  *  - pseudo
  *  - avatar
@@ -116,7 +116,7 @@ export async function PATCH(req: Request) {
 
         return NextResponse.json({ user: updatedUser }, { status: 200 });
     } catch (error) {
-        console.error("Erreur dans /api/user/update :", error);
+        console.error("Erreur dans /api/users/update :", error);
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { randomBytes } from "crypto";
 import { sendResetPasswordEmail } from "@/lib/emails/sendResetPasswordEmail";
+import { ResendSchema } from "@/lib/validators/auth-email";
 
 /**
  * POST /api/auth/forgot-password
@@ -9,16 +10,17 @@ import { sendResetPasswordEmail } from "@/lib/emails/sendResetPasswordEmail";
  */
 export async function POST(req: Request) {
     try {
-        const { email } = await req.json();
+        const json = await req.json();
         const locale = req.headers.get("accept-language") || "fr";
 
-        if (!email) {
-            return NextResponse.json(
-                { error: "auth.reset.form.errors.emailRequired" },
-                { status: 400 }
-            );
+        // Validation de la requête avec Zod
+        const parsed = ResendSchema.safeParse(json);
+        if (!parsed.success) {
+            const issue = parsed.error.issues[0];
+            return NextResponse.json({ error: issue.message }, { status: 400 });
         }
 
+        const { email } = parsed.data;
         const { db } = await connectToDatabase();
 
         // Vérifie si l'utilisateur existe

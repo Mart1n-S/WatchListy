@@ -11,14 +11,14 @@ import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import { z } from "zod";
 import { HiEye, HiEyeOff, HiLockClosed } from "react-icons/hi";
-import { useTranslations } from "next-intl";
-import { useLocale } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { useFieldValidation } from "@/lib/utils/useFieldValidation";
 
 /**
  * Formulaire complet d’édition du profil utilisateur
- * - Avatars radio-cards accessibles
- * - Validation dynamique du mot de passe
- * - Labels reliés via htmlFor/id
+ * - Validation à la perte de focus (focusout)
+ * - Disparition dynamique des erreurs
+ * - Validation cohérente newPassword/confirmPassword
  */
 export default function ProfileEditForm({ user }: { user: Session["user"] }) {
   const t = useTranslations("ProfileEdit");
@@ -46,34 +46,22 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
     confirm: false,
   });
 
+  /** --- Hook de validation réutilisable --- */
+  const { handleChangeValidation } = useFieldValidation(
+    updateUserSchema,
+    form,
+    setErrors,
+    t,
+    ["newPassword", "confirmPassword"]
+  );
+
+  /** --- Gestion du changement d’un champ --- */
   const handleChange = <K extends keyof UpdateUserInput>(
     field: K,
     value: UpdateUserInput[K]
   ) => {
     setForm((prev) => ({ ...prev, [field]: value }));
-
-    // Si on efface un champ de mot de passe → on supprime juste l’erreur sans valider
-    const passwordFields = ["oldPassword", "newPassword", "confirmPassword"];
-    if (passwordFields.includes(field as string)) {
-      if (!value || value === "") {
-        setErrors((prev) => {
-          const updated = { ...prev };
-          delete updated[field as string];
-          return updated;
-        });
-        return;
-      }
-    }
-
-    // Validation instantanée d’un champ "non-mot de passe"
-    const singleFieldSchema = updateUserSchema.pick({ [field]: true });
-    const result = singleFieldSchema.safeParse({ [field]: value });
-
-    setErrors((prev) => {
-      const updated = { ...prev };
-      if (result.success) delete updated[field as string];
-      return updated;
-    });
+    handleChangeValidation(field, value);
   };
 
   /** Vérifie les critères de sécurité du mot de passe */
@@ -108,7 +96,7 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
 
     try {
       const parsed = updateUserSchema.parse(form);
-      const res = await fetch("/api/user/update", {
+      const res = await fetch("/api/users/update", {
         method: "PATCH",
         headers: {
           "Content-Type": "application/json",
@@ -145,7 +133,6 @@ export default function ProfileEditForm({ user }: { user: Session["user"] }) {
       });
 
       toast.success(t("success"), { position: "top-right", duration: 5000 });
-
       router.push(`/${locale}/profile`);
     } catch (err) {
       if (err instanceof z.ZodError) {

@@ -124,8 +124,8 @@ export default function ProfileCard({ user }: ProfileCardProps) {
               </div>
 
               {/* === PRÉFÉRENCES === */}
-              {(user.preferences?.movies?.length ||
-                user.preferences?.tv?.length) && (
+              {user.preferences?.movies?.length ||
+              user.preferences?.tv?.length ? (
                 <div className="mt-6 space-y-4">
                   {user.preferences?.movies?.length ? (
                     <div>
@@ -168,6 +168,10 @@ export default function ProfileCard({ user }: ProfileCardProps) {
                       </div>
                     </div>
                   ) : null}
+                </div>
+              ) : (
+                <div className="mt-6 text-slate-400 text-sm italic">
+                  {t("noPreferences")}
                 </div>
               )}
             </div>

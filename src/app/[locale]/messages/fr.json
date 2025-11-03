@@ -757,6 +757,7 @@
         },
 
         "validation": {
+          "emailRequired": "L’adresse e-mail est requise.",
           "emailInvalid": "L’adresse e-mail n’est pas valide.",
           "passwordMin": "Le mot de passe doit contenir au moins 8 caractères.",
           "passwordMax": "Le mot de passe ne peut pas dépasser 30 caractères.",
@@ -771,6 +772,7 @@
 
         "errors": {
           "emailRequired": "L’adresse e-mail est requise.",
+          "emailInvalid": "L’adresse e-mail n’est pas valide.",
           "missingFields": "Tous les champs sont requis.",
           "passwordMismatch": "Les mots de passe ne correspondent pas.",
           "tokenInvalid": "Le lien de réinitialisation est invalide.",
@@ -802,10 +804,15 @@
       "resendLink": "Renvoyer un e-mail de vérification",
       "resendSuccess": "Si un compte est associé à cet e-mail, un lien de vérification a été envoyé.",
 
+      "validation": {
+        "emailRequired": "L’adresse e-mail est requise.",
+        "emailInvalid": "L’adresse e-mail n’est pas valide."
+      },
       "resend": {
         "title": "Renvoyer l’e-mail de vérification",
         "description": "Entrez votre adresse e-mail pour recevoir un nouveau lien de confirmation.",
         "button": "Renvoyer l’e-mail",
+        "emailInvalid": "L’adresse e-mail n’est pas valide.",
         "loading": "Envoi en cours...",
         "neutral": "Si un compte est associé à cet e-mail, un lien de vérification a été envoyé.",
         "success": "Un nouvel e-mail de vérification a été envoyé.",
@@ -854,6 +861,7 @@
     "memberSince": "Membre depuis",
     "movieGenres": "Genres de films favoris",
     "tvGenres": "Genres de séries favoris",
+    "noPreferences": "Aucune préférence définie.",
     "edit": "Modifier",
     "followerLabel": {
       "singular": "abonné",

@@ -1,17 +1,17 @@
 "use client";
 
 import Image from "next/image";
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import { useRouter, usePathname } from "next/navigation";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { fetchGenres } from "@/lib/redux/thunks/fetchGenres";
-import { useEffect } from "react";
 import { HiEye, HiEyeOff, HiMail, HiLockClosed, HiUser } from "react-icons/hi";
 import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 import { z } from "zod";
 import { RegisterSchema, type RegisterInput } from "@/lib/validators/register";
+import { useFieldValidation } from "@/lib/utils/useFieldValidation";
 
 /** Gestion des erreurs par champ */
 type FieldErrors = Partial<Record<keyof RegisterInput, string>>;
@@ -25,6 +25,7 @@ export default function RegisterForm() {
   const pathname = usePathname();
   const locale = pathname.startsWith("/en") ? "en" : "fr";
 
+  // === Fetch genres ===
   useEffect(() => {
     dispatch(fetchGenres(locale));
   }, [locale, dispatch]);
@@ -61,36 +62,47 @@ export default function RegisterForm() {
     else if (errs.confirmPassword) confirmRef.current?.focus();
   };
 
-  /** Gestion d’un changement de champ générique */
+  // --- Hook de validation réutilisable ---
+  const { handleChangeValidation } = useFieldValidation(
+    RegisterSchema,
+    values,
+    setFieldErrors as React.Dispatch<
+      React.SetStateAction<Record<string, string>>
+    >,
+    t,
+    ["confirmPassword"]
+  );
+
+  /** Gestion du changement d’un champ */
   const handleChange = <K extends keyof RegisterInput>(
     field: K,
     value: RegisterInput[K]
   ) => {
     setValues((v) => ({ ...v, [field]: value }));
-    setFieldErrors((f) => ({ ...f, [field]: undefined }));
+    handleChangeValidation(field, value);
   };
 
   /** Vérifie les critères de sécurité du mot de passe */
   const passwordCriteria = [
     {
       label: t("passwordCriteria.length"),
-      valid: !!values.password?.match(/^.{8,30}$/),
+      valid: !!values.password.match(/^.{8,30}$/),
     },
     {
       label: t("passwordCriteria.uppercase"),
-      valid: !!values.password?.match(/[A-Z]/),
+      valid: !!values.password.match(/[A-Z]/),
     },
     {
       label: t("passwordCriteria.lowercase"),
-      valid: !!values.password?.match(/[a-z]/),
+      valid: !!values.password.match(/[a-z]/),
     },
     {
       label: t("passwordCriteria.number"),
-      valid: !!values.password?.match(/\d/),
+      valid: !!values.password.match(/\d/),
     },
     {
       label: t("passwordCriteria.special"),
-      valid: !!values.password?.match(/[!@#$%^&*(),.?\":{}|<>]/),
+      valid: !!values.password.match(/[!@#$%^&*(),.?\":{}|<>]/),
     },
   ];
 
@@ -161,8 +173,7 @@ export default function RegisterForm() {
         const errs: FieldErrors = {};
         err.issues.forEach((issue) => {
           const k = issue.path[0] as keyof RegisterInput;
-          const msgKey = String(issue.message);
-          errs[k] = t(msgKey);
+          errs[k] = t(issue.message);
         });
         setFieldErrors(errs);
         focusFirstError(errs);

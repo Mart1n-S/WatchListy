@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { sendVerificationEmail } from "@/lib/emails/sendVerificationEmail";
 import { randomBytes } from "crypto";
+import { ResendSchema } from "@/lib/validators/auth-email";
 
 /**
  * POST /api/auth/resend-verification
@@ -9,16 +10,20 @@ import { randomBytes } from "crypto";
  */
 export async function POST(req: Request) {
     try {
-        const { email } = await req.json();
+        const json = await req.json();
         const locale = req.headers.get("accept-language") || "fr";
 
-        if (!email) {
+        // Validation via Zod
+        const result = ResendSchema.safeParse(json);
+        if (!result.success) {
+            const fieldError = result.error.issues[0];
             return NextResponse.json(
-                { error: "auth.verify.errors.tokenMissing" },
+                { error: fieldError.message },
                 { status: 400 }
             );
         }
 
+        const { email } = result.data;
         const { db } = await connectToDatabase();
 
         // Recherche de l’utilisateur

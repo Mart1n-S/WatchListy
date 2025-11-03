@@ -4,6 +4,8 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { ObjectId, UpdateFilter } from "mongodb";
 import type { User } from "@/models/User";
+import logger from "@/lib/logger";
+
 /**
  * GET /api/users/[pseudo]
  * Renvoie le profil public d’un utilisateur
@@ -88,7 +90,11 @@ export async function GET(
             { status: 200 }
         );
     } catch (error) {
-        console.error("Erreur /api/users/[pseudo] :", error);
+        logger.error({
+            route: "/api/users/[pseudo]",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }
@@ -154,7 +160,11 @@ export async function PATCH(
             likesCount,
         });
     } catch (error) {
-        console.error("Erreur PATCH /api/users/[pseudo] :", error);
+        logger.error({
+            route: "/api/users/[pseudo]",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

@@ -3,6 +3,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { sendVerificationEmail } from "@/lib/emails/sendVerificationEmail";
 import crypto from "crypto";
 import { ResendSchema } from "@/lib/validators/auth-email";
+import logger from "@/lib/logger";
 
 /**
  * POST /api/auth/resend-verification
@@ -87,7 +88,11 @@ export async function POST(req: Request) {
             { status: 200 }
         );
     } catch (error) {
-        console.error("Erreur lors du renvoi d’e-mail de vérification:", error);
+        logger.error({
+            route: "/api/auth/resend-verification",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

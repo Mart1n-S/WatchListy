@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import crypto from "crypto";
+import logger from "@/lib/logger";
 
 /**
  * GET /api/auth/verify-email/[token]
@@ -86,7 +87,11 @@ export async function GET(
             { status: 200 }
         );
     } catch (error) {
-        console.error("Erreur lors de la vérification d’e-mail:", error);
+        logger.error({
+            route: "/api/auth/verify-email/[token]",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             {
                 status: "error",

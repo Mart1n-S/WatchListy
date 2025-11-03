@@ -3,6 +3,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import type { User } from "@/models/User";
+import logger from "@/lib/logger";
 
 /**
  * GET /api/users
@@ -48,7 +49,11 @@ export async function GET() {
 
         return NextResponse.json({ users: formatted }, { status: 200 });
     } catch (error) {
-        console.error("Erreur GET /api/users :", error);
+        logger.error({
+            route: "/api/users",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

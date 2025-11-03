@@ -9,6 +9,7 @@ import {
 } from "@/types/tmdb";
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
+import logger from "@/lib/logger";
 
 const TMDB_BASE = process.env.TMDB_API_BASE!;
 const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN!;
@@ -108,7 +109,11 @@ export async function GET(
             },
         });
     } catch (error) {
-        console.error("Erreur TMDB /[type]/[id]:", error);
+        logger.error({
+            route: "/api/tmdb/[type]/[id]",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

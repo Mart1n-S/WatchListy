@@ -4,6 +4,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { Review } from "@/models/Review";
 import { ReviewSchema } from "@/lib/validators/review";
 import { ZodError } from "zod";
+import logger from "@/lib/logger";
 
 /**
  * POST /api/reviews
@@ -53,7 +54,6 @@ export async function POST(request: NextRequest) {
         await db.collection("reviews").insertOne(newReview);
         return NextResponse.json(newReview, { status: 201 });
     } catch (err: unknown) {
-        console.error("Erreur POST /api/reviews :", err);
 
         if (err instanceof ZodError) {
             return NextResponse.json(
@@ -61,6 +61,12 @@ export async function POST(request: NextRequest) {
                 { status: 400 }
             );
         }
+
+        logger.error({
+            route: "/api/reviews",
+            message: err instanceof Error ? err.message : "Erreur inconnue",
+            stack: err instanceof Error ? err.stack : undefined,
+        });
 
         return NextResponse.json(
             { error: "common.errors.internalServerError" },

@@ -3,6 +3,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import crypto from "crypto";
 import { sendResetPasswordEmail } from "@/lib/emails/sendResetPasswordEmail";
 import { ResendSchema } from "@/lib/validators/auth-email";
+import logger from "@/lib/logger";
 
 /**
  * POST /api/auth/forgot-password
@@ -76,7 +77,11 @@ export async function POST(req: Request) {
             { status: 200 }
         );
     } catch (error) {
-        console.error("Erreur lors de la demande de réinitialisation :", error);
+        logger.error({
+            route: "/api/auth/forgot-password",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

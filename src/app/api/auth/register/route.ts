@@ -4,6 +4,7 @@ import { RegisterSchema } from "@/lib/validators/register";
 import { hash } from "bcryptjs";
 import crypto from "crypto";
 import { sendVerificationEmail } from "@/lib/emails/sendVerificationEmail";
+import logger from "@/lib/logger";
 
 /**
  * POST /api/auth/register
@@ -91,7 +92,11 @@ export async function POST(req: Request) {
         try {
             await sendVerificationEmail(email, plainToken, locale);
         } catch (error) {
-            console.error("Erreur lors de l’envoi de l’e-mail :", error);
+            logger.error({
+                route: "/api/auth/register",
+                message: error instanceof Error ? error.message : "Erreur inconnue",
+                stack: error instanceof Error ? error.stack : undefined,
+            });
             return NextResponse.json(
                 { error: "auth.register.errors.emailSendFailed" },
                 { status: 500 }
@@ -103,7 +108,11 @@ export async function POST(req: Request) {
             { status: 201 }
         );
     } catch (error) {
-        console.error("Erreur dans /api/auth/register :", error);
+        logger.error({
+            route: "/api/auth/register",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

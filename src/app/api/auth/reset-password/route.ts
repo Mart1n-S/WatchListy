@@ -4,6 +4,7 @@ import bcrypt from "bcryptjs";
 import crypto from "crypto";
 import { ResetPasswordSchema } from "@/lib/validators/resetPassword";
 import { z } from "zod";
+import logger from "@/lib/logger";
 
 /**
  * POST /api/auth/reset-password
@@ -64,12 +65,17 @@ export async function POST(req: Request) {
             { status: 200 }
         );
     } catch (error) {
-        console.error("Erreur lors de la réinitialisation :", error);
 
         if (error instanceof z.ZodError) {
             const issue = error.issues[0];
             return NextResponse.json({ error: issue.message }, { status: 400 });
         }
+
+        logger.error({
+            route: "/api/auth/reset-password",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
 
         return NextResponse.json(
             { error: "common.errors.internalServerError" },

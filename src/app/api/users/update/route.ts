@@ -5,6 +5,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { updateUserSchema } from "@/lib/validators/user";
 import { hash, compare } from "bcryptjs";
 import { ObjectId } from "mongodb";
+import logger from "@/lib/logger";
 
 /**
  * PATCH /api/users/update
@@ -116,7 +117,11 @@ export async function PATCH(req: Request) {
 
         return NextResponse.json({ user: updatedUser }, { status: 200 });
     } catch (error) {
-        console.error("Erreur dans /api/users/update :", error);
+        logger.error({
+            route: "/api/users/update",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

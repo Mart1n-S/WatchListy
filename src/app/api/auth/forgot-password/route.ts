@@ -1,30 +1,34 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
-import { randomBytes } from "crypto";
+import crypto from "crypto";
 import { sendResetPasswordEmail } from "@/lib/emails/sendResetPasswordEmail";
+import { ResendSchema } from "@/lib/validators/auth-email";
 
 /**
  * POST /api/auth/forgot-password
- * Envoie un e-mail de réinitialisation de mot de passe
+ * Envoie un e-mail de réinitialisation de mot de passe.
  */
 export async function POST(req: Request) {
     try {
-        const { email } = await req.json();
+        const json = await req.json();
         const locale = req.headers.get("accept-language") || "fr";
 
-        if (!email) {
-            return NextResponse.json(
-                { error: "auth.reset.form.errors.emailRequired" },
-                { status: 400 }
-            );
+        // --- Validation avec Zod ---
+        const parsed = ResendSchema.safeParse(json);
+        if (!parsed.success) {
+            const issue = parsed.error.issues[0];
+            return NextResponse.json({ error: issue.message }, { status: 400 });
         }
 
+        const { email } = parsed.data;
         const { db } = await connectToDatabase();
 
-        // Vérifie si l'utilisateur existe
-        const user = await db.collection("users").findOne({ email: email.toLowerCase() });
+        // --- Recherche de l'utilisateur ---
+        const user = await db.collection("users").findOne({
+            email: email.toLowerCase(),
+        });
 
-        // Si aucun utilisateur trouvé → réponse neutre
+        // Réponse neutre si l'utilisateur n'existe pas
         if (!user) {
             return NextResponse.json(
                 { message: "auth.reset.request.neutral" },
@@ -32,7 +36,7 @@ export async function POST(req: Request) {
             );
         }
 
-        // Vérifie si un token de réinitialisation est encore valide (10 min)
+        // --- Vérifie si un token existe encore et est valide (10 min) ---
         if (
             user.reset_token &&
             user.reset_token_expires &&
@@ -44,23 +48,28 @@ export async function POST(req: Request) {
             );
         }
 
-        // Génère un nouveau token
-        const resetToken = randomBytes(32).toString("hex");
+        // --- Génère un nouveau token ---
+        const plainToken = crypto.randomBytes(32).toString("hex");
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(plainToken)
+            .digest("hex");
+
         const resetTokenExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 min
 
-        // Met à jour l'utilisateur
+        // --- Met à jour l'utilisateur ---
         await db.collection("users").updateOne(
             { _id: user._id },
             {
                 $set: {
-                    reset_token: resetToken,
+                    reset_token: hashedToken,
                     reset_token_expires: resetTokenExpires,
                 },
             }
         );
 
-        // Envoie l'e-mail
-        await sendResetPasswordEmail(email, resetToken, locale);
+        // --- Envoie de l'e-mail ---
+        await sendResetPasswordEmail(email, plainToken, locale);
 
         return NextResponse.json(
             { message: "auth.reset.request.neutral" },

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { RegisterSchema } from "@/lib/validators/register";
 import { hash } from "bcryptjs";
-import { randomBytes } from "crypto";
+import crypto from "crypto";
 import { sendVerificationEmail } from "@/lib/emails/sendVerificationEmail";
 
 /**
@@ -35,11 +35,15 @@ export async function POST(req: Request) {
 
         const { email, pseudo, password, avatar, preferences } = parsed.data;
 
-        // --- Connexion à la base ---
+        // --- Connexion DB ---
         const { db } = await connectToDatabase();
 
-        // Vérifie email existant
-        const existingEmail = await db.collection("users").findOne({ email: email.toLowerCase() });
+        // Vérifie doublons
+        const [existingEmail, existingPseudo] = await Promise.all([
+            db.collection("users").findOne({ email: email.toLowerCase() }),
+            db.collection("users").findOne({ pseudo }),
+        ]);
+
         if (existingEmail) {
             return NextResponse.json(
                 { error: "auth.register.errors.emailExists" },
@@ -47,8 +51,6 @@ export async function POST(req: Request) {
             );
         }
 
-        // Vérifie pseudo existant
-        const existingPseudo = await db.collection("users").findOne({ pseudo });
         if (existingPseudo) {
             return NextResponse.json(
                 { error: "auth.register.errors.pseudoExists" },
@@ -56,12 +58,17 @@ export async function POST(req: Request) {
             );
         }
 
-        // --- Hachage du mot de passe ---
+        // --- Hash du mot de passe ---
         const hashedPassword = await hash(password, 10);
 
         // --- Génération du token de vérification ---
-        const verifyToken = randomBytes(32).toString("hex");
-        const verifyTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // expire dans 24h
+        const plainToken = crypto.randomBytes(32).toString("hex");
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(plainToken)
+            .digest("hex");
+
+        const verifyTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
 
         // --- Création du nouvel utilisateur ---
         const newUser = {
@@ -74,7 +81,7 @@ export async function POST(req: Request) {
             created_at: new Date(),
             verified_at: null,
             blocked_at: null,
-            verify_token: verifyToken,
+            verify_token: hashedToken, // token haché en base
             verify_token_expires: verifyTokenExpires,
         };
 
@@ -82,10 +89,9 @@ export async function POST(req: Request) {
 
         // --- Envoi d’un e-mail de vérification ---
         try {
-            // Passe la locale à la fonction email
-            await sendVerificationEmail(email, verifyToken, locale);
+            await sendVerificationEmail(email, plainToken, locale);
         } catch (error) {
-            console.error("Erreur lors de l’envoi de l’e-mail de vérification :", error);
+            console.error("Erreur lors de l’envoi de l’e-mail :", error);
             return NextResponse.json(
                 { error: "auth.register.errors.emailSendFailed" },
                 { status: 500 }

@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import { sendVerificationEmail } from "@/lib/emails/sendVerificationEmail";
-import { randomBytes } from "crypto";
+import crypto from "crypto";
+import { ResendSchema } from "@/lib/validators/auth-email";
 
 /**
  * POST /api/auth/resend-verification
@@ -9,29 +10,36 @@ import { randomBytes } from "crypto";
  */
 export async function POST(req: Request) {
     try {
-        const { email } = await req.json();
+        const json = await req.json();
         const locale = req.headers.get("accept-language") || "fr";
 
-        if (!email) {
+        // --- Validation via Zod ---
+        const result = ResendSchema.safeParse(json);
+        if (!result.success) {
+            const fieldError = result.error.issues[0];
             return NextResponse.json(
-                { error: "auth.verify.errors.tokenMissing" },
+                { error: fieldError.message },
                 { status: 400 }
             );
         }
 
+        const { email } = result.data;
         const { db } = await connectToDatabase();
 
-        // Recherche de l’utilisateur
-        const user = await db.collection("users").findOne({ email: email.toLowerCase() });
+        // --- Recherche de l’utilisateur ---
+        const user = await db
+            .collection("users")
+            .findOne({ email: email.toLowerCase() });
 
+        // Réponse neutre si l’utilisateur n’existe pas
         if (!user) {
-            // Pour éviter le spam, on renvoie un message neutre
             return NextResponse.json(
                 { message: "auth.verify.resendNeutral" },
                 { status: 200 }
             );
         }
 
+        // Déjà vérifié ?
         if (user.verified_at) {
             return NextResponse.json(
                 { error: "auth.verify.errors.emailAlreadyVerified" },
@@ -39,35 +47,40 @@ export async function POST(req: Request) {
             );
         }
 
-        // Vérifie si un token existe encore et n’a pas expiré
+        // Token encore valide → ne pas renvoyer d’e-mail pour éviter le spam
         if (
             user.verify_token &&
             user.verify_token_expires &&
             new Date(user.verify_token_expires) > new Date()
         ) {
-            // Token encore valide → ne pas renvoyer d’e-mail pour éviter le spam
             return NextResponse.json(
                 { message: "auth.verify.resendNeutral" },
                 { status: 200 }
             );
         }
 
-        // Nouveau token de vérification
-        const verifyToken = randomBytes(32).toString("hex");
-        const verifyTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000);
+        // --- Nouveau token de vérification ---
+        const plainToken = crypto.randomBytes(32).toString("hex");
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(plainToken)
+            .digest("hex");
 
+        const verifyTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // expire dans 24h
+
+        // --- Mise à jour de l’utilisateur ---
         await db.collection("users").updateOne(
             { _id: user._id },
             {
                 $set: {
-                    verify_token: verifyToken,
+                    verify_token: hashedToken,
                     verify_token_expires: verifyTokenExpires,
                 },
             }
         );
 
-        // Envoi du mail
-        await sendVerificationEmail(email, verifyToken, locale);
+        // --- Envoi de l’e-mail ---
+        await sendVerificationEmail(email, plainToken, locale);
 
         return NextResponse.json(
             { message: "auth.verify.resendSuccess" },

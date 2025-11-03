@@ -1,17 +1,18 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useRouter, useParams, usePathname } from "next/navigation";
 import { HiEye, HiEyeOff, HiMail, HiLockClosed } from "react-icons/hi";
 import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
 import { z } from "zod";
-// import Link from "next/link";
 
 import {
   ResetPasswordSchema,
   type ResetPasswordInput,
 } from "@/lib/validators/resetPassword";
+
+import { useFieldValidation } from "@/lib/utils/useFieldValidation";
 
 /** Gestion des erreurs par champ */
 type FieldErrors = Partial<Record<keyof ResetPasswordInput, string>>;
@@ -21,11 +22,9 @@ export default function ResetPasswordForm() {
   const tCommon = useTranslations("common");
 
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const { token } = useParams<{ token: string }>();
   const pathname = usePathname();
   const locale = pathname.startsWith("/en") ? "en" : "fr";
-
-  const token = searchParams.get("token");
 
   /** État du formulaire */
   const [values, setValues] = useState<ResetPasswordInput>({
@@ -42,7 +41,7 @@ export default function ResetPasswordForm() {
   });
   const [isLoading, setIsLoading] = useState(false);
 
-  /** Refs pour focus premier champ en erreur */
+  /** Refs pour focus sur le premier champ en erreur */
   const emailRef = useRef<HTMLInputElement | null>(null);
   const passwordRef = useRef<HTMLInputElement | null>(null);
   const confirmRef = useRef<HTMLInputElement | null>(null);
@@ -53,13 +52,22 @@ export default function ResetPasswordForm() {
     else if (errs.confirmPassword) confirmRef.current?.focus();
   };
 
+  /** Hook de validation champ-par-champ */
+  const { handleChangeValidation } = useFieldValidation(
+    ResetPasswordSchema,
+    values,
+    setFieldErrors,
+    t,
+    ["confirmPassword"] // champs à validation croisée
+  );
+
   /** Gestion des changements de champ */
   const handleChange = <K extends keyof ResetPasswordInput>(
     field: K,
     value: ResetPasswordInput[K]
   ) => {
     setValues((v) => ({ ...v, [field]: value }));
-    setFieldErrors((f) => ({ ...f, [field]: undefined }));
+    handleChangeValidation(field, value);
   };
 
   /** Critères de sécurité du mot de passe */
@@ -188,8 +196,7 @@ export default function ResetPasswordForm() {
                   fieldErrors.email
                     ? "border-red-600"
                     : "border-gray-700 hover:border-gray-600"
-                }
-              `}
+                }`}
             />
           </div>
           {fieldErrors.email && (
@@ -220,8 +227,7 @@ export default function ResetPasswordForm() {
                   fieldErrors.password
                     ? "border-red-600"
                     : "border-gray-700 hover:border-gray-600"
-                }
-              `}
+                }`}
             />
             <button
               type="button"
@@ -242,6 +248,7 @@ export default function ResetPasswordForm() {
               )}
             </button>
           </div>
+
           {fieldErrors.password && (
             <p className="mt-2 text-sm text-red-300">{fieldErrors.password}</p>
           )}
@@ -283,8 +290,7 @@ export default function ResetPasswordForm() {
                   fieldErrors.confirmPassword
                     ? "border-red-600"
                     : "border-gray-700 hover:border-gray-600"
-                }
-              `}
+                }`}
             />
             <button
               type="button"
@@ -345,17 +351,6 @@ export default function ResetPasswordForm() {
             t("submit")
           )}
         </button>
-
-        {/* Footer
-        <p className="text-center text-sm text-gray-400">
-          {t("alreadyAccount")}{" "}
-          <Link
-            href={`/${locale}/login`}
-            className="font-medium text-indigo-400 hover:text-indigo-300"
-          >
-            {t("goToLogin")}
-          </Link>
-        </p> */}
       </form>
     </div>
   );

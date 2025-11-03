@@ -1,14 +1,17 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
+import crypto from "crypto";
 
 /**
- * GET /api/auth/verify-email?token=xxxx
- * Vérifie le token de validation d’e-mail et active le compte si valide
+ * GET /api/auth/verify-email/[token]
+ * Vérifie le token de validation d’e-mail (haché en base) et active le compte si valide
  */
-export async function GET(req: Request) {
+export async function GET(
+    _req: Request,
+    context: { params: Promise<{ token: string }> }
+) {
     try {
-        const { searchParams } = new URL(req.url);
-        const token = searchParams.get("token");
+        const { token } = await context.params;
 
         if (!token) {
             return NextResponse.json(
@@ -21,10 +24,15 @@ export async function GET(req: Request) {
             );
         }
 
+        // Hachage du token reçu (pour comparaison)
+        const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
+
         const { db } = await connectToDatabase();
 
-        // Recherche l'utilisateur avec ce token
-        const user = await db.collection("users").findOne({ verify_token: token });
+        // Recherche de l’utilisateur avec le token haché
+        const user = await db
+            .collection("users")
+            .findOne({ verify_token: hashedToken });
 
         if (!user) {
             return NextResponse.json(
@@ -49,6 +57,7 @@ export async function GET(req: Request) {
             );
         }
 
+        // Déjà vérifié
         if (user.verified_at) {
             return NextResponse.json(
                 {

@@ -1,9 +1,16 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState } from "react";
 import { HiMail } from "react-icons/hi";
 import { useTranslations, useLocale } from "next-intl";
 import toast from "react-hot-toast";
+import { z } from "zod";
+
+import { useFieldValidation } from "@/lib/utils/useFieldValidation";
+import {
+  ResendSchema as EmailSchema,
+  type ResendInput as EmailInput,
+} from "@/lib/validators/auth-email";
 
 export default function ForgotPasswordForm() {
   const t = useTranslations("auth.reset.request");
@@ -11,19 +18,45 @@ export default function ForgotPasswordForm() {
   const tCommon = useTranslations("common");
   const locale = useLocale();
 
-  const [email, setEmail] = useState("");
+  /** État du formulaire */
+  const [values, setValues] = useState<EmailInput>({ email: "" });
+  const [errors, setErrors] = useState<Record<string, string>>({});
   const [isLoading, setIsLoading] = useState(false);
-  const [fieldError, setFieldError] = useState<string | null>(null);
-  const emailRef = useRef<HTMLInputElement | null>(null);
 
+  /** Validation champ par champ (focusout + live) */
+  const { handleChangeValidation } = useFieldValidation(
+    EmailSchema,
+    values,
+    setErrors,
+    tForm
+  );
+
+  /** Gestion du changement */
+  const handleChange = <K extends keyof EmailInput>(
+    field: K,
+    value: EmailInput[K]
+  ) => {
+    setValues((prev) => ({ ...prev, [field]: value }));
+    handleChangeValidation(field, value);
+  };
+
+  /** Soumission du formulaire */
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setFieldError(null);
+    setErrors({});
 
-    if (!email.trim()) {
-      setFieldError(tForm("errors.emailRequired"));
-      emailRef.current?.focus();
-      return;
+    try {
+      EmailSchema.parse(values);
+    } catch (err: unknown) {
+      if (err instanceof z.ZodError) {
+        const fieldErrors: Record<string, string> = {};
+        for (const issue of err.issues) {
+          const key = issue.path[0] as keyof EmailInput;
+          fieldErrors[key as string] = tForm(issue.message);
+        }
+        setErrors(fieldErrors);
+        return;
+      }
     }
 
     setIsLoading(true);
@@ -35,21 +68,26 @@ export default function ForgotPasswordForm() {
           "Content-Type": "application/json",
           "Accept-Language": locale,
         },
-        body: JSON.stringify({ email }),
+        body: JSON.stringify(values),
       });
 
       const data = await res.json();
 
       if (res.ok) {
         toast.success(t("neutral"), { position: "top-right", duration: 5000 });
-        setEmail("");
+        setValues({ email: "" });
+        setErrors({});
       } else if (data.error) {
         const cleanKey = String(data.error).replace(/^auth\.reset\.form\./, "");
         toast.error(
-          tForm(`errors.${cleanKey}`) || tCommon("errors.unexpected")
+          tForm(`errors.${cleanKey}`) || tCommon("errors.unexpected"),
+          { position: "top-right", duration: 5000 }
         );
       } else {
-        toast.error(tCommon("errors.unexpected"));
+        toast.error(tCommon("errors.unexpected"), {
+          position: "top-right",
+          duration: 5000,
+        });
       }
     } catch (err) {
       console.error("Erreur de réinitialisation :", err);
@@ -73,24 +111,24 @@ export default function ForgotPasswordForm() {
             <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
               <HiMail className="h-5 w-5 text-gray-400 group-focus-within:text-indigo-400 transition-colors" />
             </div>
+
             <input
-              ref={emailRef}
               id="email"
               name="email"
               type="email"
               autoComplete="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className={`block w-full pl-10 pr-3 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900
-                ${
-                  fieldError
-                    ? "border-red-600"
-                    : "border-gray-700 hover:border-gray-600"
-                }`}
+              value={values.email}
+              onChange={(e) => handleChange("email", e.target.value)}
+              className={`block w-full pl-10 pr-3 py-3 rounded-lg bg-gray-800 text-gray-100 placeholder-gray-500 border ${
+                errors.email
+                  ? "border-red-600"
+                  : "border-gray-700 hover:border-gray-600"
+              } transition-colors focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900`}
             />
           </div>
-          {fieldError && (
-            <p className="mt-2 text-sm text-red-300">{fieldError}</p>
+
+          {errors.email && (
+            <p className="mt-2 text-sm text-red-300">{errors.email}</p>
           )}
         </div>
 

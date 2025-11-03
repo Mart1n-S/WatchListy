@@ -7,6 +7,8 @@ import {
     TmdbRecommendation,
     TmdbMovieFull,
 } from "@/types/tmdb";
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 
 const TMDB_BASE = process.env.TMDB_API_BASE!;
 const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN!;
@@ -20,6 +22,11 @@ export async function GET(
     context: { params: Promise<{ type: string; id: string }> }
 ) {
     try {
+        // --- Authentification ---
+        const session = await getServerSession(authOptions);
+        if (!session?.user) {
+            return NextResponse.json({ error: "common.errors.unauthorized" }, { status: 401 });
+        }
         const { type, id } = await context.params;
         const { searchParams } = new URL(request.url);
         const lang = searchParams.get("lang") || "fr";

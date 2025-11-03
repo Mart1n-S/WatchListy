@@ -25,6 +25,7 @@
       "home": "Accueil",
       "movies": "Films",
       "series": "Séries",
+      "users": "Utilisateurs",
       "profile": "Profil",
       "login": "Connexion",
       "signup": "S’inscrire",
@@ -1191,6 +1192,7 @@
       "editButton": "Modifier",
       "deleteButton": "Supprimer",
       "cancelButton": "Annuler",
+      "searchPlaceholder": "Rechercher un film ou une série...",
       "noResult": "Aucun film ou série trouvé dans cette liste.",
       "tmdbFailed": "Impossible de récupérer les informations du film ou de la série.",
       "watchlist": {
@@ -1254,6 +1256,8 @@
     },
     "loading": "Chargement du profil...",
     "errors": {
+      "likeFailed": "Impossible de liker la Watchlist.",
+      "selfLike": "Vous ne pouvez pas liker votre propre Watchlist.",
       "fetchFailed": "Impossible de charger le profil utilisateur.",
       "notFound": "Utilisateur introuvable.",
       "selfFollow": "Vous ne pouvez pas vous suivre vous-même."
@@ -1278,9 +1282,29 @@
     "success": {
       "followed": "{pseudo} a été ajouté à vos abonnements.",
       "unfollowed": "{pseudo} a été retiré de vos abonnements."
+    },
+    "like": "J'aime",
+    "likes": "J'aimes"
+  },
+  "Like": {
+    "errors": {
+      "cannotLikeYourself": "Vous ne pouvez pas liker votre propre Watchlist."
     }
   },
-
+  "users": {
+    "pageTitle": "Classement des Watchlist les plus likées",
+    "title": "Classement des Watchlist les plus likées",
+    "titleColumn": "Utilisateurs",
+    "subtitle": "Découvrez les utilisateurs avec les Watchlist les plus populaires sur WatchListy.",
+    "searchPlaceholder": "Rechercher un utilisateur...",
+    "loading": "Chargement...",
+    "count": "{count} utilisateurs",
+    "noResults": "Aucun utilisateur ne correspond à votre recherche.",
+    "empty": "Aucun utilisateur trouvé.",
+    "errors": {
+      "fetchFailed": "Impossible de charger les utilisateurs."
+    }
+  },
   "common": {
     "errors": {
       "unauthorized": "Non autorisé.",

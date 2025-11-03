@@ -12,6 +12,11 @@ export async function GET(
     _request: NextRequest,
     context: { params: Promise<{ movieId: string }> }
 ) {
+    // --- Authentification ---
+    const token = await getToken({ req: _request, secret: process.env.NEXTAUTH_SECRET });
+    if (!token) {
+        return NextResponse.json({ error: "common.errors.unauthorized" }, { status: 401 });
+    }
     try {
         const { movieId } = await context.params;
         const parsedMovieId = parseInt(movieId, 10);

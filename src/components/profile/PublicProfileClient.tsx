@@ -9,9 +9,11 @@ import {
   FiTv,
   FiUserPlus,
   FiUserMinus,
+  FiHeart,
 } from "react-icons/fi";
 import { useAppDispatch, useAppSelector } from "@/lib/redux/hooks";
 import { followUser, unfollowUser } from "@/lib/redux/thunks/followThunks";
+import { toggleLikeUser } from "@/lib/redux/thunks/toggleLikeUser";
 import type { Genre } from "@/lib/redux/slices/genresSlice";
 import type { UserMovie } from "@/models/UserMovie";
 import MediaCard from "@/components/media/MediaCard";
@@ -30,6 +32,7 @@ interface PublicUser {
     movies?: number[];
     tv?: number[];
   };
+  likesCount?: number;
 }
 
 interface PublicLists {
@@ -65,12 +68,15 @@ export default function PublicProfileClient({
   const genres = useAppSelector((state) => state.genres);
   const following = useAppSelector((state) => state.following.users);
   const currentUser = useAppSelector((state) => state.user.name);
+  const likedUsers = useAppSelector((state) => state.user.likedUsers);
 
   const [data, setData] = useState<PublicProfileResponse | null>(null);
   const [mediaCache, setMediaCache] = useState<Record<string, TmdbDetails>>({});
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [likesCount, setLikesCount] = useState<number>(0);
+  const [liked, setLiked] = useState<boolean>(false);
 
   /** Vérifie si l’utilisateur courant suit déjà ce profil */
   const isFollowing = following.some((u) => u.pseudo === pseudo);
@@ -93,7 +99,6 @@ export default function PublicProfileClient({
             `/api/tmdb/${item.itemType}/${item.itemId}?lang=${locale}`
           );
           if (!res.ok) continue;
-
           const data = await res.json();
           const detail = data.details as TmdbDetails;
 
@@ -117,7 +122,7 @@ export default function PublicProfileClient({
     [locale, t]
   );
 
-  /** Charge le profil public */
+  /** Chargement du profil public */
   useEffect(() => {
     async function fetchProfile() {
       try {
@@ -126,16 +131,20 @@ export default function PublicProfileClient({
 
         const res = await fetch(`/api/users/${pseudo}`);
         if (!res.ok) throw new Error(`Erreur HTTP ${res.status}`);
-
         const data: PublicProfileResponse = await res.json();
+
         setData(data);
+        setLikesCount(data.user.likesCount ?? 0);
+
+        // Vérifie si le user a déjà liké cette watchlist
+        const isAlreadyLiked = likedUsers.includes(pseudo);
+        setLiked(isAlreadyLiked);
 
         const allItems: UserMovie[] = [
           ...data.lists.watchlist,
           ...data.lists.watching,
           ...data.lists.completed,
         ];
-
         await loadMediaDetails(allItems);
       } catch (err) {
         console.error("Erreur chargement profil public :", err);
@@ -146,9 +155,10 @@ export default function PublicProfileClient({
     }
 
     fetchProfile();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pseudo, t, loadMediaDetails]);
 
-  /** Gère le suivi / désabonnement */
+  /** Gère Follow / Unfollow */
   const handleToggleFollow = async () => {
     if (!data) return;
     if (data.user.pseudo === currentUser) {
@@ -172,7 +182,31 @@ export default function PublicProfileClient({
     }
   };
 
-  // --- Chargement / Erreur ---
+  /** Gère Like / Unlike */
+  const handleToggleLike = async (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+
+    if (!data) return;
+    if (data.user.pseudo === currentUser) {
+      toast.error(t("errors.selfLike"));
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      const result = await dispatch(toggleLikeUser(data.user.pseudo));
+      if (toggleLikeUser.fulfilled.match(result)) {
+        setLiked(result.payload.liked);
+        setLikesCount(result.payload.likesCount);
+      } else {
+        toast.error(t("errors.likeFailed"));
+      }
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center h-[50vh] text-gray-400">
@@ -217,23 +251,45 @@ export default function PublicProfileClient({
           </p>
         )}
 
-        {/* --- Bouton Suivre / Ne plus suivre --- */}
+        {/* --- Boutons Suivre / Like --- */}
         {currentUser !== user.pseudo && (
-          <button
-            onClick={handleToggleFollow}
-            disabled={isSubmitting}
-            className={`mt-4 flex items-center gap-2 px-5 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900
-              ${
+          <div className="flex flex-wrap justify-center gap-3 mt-4">
+            <button
+              onClick={handleToggleFollow}
+              disabled={isSubmitting}
+              className={`flex items-center gap-2 px-5 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 hover:cursor-pointer ${
                 isFollowing
-                  ? "bg-rose-600 hover:bg-rose-500 text-white focus:ring-rose-500 hover:cursor-pointer"
-                  : "bg-indigo-600 hover:bg-indigo-500 text-white focus:ring-indigo-500 hover:cursor-pointer"
+                  ? "bg-rose-600 hover:bg-rose-500 text-white focus:ring-rose-500"
+                  : "bg-indigo-600 hover:bg-indigo-500 text-white focus:ring-indigo-500"
               } ${
-              isSubmitting ? "opacity-70 cursor-not-allowed" : "hover:scale-105"
-            }`}
-          >
-            {isFollowing ? <FiUserMinus /> : <FiUserPlus />}
-            {isFollowing ? t("buttons.unfollow") : t("buttons.follow")}
-          </button>
+                isSubmitting
+                  ? "opacity-70 cursor-not-allowed"
+                  : "hover:scale-105"
+              }`}
+            >
+              {isFollowing ? <FiUserMinus /> : <FiUserPlus />}
+              {isFollowing ? t("buttons.unfollow") : t("buttons.follow")}
+            </button>
+
+            <button
+              onClick={handleToggleLike}
+              disabled={isSubmitting}
+              className={`flex items-center gap-2 px-5 py-2 rounded-lg font-medium transition-all focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-offset-gray-900 hover:cursor-pointer ${
+                liked
+                  ? "bg-pink-600 hover:bg-pink-500 text-white focus:ring-pink-500"
+                  : "bg-gray-800 hover:bg-gray-700 text-pink-400 focus:ring-gray-600"
+              } ${
+                isSubmitting
+                  ? "opacity-70 cursor-not-allowed"
+                  : "hover:scale-105"
+              }`}
+            >
+              <FiHeart className={liked ? "fill-white" : "text-pink-400"} />
+              <span>
+                {likesCount} {likesCount > 1 ? t("likes") : t("like")}
+              </span>
+            </button>
+          </div>
         )}
       </div>
 

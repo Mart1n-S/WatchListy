@@ -1,6 +1,8 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
 
 const TMDB_BASE = process.env.TMDB_API_BASE!;
@@ -32,6 +34,11 @@ export async function GET(
     request: Request,
     context: { params: Promise<{ type: string }> }
 ) {
+    // --- Authentification ---
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+        return NextResponse.json({ error: "common.errors.unauthorized" }, { status: 401 });
+    }
     try {
         const { type } = await context.params;
         if (type !== "movie" && type !== "tv") {

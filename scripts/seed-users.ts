@@ -69,6 +69,7 @@ async function seedUsers() {
                     tv: getRandomGenres(tvGenres, 2),
                 },
                 following: [],
+                likesReceived: [],
             };
 
             const result = await db.collection("users").insertOne(user);

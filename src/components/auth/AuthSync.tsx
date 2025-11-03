@@ -21,7 +21,7 @@ export default function AuthSync({ children }: { children: React.ReactNode }) {
 
   useEffect(() => {
     if (status === "authenticated" && session?.user) {
-      // Hydrate Redux avec les infos NextAuth
+      // --- Hydrate Redux avec les infos NextAuth ---
       dispatch(
         setUser({
           id: session.user.id ?? null,
@@ -31,16 +31,18 @@ export default function AuthSync({ children }: { children: React.ReactNode }) {
           role: session.user.role ?? "user",
           createdAt: session.user.createdAt ?? null,
           isAuthenticated: true,
+          followingIds: session.user.followingIds ?? [],
+          likedUsers: session.user.likedUsers ?? [],
           preferences: session.user.preferences ?? { movies: [], tv: [] },
         })
       );
 
-      // Charge les données principales
+      // --- Charge les données principales ---
       dispatch(fetchGenres(locale));
       dispatch(fetchUserMovies());
       dispatch(fetchFollowingUsers());
     } else if (status === "unauthenticated") {
-      // Purge complète du store Redux
+      // --- Purge complète du store Redux ---
       dispatch(clearUser());
       dispatch(clearUserMovies());
       dispatch(clearTmdbCache());

@@ -1,104 +1,250 @@
-# WatchListy 🎬
 
-**WatchListy** est une application web permettant aux utilisateurs de suivre leurs films et séries préférés, de créer des listes personnalisées et de recevoir des recommandations basées sur leurs goûts.  
-L’application utilise l’API externe [TMDB (The Movie Database)](https://www.themoviedb.org/) pour récupérer les informations sur les films et séries.
+# 🎬 WatchListy
+
+**WatchListy** est une application web moderne permettant aux utilisateurs de **gérer leurs films et séries préférés**, de **suivre d’autres cinéphiles**, et de **recevoir des recommandations personnalisées** selon leurs goûts.
+L’application s’appuie sur l’API [TMDB (The Movie Database)](https://www.themoviedb.org/) pour les données des films et séries, et propose une interface élégante, rapide et responsive.
+
+---
+
+## 📖 Table des matières
+
+1. [Fonctionnalités principales](#-fonctionnalités-principales)
+2. [Technologies utilisées](#-technologies-utilisées)
+3. [Architecture du projet](#-architecture-du-projet)
+4. [Installation et lancement](#-installation-et-lancement)
+5. [Seeding des données](#-seeding-des-données)
+6. [Internationalisation (i18n)](#-internationalisation-i18n)
+7. [Tests](#-tests)
+8. [Liens utiles](#-liens-utiles)
 
 ---
 
 ## 🚀 Fonctionnalités principales
 
-### **Authentification et gestion utilisateur**
-- Inscription / connexion (email + mot de passe, OAuth possible)  
-- Réinitialisation de mot de passe  
-- Gestion du profil utilisateur (avatar, pseudo, bio)  
-- Historique de visionnage  
+### 🔐 **Authentification et gestion utilisateur**
 
-### **Gestion des films/séries**
-- Ajouter des films/séries à différentes listes :  
-  - “À regarder”  
-  - “Regardés”  
-  - “Favoris”  
-- Retirer un film/série d’une liste  
-- Marquer un film comme “vu” ou “en cours de visionnage”  
-- Ajouter des notes ou critiques personnelles  
-- Visualiser la note moyenne globale des utilisateurs  
+* Inscription, connexion et déconnexion via **NextAuth**
+* Authentification sécurisée par **session**
+* Gestion complète du profil utilisateur :
 
-### **Filtrage et recherche**
-- Recherche par titre, acteur, réalisateur  
-- Filtrage par :  
-  - Genre  
-  - Popularité  
-  - Date de sortie  
-  - Note  
-- Tri par :  
-  - Date d’ajout  
-  - Note utilisateur  
-  - Popularité  
+  * Pseudo, avatar, email, préférences de genres
+  * Historique d’inscription
+* Réinitialisation du mot de passe
+* Vérification du compte et gestion des utilisateurs bloqués
 
+---
 
-### **Interaction sociale (optionnel)**
-- Commentaires sur les films/séries  
-- Suivre d’autres utilisateurs  
-- Voir les listes de films d’amis  
-- Notifications quand un ami note un film  
+### 🎥 **Gestion des films et séries**
 
-### **Performance et sécurité**
-- API interne sécurisée avec JWT ou session sécurisée  
-- Gestion sécurisée des mots de passe  
-- Caching des requêtes TMDB pour limiter les appels API  
-- Préchargement côté serveur (SSR) pour les pages critiques
+* Ajout de contenu à différentes listes :
+
+  * **À regarder** 🕒
+  * **En cours** ▶️
+  * **Terminés** ✅
+* Possibilité d’ajouter une **note** et une **critique** personnelle
+* Affichage des notes moyennes globales
+* Suppression et gestion rapide via modales de confirmation
+* Synchronisation automatique entre **frontend et base MongoDB**
+
+---
+
+### 🔍 **Recherche et filtrage avancés**
+
+* Recherche par **titre**
+* Filtres :
+
+  * Genre
+  * Popularité
+  * Date de sortie
+  * Note moyenne
+* Tri dynamique :
+
+  * Date d’ajout
+  * Popularité
+  * Note utilisateur
+
+---
+
+### 💬 **Avis et communauté**
+
+* Lecture des **avis des autres utilisateurs** sur les films/séries
+* Affichage des **notes individuelles** et de la date de publication
+* Page de profil publique pour chaque utilisateur (`/users/[pseudo]`)
+
+---
+
+### 🤝 **Interaction sociale**
+
+* Système de **follow / unfollow** entre utilisateurs
+* Liste de vos abonnements
+* Comptage dynamique du nombre d’abonnés
+* Accès aux profils publics des autres membres
+
+---
+
+### ⚙️ **Préférences et recommandations**
+
+* Choix de vos genres favoris (films et séries)
+* Préférences stockées dans le profil utilisateur
+---
+
+### 🌐 **Internationalisation (i18n)**
+
+* Application entièrement **multilingue (français / anglais)**
+* Gestion via **Next-Intl**
+* Traductions dynamiques côté serveur et client
+
+---
+
+### 🔒 **Performance & sécurité**
+
+* API interne sécurisée (route handlers Next.js)
+* Stockage sécurisé des mots de passe via **bcrypt**
+* Sessions protégées via **NextAuth + cookies HTTPOnly**
+* **Caching intelligent** des requêtes TMDB pour limiter les appels
+* **Server Side Rendering (SSR)** et **préchargement** des pages critiques
 
 ---
 
 ## 🛠️ Technologies utilisées
-- **Next.js** (React, SSR, API Routes)  
-- **TypeScript** pour typage strict et sécurité  
-- **Tailwind CSS** pour le style et responsive design  
-- **TMDB API** pour les films et séries  
-- **JWT / bcrypt** pour l’authentification sécurisée  
-- **MongoDB** pour la base de données 
+
+| Catégorie                | Technologies                                                |
+| ------------------------ | ----------------------------------------------------------- |
+| **Frontend**             | Next.js  (App Router), React 19, TypeScript, Tailwind CSS |
+| **Backend**              | API Routes Next.js, MongoDB, Mongoose-like driver           |
+| **Auth & sécurité**      | NextAuth, bcrypt, JWT (sessions sécurisées)                 |
+| **State Management**     | Redux Toolkit + Thunks                                      |
+| **API externe**          | TMDB (The Movie Database)                                   |
+| **Internationalisation** | next-intl                                                   |
+| **Notifications**        | react-hot-toast                                             |
+| **Animations & UI**      | Framer Motion            |
+| **Tests**                | Playwright                                                  |
+| **Déploiement**          | Compatible Vercel ou Node.js                                |
 
 ---
 
-## 🧩 Structure recommandée
-- `pages/` : pages Next.js  
-- `components/` : composants réutilisables (Listes, Cards, Modals…)  
-- `hooks/` : hooks personnalisés (useAuth, useMovies…)  
-- `lib/` : fonctions utilitaires (API calls, gestion TMDB, helpers…)  
-- `store/` : gestion du state global si nécessaire  
-- `styles/` : fichiers CSS / Tailwind config  
-- `types/` : types TypeScript pour l’API et les modèles  
+## 🧩 Architecture du projet
 
-## 📌 Lancement du projet
+```
+src/
+├── app/                # Routes et pages Next.js (App Router)
+│   ├── api/            # API internes sécurisées
+│   ├── [locale]/       # Pages traduites (fr/en)
+│   └── layout.tsx      # Layout global
+│
+├── components/         # Composants UI & sections
+│   ├── profile/        # Composants liés au profil utilisateur
+│   ├── movies/         # Cartes & listes de films/séries
+│   ├── ui/             # Modales, backgrounds, boutons…
+│   └── layout/         # Header, footer, etc.
+│
+├── lib/                # Fonctions utilitaires et config
+│   ├── redux/          # Redux store, slices et thunks
+│   ├── tmdb.ts         # Fonctions d’appel à l’API TMDB
+│   └── auth.ts         # NextAuth config
+│
+├── models/             # Types et modèles MongoDB
+└── public/             # Images et assets statiques
+```
+
+---
+
+## 📌 Installation et lancement
+
+### 1️⃣ Cloner le projet
 
 ```bash
-# Installer les dépendances
+git clone https://github.com/Mart1n-S/WatchListy.git
+cd WatchListy
+```
+
+### 2️⃣ Installer les dépendances
+
+```bash
 npm install
+```
 
-# Lancer le serveur de développement
+### 3️⃣ Configurer les variables d’environnement
+
+Crée un fichier `.env.local` à la racine :
+
+```bash
+MONGODB_URI=...
+NEXTAUTH_SECRET=...
+NEXTAUTH_URL=http://localhost:3000
+TMDB_API_KEY=...
+```
+
+### 4️⃣ Lancer le serveur de développement
+
+```bash
 npm run dev
+```
 
-# Construire pour la production
+### 5️⃣ Construire pour la production
+
+```bash
 npm run build
 npm start
 ```
+
+---
+
+## 🌱 Seeding des données
+
+Pour initialiser des utilisateurs de test dans la base de données :
+
+```bash
+npm run seed:users
+```
+
+---
+
+## 🌍 Internationalisation (i18n)
+
+L’application gère plusieurs langues via **Next-Intl**.
+Les fichiers de traduction se trouvent dans :
+
+```
+src/messages/
+├── fr.json
+└── en.json
+```
+
+Les namespaces sont organisés par page (ex : `profile`, `layout`, `movies`, etc.).
+
+---
+
+## 🧪 Tests
+
+Lancer les tests E2E avec **Playwright** :
+
+```bash
+npx playwright test
+```
+
+Générer un rapport interactif :
+
+```bash
+npx playwright show-report
+```
+
 ---
 
 ## 🌐 Liens utiles
 
 * [TMDB API](https://developers.themoviedb.org/3)
 * [Next.js Documentation](https://nextjs.org/docs)
-* [Tailwind CSS Documentation](https://tailwindcss.com/docs)
+* [Tailwind CSS](https://tailwindcss.com/docs)
+* [Redux Toolkit](https://redux-toolkit.js.org/)
+* [Next-Intl](https://next-intl-docs.vercel.app/)
+* [Playwright Documentation](https://playwright.dev/docs/intro)
+
 ---
 
-Lancer les tests Playwright :
+## 💙 Remerciements
 
-```bash
-npx playwright test
-```
+Ce projet a été conçu avec passion par **[Mart1n-S](https://github.com/Mart1n-S)**.
+Les données proviennent de [TMDB](https://www.themoviedb.org/), mais WatchListy n’est **ni affilié ni certifié** par TMDB.
 
-Générer le rapport de couverture des tests :
-
-```bash
-npx playwright show-report
-```
+---

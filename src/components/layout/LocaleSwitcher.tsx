@@ -1,42 +1,45 @@
 "use client";
 
 import { useState, useRef, useEffect, useCallback } from "react";
-import { usePathname, useSearchParams } from "next/navigation";
+import { useParams, usePathname, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import Image from "next/image";
 import { motion, AnimatePresence } from "framer-motion";
 import { HiChevronDown } from "react-icons/hi2";
 
 export default function LocaleSwitcher() {
+  const params = useParams<{ locale: string }>();
   const pathname = usePathname();
   const searchParams = useSearchParams();
+
   const [isOpen, setIsOpen] = useState(false);
   const [focusedIndex, setFocusedIndex] = useState<number | null>(null);
   const dropdownRef = useRef<HTMLDivElement>(null);
   const listRef = useRef<HTMLUListElement>(null);
 
-  // Détection de la locale actuelle
-  const currentLocale = pathname.startsWith("/en") ? "en" : "fr";
+  // --- Locale actuelle (segment dynamique [locale]) ---
+  const currentLocale = params.locale || "fr";
 
-  // Liste des langues disponibles
+  // --- Liste des langues disponibles ---
   const locales = [
     { code: "fr", label: "Français", flag: "/images/flags/france.svg" },
     { code: "en", label: "English", flag: "/images/flags/uk.svg" },
   ];
 
-  const active = locales.find((l) => l.code === currentLocale)!;
+  const active = locales.find((l) => l.code === currentLocale) ?? locales[0];
 
-  // Génère le chemin localisé en préservant les query params (token, etc.)
+  // --- Construit un chemin localisé en préservant les query params ---
   const getLocalizedPath = useCallback(
     (locale: string) => {
-      const cleanPath = pathname.replace(/^\/(fr|en)/, ""); // retire la locale actuelle
-      const queryString = searchParams.toString(); // récupère ?token=xxxx
+      // Supprime la locale actuelle du début du chemin
+      const cleanPath = pathname.replace(/^\/(fr|en)/, "");
+      const queryString = searchParams.toString();
       return `/${locale}${cleanPath}${queryString ? `?${queryString}` : ""}`;
     },
     [pathname, searchParams]
   );
 
-  // Ferme le menu quand on clique en dehors
+  // --- Ferme le menu quand on clique à l’extérieur ---
   useEffect(() => {
     const handleClickOutside = (e: MouseEvent) => {
       if (
@@ -50,7 +53,7 @@ export default function LocaleSwitcher() {
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, []);
 
-  // Gère le clavier sur le bouton
+  // --- Navigation clavier sur le bouton ---
   const handleKeyDownButton = (e: React.KeyboardEvent<HTMLButtonElement>) => {
     if (["Enter", " ", "ArrowDown"].includes(e.key)) {
       e.preventDefault();
@@ -59,7 +62,7 @@ export default function LocaleSwitcher() {
     }
   };
 
-  // Gère le clavier dans la liste
+  // --- Navigation clavier dans la liste ---
   const handleKeyDownList = (e: React.KeyboardEvent<HTMLUListElement>) => {
     if (e.key === "Escape") {
       setIsOpen(false);
@@ -82,6 +85,7 @@ export default function LocaleSwitcher() {
     }
   };
 
+  // --- Rendu ---
   return (
     <div ref={dropdownRef} className="relative">
       {/* --- Bouton principal --- */}

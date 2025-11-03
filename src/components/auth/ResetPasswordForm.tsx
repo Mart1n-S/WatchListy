@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
-import { useRouter, useSearchParams, usePathname } from "next/navigation";
+import { useRouter, useParams, usePathname } from "next/navigation";
 import { HiEye, HiEyeOff, HiMail, HiLockClosed } from "react-icons/hi";
 import { useTranslations } from "next-intl";
 import toast from "react-hot-toast";
@@ -22,11 +22,9 @@ export default function ResetPasswordForm() {
   const tCommon = useTranslations("common");
 
   const router = useRouter();
-  const searchParams = useSearchParams();
+  const { token } = useParams<{ token: string }>();
   const pathname = usePathname();
   const locale = pathname.startsWith("/en") ? "en" : "fr";
-
-  const token = searchParams.get("token");
 
   /** État du formulaire */
   const [values, setValues] = useState<ResetPasswordInput>({

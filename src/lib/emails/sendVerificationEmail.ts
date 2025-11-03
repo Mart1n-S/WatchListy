@@ -3,7 +3,7 @@ import fr from "@/app/[locale]/messages/fr.json";
 import en from "@/app/[locale]/messages/en.json";
 
 export async function sendVerificationEmail(email: string, token: string, locale: string = "fr") {
-  const verifyUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/verify-email?token=${token}`;
+  const verifyUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/verify-email/${token}`;
 
   // Sélection des traductions depuis les fichiers JSON
   const messages = locale === "en" ? en : fr;

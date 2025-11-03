@@ -7,7 +7,7 @@ export async function sendResetPasswordEmail(
   token: string,
   locale: string = "fr"
 ) {
-  const resetUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/reset-password?token=${token}`;
+  const resetUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/reset-password/${token}`;
 
   // Sélection des traductions depuis les fichiers JSON
   const messages = locale === "en" ? en : fr;

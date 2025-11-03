@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { useSearchParams } from "next/navigation";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { useTranslations, useLocale } from "next-intl";
 import toast from "react-hot-toast";
@@ -12,8 +12,7 @@ type VerifyStatus = "loading" | "success" | "expired" | "invalid" | "error";
 export default function VerifyEmailClient() {
   const t = useTranslations("auth.verify");
   const locale = useLocale();
-  const searchParams = useSearchParams();
-  const token = searchParams.get("token");
+  const { token } = useParams<{ token: string }>();
 
   const [status, setStatus] = useState<VerifyStatus>("loading");
 
@@ -25,7 +24,7 @@ export default function VerifyEmailClient() {
 
     const verifyEmail = async () => {
       try {
-        const res = await fetch(`/api/auth/verify-email?token=${token}`);
+        const res = await fetch(`/api/auth/verify-email/${token}`);
         const data = await res.json();
 
         if (res.ok && data.status === "success") {

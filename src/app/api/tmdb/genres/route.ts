@@ -2,6 +2,7 @@ export const dynamic = "force-dynamic";
 export const revalidate = 86400;
 
 import { NextResponse } from "next/server";
+import logger from "@/lib/logger";
 
 const TMDB_BASE = process.env.TMDB_API_BASE!;
 const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN!;
@@ -56,7 +57,11 @@ export async function GET(request: Request) {
             }
         );
     } catch (error) {
-        console.error("Erreur TMDB:", error);
+        logger.error({
+            route: "/api/tmdb/genres",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "Impossible de récupérer les genres." },
             { status: 500 }

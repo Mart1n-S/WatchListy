@@ -4,6 +4,7 @@ export const revalidate = 3600;
 import { authOptions } from "@/lib/auth";
 import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import logger from "@/lib/logger";
 
 const TMDB_BASE = process.env.TMDB_API_BASE!;
 const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN!;
@@ -108,7 +109,11 @@ export async function GET(
             }
         );
     } catch (error) {
-        console.error("Erreur TMDB (discover):", error);
+        logger.error({
+            route: "/api/tmdb/[type]/discover",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json({ error: "common.errors.internalServerError" }, { status: 500 });
     }
 }

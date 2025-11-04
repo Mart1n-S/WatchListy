@@ -4,6 +4,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import type { UserMovie } from "@/models/UserMovie";
 import { z } from "zod";
 import { UserMovieSchema } from "@/lib/validators/userMovie";
+import logger from "@/lib/logger";
 
 const StatusSchema = UserMovieSchema.pick({ status: true });
 
@@ -40,7 +41,11 @@ export async function GET(
 
         return NextResponse.json(entry, { status: 200 });
     } catch (error) {
-        console.error("Erreur GET /api/user-movies/[itemId] :", error);
+        logger.error({
+            route: "/api/user-movies/[itemId]",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json({ error: "common.errors.internalServerError" }, { status: 500 });
     }
 }
@@ -83,10 +88,15 @@ export async function PATCH(
 
         return NextResponse.json(result.value, { status: 200 });
     } catch (error) {
-        console.error("Erreur PATCH /api/user-movies/[itemId] :", error);
+
         if (error instanceof z.ZodError) {
             return NextResponse.json({ error: "userMovies.validation.failed" }, { status: 400 });
         }
+        logger.error({
+            route: "/api/user-movies/[itemId]",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json({ error: "common.errors.internalServerError" }, { status: 500 });
     }
 }
@@ -124,7 +134,11 @@ export async function DELETE(
 
         return NextResponse.json({ success: true }, { status: 200 });
     } catch (error) {
-        console.error("Erreur DELETE /api/user-movies/[itemId] :", error);
+        logger.error({
+            route: "/api/user-movies/[itemId]",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json({ error: "common.errors.internalServerError" }, { status: 500 });
     }
 }

@@ -3,6 +3,7 @@ import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { connectToDatabase } from "@/lib/mongodb";
 import { ObjectId } from "mongodb";
+import logger from "@/lib/logger";
 
 /**
  * GET /api/users/following
@@ -42,7 +43,11 @@ export async function GET() {
 
         return NextResponse.json(followingUsers, { status: 200 });
     } catch (error) {
-        console.error("Erreur /api/users/following :", error);
+        logger.error({
+            route: "/api/users/following",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

@@ -5,17 +5,26 @@ import LoginForm from "@/components/auth/LoginForm";
 import BackgroundCinematic from "@/components/ui/BackgroundCinematic";
 
 // --- Traduction dynamique des métadonnées ---
-export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "auth.login.meta" });
 
   return {
     title: t("title"),
+    description: t("description"),
   };
 }
 
 // --- Page principale ---
-export default async function LoginPage({ params }: { params: Promise<{ locale: string }> }) {
+export default async function LoginPage({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}) {
   const { locale } = await params;
   const t = await getTranslations({ locale, namespace: "auth.login" });
 

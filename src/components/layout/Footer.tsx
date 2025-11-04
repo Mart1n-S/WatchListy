@@ -155,7 +155,7 @@ export default function Footer() {
             <button
               className="px-6 py-2 rounded-lg bg-gradient-to-r from-blue-600 to-emerald-500 text-white
                                hover:from-blue-700 hover:to-emerald-600 transition-all
-                               focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900"
+                               focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-offset-2 focus:ring-offset-gray-900 hover:cursor-pointer"
             >
               {t("newsletter.button")}
             </button>

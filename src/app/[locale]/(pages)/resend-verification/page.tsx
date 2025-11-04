@@ -1,9 +1,26 @@
-"use client";
-
 import { useTranslations } from "next-intl";
 import BackgroundCinematic from "@/components/ui/BackgroundCinematic";
 import ResendForm from "@/components/auth/ResendForm";
+import type { Metadata } from "next";
+import { getTranslations } from "next-intl/server";
 
+// --- Traduction dynamique des métadonnées ---
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string }>;
+}): Promise<Metadata> {
+  const { locale } = await params;
+  const t = await getTranslations({
+    locale,
+    namespace: "auth.verify.resend.meta",
+  });
+
+  return {
+    title: t("title"),
+    description: t("description"),
+  };
+}
 export default function ResendVerificationPage() {
   const t = useTranslations("auth.verify.resend");
 

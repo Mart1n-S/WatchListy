@@ -5,6 +5,9 @@ export async function generateMetadata() {
   const t = await getTranslations("users");
   return {
     title: t("pageTitle", { defaultValue: "Utilisateurs populaires" }),
+    description: t("pageDescription", {
+      defaultValue: "Découvrez les utilisateurs les plus actifs de WatchListy.",
+    }),
   };
 }
 

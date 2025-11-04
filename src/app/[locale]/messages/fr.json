@@ -539,8 +539,8 @@
       "subtitle": "Votre <highlight>compagnon ultime</highlight> pour suivre, organiser et découvrir vos films et séries préférés.",
       "cta": "Commencer gratuitement",
       "stats": {
-        "followed": "124 films suivis",
-        "reviews": "42 avis"
+        "followed": "+50 000 films & séries",
+        "reviews": "+800 avis"
       }
     },
 
@@ -611,7 +611,8 @@
   "auth": {
     "login": {
       "meta": {
-        "title": "Connexion"
+        "title": "Connexion",
+        "description": "Connectez-vous à votre compte WatchListy pour accéder à vos listes et recommandations."
       },
       "title": "Se connecter",
       "subtitle": "Accédez à vos listes et recommandations.",
@@ -648,7 +649,8 @@
 
     "register": {
       "meta": {
-        "title": "Inscription"
+        "title": "Inscription",
+        "description": "Créez un compte WatchListy pour commencer à gérer vos films et séries."
       },
       "title": "Créer un compte",
       "subtitle": "Rejoignez Watchlisty et commencez à gérer vos films et séries.",
@@ -795,6 +797,10 @@
       }
     },
     "verify": {
+      "meta": {
+        "title": "Vérification de l’e-mail",
+        "description": "Vérifiez votre adresse e-mail pour activer votre compte WatchListy."
+      },
       "loading": "Vérification de votre e-mail en cours...",
       "successTitle": "E-mail confirmé avec succès 🎉",
       "successText": "Votre adresse e-mail a été vérifiée avec succès. Vous pouvez maintenant vous connecter.",
@@ -810,6 +816,10 @@
         "emailInvalid": "L’adresse e-mail n’est pas valide."
       },
       "resend": {
+        "meta": {
+          "title": "Renvoyer l’e-mail de vérification",
+          "description": "Demandez un nouvel e-mail de vérification pour confirmer votre adresse e-mail."
+        },
         "title": "Renvoyer l’e-mail de vérification",
         "description": "Entrez votre adresse e-mail pour recevoir un nouveau lien de confirmation.",
         "button": "Renvoyer l’e-mail",
@@ -1293,6 +1303,7 @@
   },
   "users": {
     "pageTitle": "Classement des Watchlist les plus likées",
+    "pageDescription": "Découvrez les utilisateurs avec les Watchlist les plus populaires sur WatchListy.",
     "title": "Classement des Watchlist les plus likées",
     "titleColumn": "Utilisateurs",
     "subtitle": "Découvrez les utilisateurs avec les Watchlist les plus populaires sur WatchListy.",

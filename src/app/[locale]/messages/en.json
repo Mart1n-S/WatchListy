@@ -539,8 +539,8 @@
       "subtitle": "Your <highlight>ultimate companion</highlight> to track, organize and discover your favorite movies and series.",
       "cta": "Get started for free",
       "stats": {
-        "followed": "124 movies tracked",
-        "reviews": "42 reviews"
+        "followed": "+50 000 movies and series",
+        "reviews": "+800 reviews"
       }
     },
 
@@ -610,7 +610,8 @@
   "auth": {
     "login": {
       "meta": {
-        "title": "Login"
+        "title": "Login",
+        "description": "Access your Watchlisty account to manage your watchlists, track your progress, and get personalized recommendations."
       },
       "title": "Sign in",
       "subtitle": "Access your watchlists and recommendations.",
@@ -647,7 +648,8 @@
 
     "register": {
       "meta": {
-        "title": "Sign up"
+        "title": "Sign up",
+        "description": "Create a Watchlisty account to start managing your movies and shows."
       },
       "title": "Create an account",
       "subtitle": "Join Watchlisty and start managing your movies and shows.",
@@ -793,6 +795,10 @@
       }
     },
     "verify": {
+      "meta": {
+        "title": "Email Verification",
+        "description": "Verify your email address to activate your Watchlisty account."
+      },
       "loading": "Verifying your email...",
       "successTitle": "Email successfully verified 🎉",
       "successText": "Your email has been verified successfully. You can now log in.",
@@ -809,6 +815,10 @@
       },
 
       "resend": {
+        "meta": {
+          "title": "Resend Verification Email",
+          "description": "Request a new verification email to confirm your Watchlisty account."
+        },
         "title": "Resend verification email",
         "description": "Enter your email address to receive a new verification link.",
         "button": "Resend email",
@@ -1294,6 +1304,7 @@
   "users": {
     "pageTitle": "Ranking of the most liked Watchlists",
     "title": "Ranking of the most liked Watchlists",
+    "pageDescription": "Discover users with the most popular Watchlists on WatchListy.",
     "titleColumn": "Users",
     "subtitle": "Discover users with the most popular Watchlists on WatchListy.",
     "searchPlaceholder": "Search for a user...",

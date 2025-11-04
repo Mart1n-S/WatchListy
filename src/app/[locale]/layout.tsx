@@ -22,7 +22,8 @@ export function generateStaticParams() {
 /* -------------------------------------------------------------------------- */
 /*                         MÉTADONNÉES DYNAMIQUES                             */
 /* -------------------------------------------------------------------------- */
-const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000";
+const siteUrl =
+  process.env.NEXT_PUBLIC_SITE_URL || "https://watch-listy-one.vercel.app";
 const googleVerification =
   process.env.NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION || "";
 
@@ -60,8 +61,11 @@ export async function generateMetadata({
       },
     },
     alternates: {
-      canonical: `/${locale}`,
-      languages: { "fr-FR": "/fr", "en-US": "/en" },
+      canonical: `${siteUrl}/${locale}`,
+      languages: {
+        "fr-FR": `${siteUrl}/fr`,
+        "en-US": `${siteUrl}/en`,
+      },
     },
     openGraph: {
       title: t("ogTitle") || t("title"),

@@ -3,9 +3,9 @@
 import Link from "next/link";
 import { motion, useReducedMotion } from "framer-motion";
 import { FiFilm, FiCheckCircle, FiStar, FiUserPlus } from "react-icons/fi";
-import { FaImdb } from "react-icons/fa";
 import { fadeInUp, gradientBackground } from "@/lib/animation";
 import { useTranslations, useLocale } from "next-intl";
+import Image from "next/image";
 
 export function HeroSection() {
   const prefersReducedMotion = useReducedMotion();
@@ -92,26 +92,42 @@ export function HeroSection() {
           className="relative w-full max-w-3xl h-64 mx-auto bg-gradient-to-br from-blue-500/10 to-emerald-500/10 rounded-2xl overflow-hidden shadow-xl"
           aria-hidden="true"
         >
-          <div className="absolute inset-0 flex items-center justify-center">
+          {/* --- Cartes d'affiches --- */}
+          <div className="absolute inset-0 flex items-center justify-center -translate-y-6 sm:-translate-y-8">
             <div className="flex space-x-4">
-              {[...Array(5)].map((_, i) => (
+              {[
+                "/images/hero-posters/demonSalyer.webp",
+                "/images/hero-posters/ca.webp",
+                "/images/hero-posters/strangerThings.webp",
+                "/images/hero-posters/f1.webp",
+                "/images/hero-posters/4F.webp",
+              ].map((src, i) => (
                 <div
                   key={i}
-                  className="w-20 h-32 bg-gradient-to-br from-blue-400 to-emerald-400 rounded-lg opacity-80 transition-transform will-change-transform"
-                  style={{ transform: `rotate(${i * 8 - 20}deg)` }}
-                />
+                  className="relative w-20 h-32 sm:w-24 sm:h-36 md:w-28 md:h-40 rounded-lg overflow-hidden shadow-lg transform transition-transform will-change-transform"
+                  style={{
+                    transform: `rotate(${i * 8 - 20}deg)`,
+                  }}
+                >
+                  <Image
+                    src={src}
+                    alt=""
+                    fill
+                    sizes="(max-width: 768px) 80px, (max-width: 1024px) 100px, 120px"
+                    className="object-cover rounded-lg"
+                    priority={i === 2}
+                  />
+                  <div className="absolute inset-0 bg-black/10 transition-colors" />
+                </div>
               ))}
             </div>
           </div>
 
+          {/* --- Bandeau infos --- */}
           <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between px-4 py-2 bg-gray-800/90 backdrop-blur-sm rounded-lg text-gray-100">
             <div className="flex items-center space-x-2">
               <FiCheckCircle className="text-green-400" aria-hidden="true" />
               <span className="text-sm font-medium">{t("stats.followed")}</span>
-            </div>
-            <div className="flex items-center space-x-2">
-              <FaImdb className="text-yellow-400" aria-hidden="true" />
-              <span className="text-sm font-medium">8.2/10</span>
             </div>
             <div className="flex items-center space-x-2">
               <FiStar className="text-blue-400" aria-hidden="true" />

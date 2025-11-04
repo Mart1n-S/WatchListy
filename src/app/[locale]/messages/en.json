@@ -25,6 +25,7 @@
       "home": "Home",
       "movies": "Movies",
       "series": "Series",
+      "users": "Users",
       "profile": "Profile",
       "login": "Login",
       "signup": "Sign up",
@@ -1189,6 +1190,7 @@
       "editButton": "Edit",
       "deleteButton": "Delete",
       "cancelButton": "Cancel",
+      "searchPlaceholder": "Search for a movie or series...",
       "noResult": "No movie or series found in this list.",
       "tmdbFailed": "Failed to retrieve movie or series information.",
       "watchlist": {
@@ -1253,6 +1255,8 @@
     },
     "loading": "Loading profile...",
     "errors": {
+      "likeFailed": "Could not like the user's Watchlist.",
+      "selfLike": "You cannot like your own Watchlist.",
       "fetchFailed": "Could not load user profile.",
       "notFound": "User not found."
     },
@@ -1276,6 +1280,29 @@
     "success": {
       "followed": "{pseudo} has been added to your subscriptions.",
       "unfollowed": "{pseudo} has been removed from your subscriptions."
+    },
+    "like": "Like",
+    "likes": "Likes"
+  },
+
+  "Like": {
+    "errors": {
+      "cannotLikeYourself": "You cannot like your own Watchlist."
+    }
+  },
+
+  "users": {
+    "pageTitle": "Ranking of the most liked Watchlists",
+    "title": "Ranking of the most liked Watchlists",
+    "titleColumn": "Users",
+    "subtitle": "Discover users with the most popular Watchlists on WatchListy.",
+    "searchPlaceholder": "Search for a user...",
+    "loading": "Loading...",
+    "count": "{count} users",
+    "noResults": "No users found matching your search.",
+    "empty": "No users found.",
+    "errors": {
+      "fetchFailed": "Failed to load users."
     }
   },
 

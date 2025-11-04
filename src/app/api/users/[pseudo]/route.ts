@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
+import { ObjectId, UpdateFilter } from "mongodb";
+import type { User } from "@/models/User";
+import logger from "@/lib/logger";
 
 /**
  * GET /api/users/[pseudo]
@@ -10,6 +15,12 @@ export async function GET(
     _req: Request,
     context: { params: Promise<{ pseudo: string }> }
 ) {
+    // --- Authentification ---
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+        return NextResponse.json({ error: "common.errors.unauthorized" }, { status: 401 });
+    }
+
     try {
         const { db } = await connectToDatabase();
         const { pseudo } = await context.params;
@@ -56,6 +67,7 @@ export async function GET(
                     avatar: user.avatar,
                     created_at: user.created_at,
                     preferences: user.preferences,
+                    likesCount: user.likesReceived?.length || 0,
                 },
                 lists: {
                     watchlist: watchlist.map((m) => ({
@@ -78,7 +90,81 @@ export async function GET(
             { status: 200 }
         );
     } catch (error) {
-        console.error("Erreur /api/users/[pseudo] :", error);
+        logger.error({
+            route: "/api/users/[pseudo]",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
+        return NextResponse.json(
+            { error: "common.errors.internalServerError" },
+            { status: 500 }
+        );
+    }
+}
+
+/**
+ * PATCH /api/users/[pseudo]
+ * → Like / Unlike la watchlist d’un utilisateur
+ */
+export async function PATCH(
+    _req: Request,
+    context: { params: Promise<{ pseudo: string }> }
+) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user) {
+            return NextResponse.json({ error: "common.errors.unauthorized" }, { status: 401 });
+        }
+
+        const currentUserId = new ObjectId(session.user.id);
+        const { db } = await connectToDatabase();
+        const { pseudo } = await context.params;
+
+        const targetUser = await db.collection<User>("users").findOne({ pseudo });
+        if (!targetUser) {
+            return NextResponse.json(
+                { error: "Follow.errors.userNotFound" },
+                { status: 404 }
+            );
+        }
+
+        const targetUserId = targetUser._id as ObjectId;
+
+        if (targetUserId.equals(currentUserId)) {
+            return NextResponse.json(
+                { error: "Like.errors.cannotLikeYourself" },
+                { status: 400 }
+            );
+        }
+
+        const alreadyLiked = (targetUser.likesReceived ?? []).some((id) =>
+            id.equals(currentUserId)
+        );
+
+        const updateQuery = (alreadyLiked
+            ? { $pull: { likesReceived: currentUserId } }
+            : { $addToSet: { likesReceived: currentUserId } }) as UpdateFilter<User>;
+
+        const updatedUser = await db
+            .collection<User>("users")
+            .findOneAndUpdate(
+                { _id: targetUserId },
+                updateQuery,
+                { returnDocument: "after" }
+            );
+
+        const likesCount = updatedUser.value?.likesReceived?.length ?? 0;
+
+        return NextResponse.json({
+            liked: !alreadyLiked,
+            likesCount,
+        });
+    } catch (error) {
+        logger.error({
+            route: "/api/users/[pseudo]",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

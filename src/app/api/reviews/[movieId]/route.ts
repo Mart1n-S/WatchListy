@@ -3,6 +3,7 @@ import { getToken } from "next-auth/jwt";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Review } from "@/models/Review";
 import { ReviewSchema } from "@/lib/validators/review";
+import logger from "@/lib/logger";
 
 /**
  * GET /api/reviews/[movieId]
@@ -12,6 +13,11 @@ export async function GET(
     _request: NextRequest,
     context: { params: Promise<{ movieId: string }> }
 ) {
+    // --- Authentification ---
+    const token = await getToken({ req: _request, secret: process.env.NEXTAUTH_SECRET });
+    if (!token) {
+        return NextResponse.json({ error: "common.errors.unauthorized" }, { status: 401 });
+    }
     try {
         const { movieId } = await context.params;
         const parsedMovieId = parseInt(movieId, 10);
@@ -32,7 +38,11 @@ export async function GET(
 
         return NextResponse.json(reviews, { status: 200 });
     } catch (err) {
-        console.error("Erreur GET /api/reviews/[movieId] :", err);
+        logger.error({
+            route: "/api/reviews/[movieId]",
+            message: err instanceof Error ? err.message : "Erreur inconnue",
+            stack: err instanceof Error ? err.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }
@@ -86,7 +96,11 @@ export async function PATCH(
 
         return NextResponse.json(result.value, { status: 200 });
     } catch (err) {
-        console.error("Erreur PATCH /api/reviews/[movieId] :", err);
+        logger.error({
+            route: "/api/reviews/[movieId]",
+            message: err instanceof Error ? err.message : "Erreur inconnue",
+            stack: err instanceof Error ? err.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }
@@ -129,7 +143,11 @@ export async function DELETE(
 
         return NextResponse.json({ success: true }, { status: 200 });
     } catch (err) {
-        console.error("Erreur DELETE /api/reviews/[movieId] :", err);
+        logger.error({
+            route: "/api/reviews/[movieId]",
+            message: err instanceof Error ? err.message : "Erreur inconnue",
+            stack: err instanceof Error ? err.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

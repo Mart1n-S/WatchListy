@@ -1,10 +1,13 @@
 import { NextResponse } from "next/server";
 import { connectToDatabase } from "@/lib/mongodb";
 import crypto from "crypto";
+import { ObjectId } from "mongodb";
+import logger from "@/lib/logger";
 
 /**
  * GET /api/auth/verify-email/[token]
- * Vérifie le token de validation d’e-mail (haché en base) et active le compte si valide
+ * ➜ Vérifie un token de validation d’e-mail via la collection `auth_tokens`
+ *    et active le compte utilisateur s’il est valide et non expiré.
  */
 export async function GET(
     _req: Request,
@@ -24,40 +27,46 @@ export async function GET(
             );
         }
 
-        // Hachage du token reçu (pour comparaison)
+        // Hache le token reçu pour comparer
         const hashedToken = crypto.createHash("sha256").update(token).digest("hex");
 
         const { db } = await connectToDatabase();
 
-        // Recherche de l’utilisateur avec le token haché
-        const user = await db
-            .collection("users")
-            .findOne({ verify_token: hashedToken });
+        // Recherche du token actif (non expiré) dans `auth_tokens`
+        const tokenDoc = await db.collection("auth_tokens").findOne({
+            type: "verify-email",
+            tokenHash: hashedToken,
+            expiresAt: { $gt: new Date() },
+        });
 
-        if (!user) {
+        if (!tokenDoc) {
             return NextResponse.json(
                 {
                     status: "error",
-                    code: "invalid",
+                    code: "invalid_or_expired",
                     error: "auth.verify.errors.invalidLink",
                 },
                 { status: 400 }
             );
         }
 
-        // Vérifie l'expiration du token
-        if (new Date(user.verify_token_expires) < new Date()) {
+        // Recherche de l'utilisateur associé
+        const user = await db
+            .collection("users")
+            .findOne({ _id: new ObjectId(tokenDoc.userId) });
+
+        if (!user) {
             return NextResponse.json(
                 {
                     status: "error",
-                    code: "expired",
-                    error: "auth.verify.errors.expiredLink",
+                    code: "user_not_found",
+                    error: "auth.verify.errors.invalidLink",
                 },
                 { status: 400 }
             );
         }
 
-        // Déjà vérifié
+        // Déjà vérifié ?
         if (user.verified_at) {
             return NextResponse.json(
                 {
@@ -69,14 +78,14 @@ export async function GET(
             );
         }
 
-        // Met à jour l’utilisateur : e-mail confirmé
+        // Active le compte utilisateur
         await db.collection("users").updateOne(
             { _id: user._id },
-            {
-                $set: { verified_at: new Date() },
-                $unset: { verify_token: "", verify_token_expires: "" },
-            }
+            { $set: { verified_at: new Date() } }
         );
+
+        // Supprime le token (bonne pratique : éviter réutilisation)
+        await db.collection("auth_tokens").deleteOne({ _id: tokenDoc._id });
 
         return NextResponse.json(
             {
@@ -86,7 +95,12 @@ export async function GET(
             { status: 200 }
         );
     } catch (error) {
-        console.error("Erreur lors de la vérification d’e-mail:", error);
+        logger.error({
+            route: "/api/auth/verify-email/[token]",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
+
         return NextResponse.json(
             {
                 status: "error",

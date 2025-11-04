@@ -2,21 +2,36 @@
 
 import { useState, useEffect } from "react";
 import { FiSearch, FiX } from "react-icons/fi";
-import { useTranslations } from "next-intl";
 
-interface UserMovieSearchBarProps {
+interface SearchBarProps {
+  /** Valeur du champ de recherche */
   value: string;
+
+  /** Callback appelée à chaque changement de texte */
   onChange: (query: string) => void;
+
+  /** Placeholder personnalisé */
+  placeholder?: string;
+
+  /** Couleur principale du focus ring (ex: "indigo" ou "rose") */
+  accentColor?: string;
+
+  /** Largeur max (optionnelle, par défaut `max-w-lg`) */
+  maxWidthClass?: string;
 }
 
 /**
- * Barre de recherche pour filtrer les films de la liste utilisateur (frontend only)
+ * SearchBar
+ * Composant générique de barre de recherche (frontend-only)
+ * Réutilisable pour filtrer tout type de liste (films, users, etc.)
  */
-export default function UserMovieSearchBar({
+export default function SearchBar({
   value,
   onChange,
-}: UserMovieSearchBarProps) {
-  const t = useTranslations("userMovies.search");
+  placeholder = "Rechercher...",
+  accentColor = "indigo",
+  maxWidthClass = "max-w-lg",
+}: SearchBarProps) {
   const [query, setQuery] = useState(value || "");
   const [isMobile, setIsMobile] = useState(false);
 
@@ -41,10 +56,13 @@ export default function UserMovieSearchBar({
   };
 
   return (
-    <div className="w-full max-w-lg mx-auto mb-8 relative">
-      {/* Icône loupe (desktop) */}
+    <div className={`w-full ${maxWidthClass} mx-auto mb-8 relative`}>
+      {/* Icône loupe (desktop uniquement) */}
       {!isMobile && (
-        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5" />
+        <FiSearch
+          className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"
+          aria-hidden="true"
+        />
       )}
 
       {/* Champ texte */}
@@ -52,15 +70,14 @@ export default function UserMovieSearchBar({
         type="text"
         value={query}
         onChange={handleChange}
-        placeholder={t("placeholder", {
-          defaultValue: "Rechercher un film ou une série...",
-        })}
+        placeholder={placeholder}
         className={`
           w-full ${isMobile ? "pl-4" : "pl-12"} pr-10 py-3
           bg-slate-900 border border-slate-700 rounded-lg
           text-gray-100 placeholder-gray-500
           transition-colors
-          focus:outline-none focus:ring-2 focus:ring-indigo-500
+          focus:outline-none focus:ring-2
+          focus:ring-${accentColor}-500
           focus:ring-offset-2 focus:ring-offset-gray-900
           hover:border-slate-600
         `}
@@ -71,10 +88,14 @@ export default function UserMovieSearchBar({
         <button
           type="button"
           onClick={handleClear}
-          aria-label={t("clear", { defaultValue: "Effacer" })}
-          className="absolute right-3 top-1/2 -translate-y-1/2
-                     text-slate-400 hover:text-slate-200 rounded-full p-1
-                     focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+          aria-label="Effacer"
+          className={`
+            absolute right-3 top-1/2 -translate-y-1/2
+            text-slate-400 hover:text-slate-200 rounded-full p-1
+            focus:outline-none focus:ring-2
+            focus:ring-${accentColor}-500
+            focus:ring-offset-2 focus:ring-offset-gray-900
+          `}
         >
           <FiX className="w-4 h-4" />
         </button>

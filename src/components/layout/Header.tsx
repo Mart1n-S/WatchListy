@@ -47,6 +47,7 @@ export default function Header() {
   if (session) {
     navItems.push({ name: t("movies"), href: "/movies" });
     navItems.push({ name: t("series"), href: "/series" });
+    navItems.push({ name: t("users"), href: "/users" });
     navItems.push({ name: t("profile"), href: "/profile" });
   }
 

@@ -4,21 +4,19 @@ import { RegisterSchema } from "@/lib/validators/register";
 import { hash } from "bcryptjs";
 import crypto from "crypto";
 import { sendVerificationEmail } from "@/lib/emails/sendVerificationEmail";
+import logger from "@/lib/logger";
 
 /**
  * POST /api/auth/register
- * Crée un nouvel utilisateur et envoie un e-mail de vérification
- * - Gère la sélection d’un avatar
- * - Gère les genres de films/séries préférés
+ * ➜ Crée un utilisateur, stocke un token haché dans `auth_tokens` (TTL 24h)
+ *    et envoie un e-mail de vérification.
  */
 export async function POST(req: Request) {
     try {
         const body = await req.json();
-
-        // Récupère la langue depuis le header
         const locale = req.headers.get("accept-language") || "fr";
 
-        // Validation du schéma Zod
+        // --- Validation via Zod ---
         const parsed = RegisterSchema.safeParse(body);
         if (!parsed.success) {
             const fieldErrors: Record<string, string> = {};
@@ -35,10 +33,10 @@ export async function POST(req: Request) {
 
         const { email, pseudo, password, avatar, preferences } = parsed.data;
 
-        // --- Connexion DB ---
+        // --- Connexion MongoDB ---
         const { db } = await connectToDatabase();
 
-        // Vérifie doublons
+        // --- Vérifie doublons ---
         const [existingEmail, existingPseudo] = await Promise.all([
             db.collection("users").findOne({ email: email.toLowerCase() }),
             db.collection("users").findOne({ pseudo }),
@@ -61,15 +59,6 @@ export async function POST(req: Request) {
         // --- Hash du mot de passe ---
         const hashedPassword = await hash(password, 10);
 
-        // --- Génération du token de vérification ---
-        const plainToken = crypto.randomBytes(32).toString("hex");
-        const hashedToken = crypto
-            .createHash("sha256")
-            .update(plainToken)
-            .digest("hex");
-
-        const verifyTokenExpires = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
-
         // --- Création du nouvel utilisateur ---
         const newUser = {
             email: email.toLowerCase(),
@@ -81,17 +70,37 @@ export async function POST(req: Request) {
             created_at: new Date(),
             verified_at: null,
             blocked_at: null,
-            verify_token: hashedToken, // token haché en base
-            verify_token_expires: verifyTokenExpires,
         };
 
-        await db.collection("users").insertOne(newUser);
+        const { insertedId } = await db.collection("users").insertOne(newUser);
 
-        // --- Envoi d’un e-mail de vérification ---
+        // --- Génération du token de vérification (24h) ---
+        const plainToken = crypto.randomBytes(32).toString("hex");
+        const hashedToken = crypto
+            .createHash("sha256")
+            .update(plainToken)
+            .digest("hex");
+
+        const expiresAt = new Date(Date.now() + 24 * 60 * 60 * 1000); // 24h
+
+        // --- Stocke le token dans la collection TTL ---
+        await db.collection("auth_tokens").insertOne({
+            userId: insertedId,
+            type: "verify-email",
+            tokenHash: hashedToken,
+            createdAt: new Date(),
+            expiresAt,
+        });
+
+        // --- Envoi de l’e-mail ---
         try {
             await sendVerificationEmail(email, plainToken, locale);
         } catch (error) {
-            console.error("Erreur lors de l’envoi de l’e-mail :", error);
+            logger.error({
+                route: "/api/auth/register",
+                message: error instanceof Error ? error.message : "Erreur inconnue",
+                stack: error instanceof Error ? error.stack : undefined,
+            });
             return NextResponse.json(
                 { error: "auth.register.errors.emailSendFailed" },
                 { status: 500 }
@@ -103,7 +112,11 @@ export async function POST(req: Request) {
             { status: 201 }
         );
     } catch (error) {
-        console.error("Erreur dans /api/auth/register :", error);
+        logger.error({
+            route: "/api/auth/register",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

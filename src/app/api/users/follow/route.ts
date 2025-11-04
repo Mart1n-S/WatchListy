@@ -5,6 +5,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 import { followSchema } from "@/lib/validators/followSchema";
 import { ObjectId } from "mongodb";
 import type { ZodError } from "zod";
+import logger from "@/lib/logger";
 
 /**
  * Gère le suivi et le désabonnement d’un utilisateur.
@@ -63,7 +64,11 @@ export async function POST(req: Request) {
         const updated = await db.collection("users").findOne({ _id: currentUser._id });
         return NextResponse.json({ following: updated?.following ?? [] }, { status: 200 });
     } catch (error) {
-        console.error("Erreur /api/users/follow [POST] :", error);
+        logger.error({
+            route: "/api/users/follow [POST]",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json({ error: "common.errors.internalServerError" }, { status: 500 });
     }
 }
@@ -102,7 +107,11 @@ export async function DELETE(req: Request) {
         const updated = await db.collection("users").findOne({ _id: currentUser._id });
         return NextResponse.json({ following: updated?.following ?? [] }, { status: 200 });
     } catch (error) {
-        console.error("Erreur /api/users/follow [DELETE] :", error);
+        logger.error({
+            route: "/api/users/follow [DELETE]",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json({ error: "common.errors.internalServerError" }, { status: 500 });
     }
 }

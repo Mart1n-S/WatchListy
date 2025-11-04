@@ -3,7 +3,7 @@ import { hash } from "bcryptjs";
 import { ObjectId } from "mongodb";
 import { UserDocument, UserInput } from "@/models/User";
 
-// Genres de TMDB (extraits de ta réponse API)
+/** --- Genres de TMDB (exemples) --- */
 const movieGenres = [
     { id: 28, name: "Action" },
     { id: 12, name: "Aventure" },
@@ -25,31 +25,77 @@ const tvGenres = [
     { id: 10765, name: "Science-Fiction & Fantastique" },
 ];
 
-// Fonction pour tirer quelques genres aléatoires
+/** Tire quelques genres aléatoires */
 function getRandomGenres(list: { id: number }[], count: number) {
     const shuffled = [...list].sort(() => 0.5 - Math.random());
     return shuffled.slice(0, count).map((g) => g.id);
 }
 
-const avatars = ["avatar1.svg", "avatar2.svg", "avatar3.svg", "avatar4.svg", "avatar5.svg"];
+const avatars = [
+    "avatar1.svg",
+    "avatar2.svg",
+    "avatar3.svg",
+    "avatar4.svg",
+    "avatar5.svg",
+];
 
 const users: UserInput[] = [
-    { pseudo: "user", email: "user@example.com", password: "password", avatar: avatars[0] },
-    { pseudo: "Alice42", email: "alice@example.com", password: "securePassword42", avatar: avatars[1] },
-    { pseudo: "BobTheBuilder", email: "bob@example.com", password: "build123", avatar: avatars[2] },
-    { pseudo: "CharlieBrown", email: "charlie@example.com", password: "peanuts456", avatar: avatars[3] },
-    { pseudo: "DianaPrince", email: "diana@example.com", password: "wonderWoman789", avatar: avatars[4] },
+    {
+        pseudo: "user",
+        email: "user@example.com",
+        password: "password",
+        avatar: avatars[0],
+    },
+    {
+        pseudo: "Alice42",
+        email: "alice@example.com",
+        password: "securePassword42",
+        avatar: avatars[1],
+    },
+    {
+        pseudo: "BobTheBuilder",
+        email: "bob@example.com",
+        password: "build123",
+        avatar: avatars[2],
+    },
+    {
+        pseudo: "CharlieBrown",
+        email: "charlie@example.com",
+        password: "peanuts456",
+        avatar: avatars[3],
+    },
+    {
+        pseudo: "DianaPrince",
+        email: "diana@example.com",
+        password: "wonderWoman789",
+        avatar: avatars[4],
+    },
 ];
 
 async function seedUsers() {
     let connection;
     try {
-        const { db, client } = await connectToDatabase("watchlisty_recette");
+        const { db, client } = await connectToDatabase(process.env.MONGODB_DATABASE || "watchlisty_recette");
         connection = client;
 
+        console.log("Initialisation de la base...");
+
+        /** --- Index utilisateurs --- */
         await db.collection("users").createIndex({ email: 1 }, { unique: true });
         await db.collection("users").createIndex({ pseudo: 1 }, { unique: true });
 
+        /** --- Index TTL pour auth_tokens --- */
+        await db
+            .collection("auth_tokens")
+            .createIndex({ expiresAt: 1 }, { expireAfterSeconds: 0 });
+        await db.collection("auth_tokens").createIndex({ tokenHash: 1 });
+        console.log("Index TTL créé pour auth_tokens");
+
+        /** --- Suppression ancienne data --- */
+        await db.collection("users").deleteMany({});
+        console.log("Collection users vidée");
+
+        /** --- Insertion des utilisateurs --- */
         for (let i = 0; i < users.length; i++) {
             const userInput = users[i];
             const hashedPassword = await hash(userInput.password, 10);
@@ -69,20 +115,21 @@ async function seedUsers() {
                     tv: getRandomGenres(tvGenres, 2),
                 },
                 following: [],
+                likesReceived: [],
             };
 
             const result = await db.collection("users").insertOne(user);
-            console.log(`✅ Utilisateur ${user.pseudo} inséré avec l'_id: ${result.insertedId}`);
+            console.log(`Utilisateur ${user.pseudo} inséré avec l'_id: ${result.insertedId}`);
         }
 
-        console.log("🌱 Seed des utilisateurs terminé avec succès !");
+        console.log("Seed des utilisateurs terminé avec succès !");
     } catch (error) {
-        console.error("❌ Erreur lors du seed des utilisateurs:", error);
+        console.error("Erreur lors du seed des utilisateurs:", error);
         throw error;
     } finally {
         if (connection) {
             await connection.close();
-            console.log("🔒 Connexion MongoDB fermée.");
+            console.log("Connexion MongoDB fermée.");
         }
     }
 }

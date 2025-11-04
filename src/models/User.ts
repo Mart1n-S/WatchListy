@@ -17,12 +17,13 @@ export interface User {
     };
 
     following: ObjectId[]; // Liste des userId suivis
+    likesReceived: ObjectId[]; // Liste des userId qui ont liké la watchlist de cet utilisateur
 }
 
-/** Type pour les documents de la collection */
+/** Type pour les documents stockés dans MongoDB */
 export type UserDocument = User & { _id: ObjectId };
 
-/** Type pour les données d'entrée (création/mise à jour) */
+/** Type pour les données d'entrée (création / mise à jour) */
 export interface UserInput {
     pseudo: string;
     email: string;
@@ -34,8 +35,11 @@ export interface UserInput {
     };
 }
 
-/** Crée les index nécessaires pour la collection "users" */
+/**
+ * Crée les index nécessaires pour la collection "users"
+ */
 export const createUserIndexes = async (db: Db): Promise<void> => {
     await db.collection<User>("users").createIndex({ pseudo: 1 }, { unique: true });
     await db.collection<User>("users").createIndex({ email: 1 }, { unique: true });
+    await db.collection<User>("users").createIndex({ likesReceived: 1 }); // pour trier par popularité
 };

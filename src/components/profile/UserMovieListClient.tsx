@@ -9,7 +9,7 @@ import type { EnrichedUserMovie } from "@/types/EnrichedUserMovie";
 import UserMovieCard from "./UserMovieCard";
 import ConfirmDeleteModal from "@/components/ui/ConfirmDeleteModal";
 import ReviewModal from "@/components/ui/ReviewModal";
-import UserMovieSearchBar from "@/components/profile/UserMovieSearchBar";
+import SearchBar from "@/components/ui/SearchBar";
 import toast from "react-hot-toast";
 import { FiArrowLeft } from "react-icons/fi";
 import { useRouter } from "next/navigation";
@@ -93,13 +93,14 @@ export default function UserMovieListClient({ status, locale }: Props) {
       );
   };
 
+  // --- Filtrage local ---
   const filteredMovies = enrichedMovies.filter((m) =>
     m.title?.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
   return (
     <section className="min-h-[60vh]">
-      {/* Bouton Retour */}
+      {/* --- Bouton Retour --- */}
       <div className="mb-6">
         <button
           onClick={() => router.push(`/${locale}/profile`)}
@@ -118,8 +119,8 @@ export default function UserMovieListClient({ status, locale }: Props) {
         </button>
       </div>
 
-      {/* Titre */}
-      <div className="text-center mb-8">
+      {/* --- Titre --- */}
+      <div className="text-center mb-6">
         <h1 className="text-2xl font-bold text-white mb-3">
           {t(`${status}.title`)}
         </h1>
@@ -128,9 +129,20 @@ export default function UserMovieListClient({ status, locale }: Props) {
         </p>
       </div>
 
-      {/* Barre de recherche */}
-      <UserMovieSearchBar value={searchQuery} onChange={setSearchQuery} />
+      {/* --- Barre de recherche générique --- */}
+      <div className="flex justify-center mb-6">
+        <SearchBar
+          value={searchQuery}
+          onChange={setSearchQuery}
+          placeholder={t("searchPlaceholder", {
+            defaultValue: "Rechercher un film ou une série...",
+          })}
+          accentColor="indigo"
+          maxWidthClass="max-w-xl"
+        />
+      </div>
 
+      {/* --- Chargement --- */}
       {loading && (
         <div className="flex flex-col items-center justify-center min-h-[30vh] text-gray-400">
           <div className="w-12 mb-2 h-12 border-4 border-indigo-600 border-t-transparent rounded-full animate-spin" />
@@ -138,7 +150,7 @@ export default function UserMovieListClient({ status, locale }: Props) {
         </div>
       )}
 
-      {/* Cas vide */}
+      {/* --- Cas vide --- */}
       {!loading && enrichedMovies.length === 0 && (
         <div className="flex flex-col items-center justify-center text-center py-20">
           <p className="text-gray-400 text-lg">
@@ -149,7 +161,7 @@ export default function UserMovieListClient({ status, locale }: Props) {
         </div>
       )}
 
-      {/* Résultats */}
+      {/* --- Résultats --- */}
       {!loading && enrichedMovies.length > 0 && (
         <>
           {filteredMovies.length > 0 ? (
@@ -184,6 +196,7 @@ export default function UserMovieListClient({ status, locale }: Props) {
         </>
       )}
 
+      {/* --- Modale de suppression --- */}
       <ConfirmDeleteModal
         isOpen={pendingDelete !== null}
         onConfirm={handleConfirmDelete}
@@ -194,7 +207,7 @@ export default function UserMovieListClient({ status, locale }: Props) {
         })}
       />
 
-      {/* Modal Review */}
+      {/* --- Modale d’avis --- */}
       <ReviewModal
         isOpen={!!reviewingMovie}
         onClose={() => setReviewingMovie(null)}

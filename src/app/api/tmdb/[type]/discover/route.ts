@@ -1,7 +1,10 @@
 export const dynamic = "force-dynamic";
 export const revalidate = 3600;
 
+import { authOptions } from "@/lib/auth";
+import { getServerSession } from "next-auth";
 import { NextResponse } from "next/server";
+import logger from "@/lib/logger";
 
 const TMDB_BASE = process.env.TMDB_API_BASE!;
 const TMDB_TOKEN = process.env.TMDB_ACCESS_TOKEN!;
@@ -25,20 +28,22 @@ interface TmdbDiscoverResponse {
 }
 
 /**
- * GET /api/tmdb/[type]/discover?lang=fr&page=1&with_genres=18
- * type ∈ ["movie", "tv"]
+ * GET /api/tmdb/[type]/discover?lang=fr&page=1&with_genres=18&vote_average_gte=7
  */
 export async function GET(
     request: Request,
     context: { params: Promise<{ type: string }> }
 ) {
+    // --- Authentification ---
+    const session = await getServerSession(authOptions);
+    if (!session?.user) {
+        return NextResponse.json({ error: "common.errors.unauthorized" }, { status: 401 });
+    }
+
     try {
         const { type } = await context.params;
         if (type !== "movie" && type !== "tv") {
-            return NextResponse.json(
-                { error: "Type invalide. Attendu: movie ou tv" },
-                { status: 400 }
-            );
+            return NextResponse.json({ error: "Type invalide (movie|tv)" }, { status: 400 });
         }
 
         const { searchParams } = new URL(request.url);
@@ -52,28 +57,32 @@ export async function GET(
             page,
         });
 
+        // On accepte ces clés de filtre
         const allowedKeys = [
             "with_genres",
             "sort_by",
             "with_original_language",
-            "vote_average_gte",
             "region",
+            "vote_average_gte",
         ];
 
         for (const [key, value] of searchParams.entries()) {
-            if (allowedKeys.includes(key) && value) params.append(key, value);
+            if (!value) continue;
+
+            if (key === "vote_average_gte") {
+                params.append("vote_average.gte", value);
+            } else if (allowedKeys.includes(key)) {
+                params.append(key, value);
+            }
         }
 
-        const response = await fetch(
-            `${TMDB_BASE}/discover/${type}?${params.toString()}`,
-            {
-                headers: {
-                    Authorization: `Bearer ${TMDB_TOKEN}`,
-                    Accept: "application/json",
-                },
-                next: { revalidate: 3600 },
-            }
-        );
+        const response = await fetch(`${TMDB_BASE}/discover/${type}?${params.toString()}`, {
+            headers: {
+                Authorization: `Bearer ${TMDB_TOKEN}`,
+                Accept: "application/json",
+            },
+            next: { revalidate: 3600 },
+        });
 
         if (!response.ok) {
             console.error("TMDB Discover Error:", await response.text());
@@ -100,10 +109,11 @@ export async function GET(
             }
         );
     } catch (error) {
-        console.error("Erreur TMDB (discover):", error);
-        return NextResponse.json(
-            { error: "Erreur interne serveur" },
-            { status: 500 }
-        );
+        logger.error({
+            route: "/api/tmdb/[type]/discover",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
+        return NextResponse.json({ error: "common.errors.internalServerError" }, { status: 500 });
     }
 }

@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { getToken } from "next-auth/jwt";
 import { connectToDatabase } from "@/lib/mongodb";
 import { Review } from "@/models/Review";
+import logger from "@/lib/logger";
 
 /**
  * GET /api/reviews/[movieId]/mine
@@ -34,7 +35,11 @@ export async function GET(
 
         return NextResponse.json(myReview ?? null, { status: 200 });
     } catch (err) {
-        console.error("Erreur GET /api/reviews/[movieId]/mine :", err);
+        logger.error({
+            route: "/api/reviews/[movieId]/mine",
+            message: err instanceof Error ? err.message : "Erreur inconnue",
+            stack: err instanceof Error ? err.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

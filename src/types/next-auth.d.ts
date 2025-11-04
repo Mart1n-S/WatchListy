@@ -2,7 +2,7 @@ import { DefaultSession, DefaultUser } from "next-auth";
 import { DefaultJWT } from "next-auth/jwt";
 
 /**
- * Extension du module NextAuth pour personnaliser les types Session et User
+ * Extension du module NextAuth pour personnaliser les types Session, User et JWT
  */
 declare module "next-auth" {
     interface Session {
@@ -13,6 +13,10 @@ declare module "next-auth" {
             role: string;
             /** Date de création du compte utilisateur */
             createdAt: string;
+            /** IDs des utilisateurs suivis */
+            followingIds?: string[];
+            /** Pseudos ou IDs des utilisateurs likés */
+            likedUsers?: string[];
             /** Préférences de genres (films et séries) */
             preferences?: {
                 movies?: number[];
@@ -26,6 +30,10 @@ declare module "next-auth" {
         role: string;
         /** Date de création */
         createdAt: string;
+        /** IDs des utilisateurs suivis */
+        followingIds?: string[];
+        /** Pseudos ou IDs des utilisateurs likés */
+        likedUsers?: string[];
         /** Préférences de genres */
         preferences?: {
             movies?: number[];
@@ -39,9 +47,11 @@ declare module "next-auth" {
  */
 declare module "next-auth/jwt" {
     interface JWT extends DefaultJWT {
-        role: string;
         id: string;
+        role: string;
         createdAt: string;
+        followingIds?: string[];
+        likedUsers?: string[];
         preferences?: {
             movies?: number[];
             tv?: number[];

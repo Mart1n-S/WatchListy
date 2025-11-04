@@ -3,6 +3,7 @@ import { getToken } from "next-auth/jwt";
 import { connectToDatabase } from "@/lib/mongodb";
 import type { UserMovie } from "@/models/UserMovie";
 import { UserMovieSchema } from "@/lib/validators/userMovie";
+import logger from "@/lib/logger";
 
 /**
  * GET /api/user-movies
@@ -24,7 +25,11 @@ export async function GET(request: NextRequest) {
 
         return NextResponse.json(movies, { status: 200 });
     } catch (error) {
-        console.error("Erreur GET /api/user-movies :", error);
+        logger.error({
+            route: "/api/user-movies",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }
@@ -73,7 +78,6 @@ export async function POST(request: NextRequest) {
         await db.collection<UserMovie>("user_movies").insertOne(newEntry);
         return NextResponse.json(newEntry, { status: 201 });
     } catch (error) {
-        console.error("Erreur POST /api/user-movies :", error);
 
         if (error instanceof Error && "issues" in error) {
             // Erreur de validation Zod
@@ -82,6 +86,12 @@ export async function POST(request: NextRequest) {
                 { status: 400 }
             );
         }
+
+        logger.error({
+            route: "/api/user-movies",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
 
         return NextResponse.json(
             { error: "common.errors.internalServerError" },

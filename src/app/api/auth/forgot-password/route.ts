@@ -3,17 +3,19 @@ import { connectToDatabase } from "@/lib/mongodb";
 import crypto from "crypto";
 import { sendResetPasswordEmail } from "@/lib/emails/sendResetPasswordEmail";
 import { ResendSchema } from "@/lib/validators/auth-email";
+import logger from "@/lib/logger";
 
 /**
  * POST /api/auth/forgot-password
- * Envoie un e-mail de réinitialisation de mot de passe.
+ * ➜ Génère un token unique de réinitialisation de mot de passe
+ *    et l’envoie par e-mail à l’utilisateur.
  */
 export async function POST(req: Request) {
     try {
         const json = await req.json();
         const locale = req.headers.get("accept-language") || "fr";
 
-        // --- Validation avec Zod ---
+        // --- Validation via Zod ---
         const parsed = ResendSchema.safeParse(json);
         if (!parsed.success) {
             const issue = parsed.error.issues[0];
@@ -28,7 +30,7 @@ export async function POST(req: Request) {
             email: email.toLowerCase(),
         });
 
-        // Réponse neutre si l'utilisateur n'existe pas
+        // Réponse neutre (même si pas d'utilisateur)
         if (!user) {
             return NextResponse.json(
                 { message: "auth.reset.request.neutral" },
@@ -36,47 +38,53 @@ export async function POST(req: Request) {
             );
         }
 
-        // --- Vérifie si un token existe encore et est valide (10 min) ---
-        if (
-            user.reset_token &&
-            user.reset_token_expires &&
-            new Date(user.reset_token_expires) > new Date()
-        ) {
+        // --- Vérifie si un token récent existe déjà (anti-spam) ---
+        const existingToken = await db.collection("auth_tokens").findOne({
+            userId: user._id,
+            type: "reset-password",
+            expiresAt: { $gt: new Date() },
+        });
+
+        if (existingToken) {
             return NextResponse.json(
                 { message: "auth.reset.request.neutral" },
                 { status: 200 }
             );
         }
 
-        // --- Génère un nouveau token ---
+        // --- Génération d’un nouveau token sécurisé ---
         const plainToken = crypto.randomBytes(32).toString("hex");
         const hashedToken = crypto
             .createHash("sha256")
             .update(plainToken)
             .digest("hex");
 
-        const resetTokenExpires = new Date(Date.now() + 10 * 60 * 1000); // 10 min
+        const expiresAt = new Date(Date.now() + 10 * 60 * 1000); // expire dans 10 minutes
 
-        // --- Met à jour l'utilisateur ---
-        await db.collection("users").updateOne(
-            { _id: user._id },
-            {
-                $set: {
-                    reset_token: hashedToken,
-                    reset_token_expires: resetTokenExpires,
-                },
-            }
-        );
+        // --- Sauvegarde dans la collection TTL ---
+        await db.collection("auth_tokens").insertOne({
+            userId: user._id,
+            type: "reset-password",
+            tokenHash: hashedToken,
+            createdAt: new Date(),
+            expiresAt,
+        });
 
-        // --- Envoie de l'e-mail ---
+        // --- Envoi de l'e-mail ---
         await sendResetPasswordEmail(email, plainToken, locale);
 
+        // Réponse neutre (évite les fuites d’infos)
         return NextResponse.json(
             { message: "auth.reset.request.neutral" },
             { status: 200 }
         );
     } catch (error) {
-        console.error("Erreur lors de la demande de réinitialisation :", error);
+        logger.error({
+            route: "/api/auth/forgot-password",
+            message: error instanceof Error ? error.message : "Erreur inconnue",
+            stack: error instanceof Error ? error.stack : undefined,
+        });
+
         return NextResponse.json(
             { error: "common.errors.internalServerError" },
             { status: 500 }

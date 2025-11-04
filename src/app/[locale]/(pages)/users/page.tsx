@@ -1,4 +1,3 @@
-import ProfileBackground from "@/components/ui/ProfileBackground";
 import UsersList from "@/components/users/UsersList";
 import { getTranslations } from "next-intl/server";
 
@@ -18,10 +17,7 @@ export default async function UsersPage({
   const t = await getTranslations({ locale, namespace: "users" });
 
   return (
-    <div className="relative min-h-screen bg-transparent">
-      {/* --- Fond global --- */}
-      <ProfileBackground />
-
+    <div className="relative min-h-screen bg-gradient-to-br from-[#0a1a10] to-[#14052a]">
       {/* --- Contenu principal --- */}
       <div className="relative z-10 pt-20 pb-8 px-4 sm:px-6 lg:px-8 max-w-7xl mx-auto">
         <h1 className="text-3xl font-bold text-white mb-2">{t("title")}</h1>

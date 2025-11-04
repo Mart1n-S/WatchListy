@@ -16,7 +16,10 @@ export async function GET() {
         // --- Authentification ---
         const session = await getServerSession(authOptions);
         if (!session?.user) {
-            return NextResponse.json({ error: "common.errors.unauthorized" }, { status: 401 });
+            return NextResponse.json(
+                { error: "common.errors.unauthorized" },
+                { status: 401 }
+            );
         }
 
         const { db } = await connectToDatabase();
@@ -47,7 +50,14 @@ export async function GET() {
 
         formatted.sort((a, b) => b.likesCount - a.likesCount);
 
-        return NextResponse.json({ users: formatted }, { status: 200 });
+        // Ajout d’un cache public de 1 minute + stale-while-revalidate
+        const response = NextResponse.json({ users: formatted }, { status: 200 });
+        response.headers.set(
+            "Cache-Control",
+            "public, max-age=60, stale-while-revalidate=300"
+        );
+
+        return response;
     } catch (error) {
         logger.error({
             route: "/api/users",

@@ -87,9 +87,9 @@ export default function Footer() {
 
           {/* Section Liens utiles */}
           <div>
-            <h4 className="font-semibold mb-4 text-gray-50">
+            <p className="font-semibold mb-4 text-gray-50">
               {t("usefulLinks.title")}
-            </h4>
+            </p>
             <ul className="space-y-2">
               {[
                 { name: t("usefulLinks.home"), href: "/" },
@@ -110,9 +110,9 @@ export default function Footer() {
 
           {/* Section Légal */}
           <div>
-            <h4 className="font-semibold mb-4 text-gray-50">
+            <p className="font-semibold mb-4 text-gray-50">
               {t("legal.title")}
-            </h4>
+            </p>
             <ul className="space-y-2">
               {[
                 { name: t("legal.terms"), href: "/legal/terms" },
@@ -138,9 +138,9 @@ export default function Footer() {
 
         {/* Newsletter */}
         <div className="border-t border-gray-800 pt-8 mb-8">
-          <h4 className="font-semibold mb-2 text-gray-50">
+          <p className="font-semibold mb-2 text-gray-50">
             {t("newsletter.title")}
-          </h4>
+          </p>
           <label htmlFor="newsletter" className="text-gray-300 mb-4 max-w-md">
             {t("newsletter.description")}
           </label>

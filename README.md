@@ -79,6 +79,8 @@
   - [**10) Lancer les tests (Playwright)**](#10-lancer-les-tests-playwright)
   - [**11) Build pour la production**](#11-build-pour-la-production)
   - [🔧 **Dépannage**](#-dépannage)
+  - [🧱 Structure du projet](#-structure-du-projet)
+    - [🧭 Aperçu rapide](#-aperçu-rapide)
   - [🌐 Liens utiles](#-liens-utiles)
   - [💙 Remerciements](#-remerciements)
 
@@ -447,6 +449,45 @@ npm start
 | Erreur de connexion MongoDB | Vérifiez `MONGODB_URI` et l'IP autorisée dans Atlas. |
 | Erreur NextAuth             | Vérifiez `NEXTAUTH_SECRET` et `NEXTAUTH_URL`.        |
 | API TMDB non accessible     | Vérifiez `TMDB_ACCESS_TOKEN`.                        |
+
+
+## 🧱 Structure du projet
+
+Voici une synthèse de la structure des dossiers et fichiers principaux du projet **WatchListy** :
+
+```
+📦 WatchListy
+├── .github/          → Images pour le README
+├── public/           → Fichiers statiques (favicon, manifest, images)
+├── scripts/          → Scripts utilitaires (ex: seed de la base)
+├── src/
+│   ├── app/          → Pages Next.js et routes API (auth, users, TMDB…)
+│   ├── components/   → Composants UI (auth, profil, médias, layout…)
+│   ├── hooks/        → Hooks personnalisés
+│   ├── i18n/         → Configuration de la traduction (Next Intl)
+│   ├── lib/          → Logique métier (auth, Redux, DB, validation…)
+│   ├── models/       → Modèles Mongoose (User, Review, Watchlist)
+│   ├── types/        → Types et interfaces TypeScript
+│   └── middleware.ts → Middleware Next.js (auth et i18n)
+├── tests/            → Tests E2E Playwright
+├── .env.example      → Variables d’environnement (exemple)
+├── next.config.ts    → Configuration Next.js
+├── playwright.config.ts → Configuration des tests
+├── tsconfig.json     → Configuration TypeScript
+└── package.json      → Dépendances et scripts du projet
+```
+
+---
+
+### 🧭 Aperçu rapide
+
+* **`src/app/`** → Structure des pages et routes API.
+* **`src/components/`** → Interface utilisateur (UI) organisée par modules.
+* **`src/lib/`** → Logique applicative : auth, Redux, validation, MongoDB.
+* **`tests/`** → Scénarios end-to-end avec Playwright.
+* **`public/`** → Ressources statiques accessibles depuis le web.
+
+
 
 ## 🌐 Liens utiles
 

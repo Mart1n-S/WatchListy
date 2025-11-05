@@ -31,7 +31,7 @@ export default function Footer() {
         <div className="grid grid-cols-1 gap-10 mb-10">
           {/* Section Marque */}
           <div>
-            <h3 className="text-xl font-bold mb-4 flex items-center">
+            <p className="text-xl font-bold mb-4 flex items-center">
               <Image
                 src="/watchlisty-icon.svg"
                 alt={t("brand.logoAlt")}
@@ -43,7 +43,7 @@ export default function Footer() {
                 Watch
               </span>
               <span className="text-gray-50">Listy</span>
-            </h3>
+            </p>
             <p className="text-gray-300 mb-4">{t("brand.description")}</p>
 
             <div className="flex space-x-4">

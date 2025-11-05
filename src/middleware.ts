@@ -31,7 +31,6 @@ export async function middleware(req: NextRequest) {
         if (pathname.startsWith("/api/tmdb/genres")) {
             const res = NextResponse.next();
             res.headers.set("X-Cache-Layer", "Next-Fetch-Cache");
-            console.log("🌀 [Middleware] Accès public TMDB genres (cache actif)");
             return res;
         }
 

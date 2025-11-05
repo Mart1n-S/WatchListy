@@ -41,7 +41,6 @@ export async function connectToDatabase(dbName?: string) {
     if (!cached.db) {
         // `connect()` est idempotent : il ne relance pas une connexion existante.
         await cached.client.connect();
-        console.log("[mongodb] Connecté à MongoDB Atlas");
         cached.db = cached.client.db(dbName);
     }
 
@@ -55,6 +54,5 @@ export async function closeConnection() {
     if (cached.client) {
         await cached.client.close();
         global._mongoCache = undefined;
-        console.log("[mongodb] Connexion fermée");
     }
 }

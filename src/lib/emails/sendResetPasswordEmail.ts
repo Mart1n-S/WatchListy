@@ -1,6 +1,7 @@
 import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
 import fr from "@/app/[locale]/messages/fr.json";
 import en from "@/app/[locale]/messages/en.json";
+import logger from "../logger";
 
 export async function sendResetPasswordEmail(
   email: string,
@@ -61,10 +62,12 @@ export async function sendResetPasswordEmail(
       subject: t.subject,
       htmlContent: html,
     });
-
-    console.log(`Email de réinitialisation envoyé (${locale}) à`, email);
   } catch (error) {
-    console.error("Erreur lors de l’envoi de l’e-mail de réinitialisation :", error);
+    logger.error({
+      route: "/api/auth/reset-password",
+      message: error instanceof Error ? error.message : "Erreur inconnue",
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     throw new Error("auth.reset.errors.emailSendFailed");
   }
 }

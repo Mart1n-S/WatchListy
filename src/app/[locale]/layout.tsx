@@ -1,9 +1,11 @@
+import "./globals.css";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { Suspense } from "react";
+import { headers } from "next/headers";
 import { NextIntlClientProvider } from "next-intl";
 import { getMessages, getTranslations } from "next-intl/server";
-import { HtmlLangUpdater } from "@/components/utils/HtmlLangUpdater";
+import { Montserrat } from "next/font/google";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { AuthProvider } from "@/components/providers/AuthProvider";
@@ -13,14 +15,23 @@ import { locales, type Locale } from "@/i18n/locales";
 import { Toaster } from "react-hot-toast";
 
 /* -------------------------------------------------------------------------- */
-/*                 GÉNÉRATION STATIQUE DES PARAMÈTRES DE LOCALE               */
+/*                                   FONT                                     */
+/* -------------------------------------------------------------------------- */
+const montserrat = Montserrat({
+  subsets: ["latin"],
+  weight: ["400", "500", "700"],
+  variable: "--font-montserrat",
+});
+
+/* -------------------------------------------------------------------------- */
+/*                        GÉNÉRATION STATIQUE DES LOCALES                     */
 /* -------------------------------------------------------------------------- */
 export function generateStaticParams() {
   return locales.map((locale) => ({ locale }));
 }
 
 /* -------------------------------------------------------------------------- */
-/*                         MÉTADONNÉES DYNAMIQUES                             */
+/*                         MÉTADONNÉES DYNAMIQUES (TRADUITES)                */
 /* -------------------------------------------------------------------------- */
 const siteUrl =
   process.env.NEXT_PUBLIC_SITE_URL || "https://watch-listy-one.vercel.app";
@@ -39,6 +50,10 @@ export async function generateMetadata({
 
   // Charge les traductions du namespace "meta"
   const t = await getTranslations({ locale, namespace: "meta" });
+
+  const headersList = await headers();
+  const currentPath = headersList.get("x-pathname") || ""; // ex: "/profile"
+  const canonicalUrl = `${siteUrl}/${locale}${currentPath}`;
 
   return {
     metadataBase: new URL(siteUrl),
@@ -61,16 +76,16 @@ export async function generateMetadata({
       },
     },
     alternates: {
-      canonical: `${siteUrl}/${locale}`,
+      canonical: canonicalUrl,
       languages: {
-        "fr-FR": `${siteUrl}/fr`,
-        "en-US": `${siteUrl}/en`,
+        "fr-FR": `${siteUrl}/fr${currentPath}`,
+        "en-US": `${siteUrl}/en${currentPath}`,
       },
     },
     openGraph: {
       title: t("ogTitle") || t("title"),
       description: t("ogDescription") || t("description"),
-      url: `${siteUrl}/${locale}`,
+      url: canonicalUrl,
       siteName: "WatchListy",
       type: "website",
       locale: locale === "fr" ? "fr_FR" : "en_US",
@@ -83,7 +98,12 @@ export async function generateMetadata({
         },
       ],
     },
-    other: { "theme-color": "#7C3AED" },
+    twitter: {
+      card: "summary_large_image",
+      title: t("ogTitle") || t("title"),
+      description: t("ogDescription") || t("description"),
+      images: ["/og-image.jpg"],
+    },
     manifest: "/site.webmanifest",
     icons: {
       icon: [
@@ -92,11 +112,12 @@ export async function generateMetadata({
         { url: "/favicon-96x96.png", sizes: "96x96", type: "image/png" },
       ],
     },
+    other: { "theme-color": "#7C3AED" },
   };
 }
 
 /* -------------------------------------------------------------------------- */
-/*                               LAYOUT LOCALISÉ                              */
+/*                               LAYOUT GLOBAL                                */
 /* -------------------------------------------------------------------------- */
 export default async function LocaleRootLayout({
   children,
@@ -109,43 +130,73 @@ export default async function LocaleRootLayout({
   if (!locales.includes(locale as Locale)) notFound();
 
   const messages = await getMessages({ locale });
+  const t = await getTranslations({ locale, namespace: "meta" });
+
+  const jsonLd = {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    name: "WatchListy",
+    description: t("description"),
+    url: siteUrl,
+    applicationCategory: "Entertainment",
+    operatingSystem: "Web",
+    author: { "@type": "Organization", name: "WatchListy Team" },
+  };
 
   return (
-    <ReduxProvider>
-      <AuthProvider>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          <AuthSync>
-            <HtmlLangUpdater locale={locale} />
+    <html lang={locale} className="dark" suppressHydrationWarning>
+      <head>
+        <meta name="description" content={t("description")} />
+        <meta
+          name="keywords"
+          content={(t.raw("keywords") as string[])?.join(", ")}
+        />
+        <meta name="author" content="WatchListy Team" />
+        <meta name="theme-color" content="#7C3AED" />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
+        />
+      </head>
 
-            <Suspense
-              fallback={
-                <div className="flex justify-center items-center py-4 text-gray-400">
-                  Chargement du header...
-                </div>
-              }
-            >
-              <Header />
-            </Suspense>
+      <body
+        className={`${montserrat.className} antialiased min-h-dvh bg-gray-900 text-gray-100`}
+      >
+        <ReduxProvider>
+          <AuthProvider>
+            <NextIntlClientProvider locale={locale} messages={messages}>
+              <AuthSync>
+                <Suspense
+                  fallback={
+                    <div className="flex justify-center items-center py-4 text-gray-400">
+                      Chargement du header...
+                    </div>
+                  }
+                >
+                  <Header />
+                </Suspense>
 
-            <main id="content" className="flex-grow pt-10">
-              <Suspense
-                fallback={
-                  <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400 gap-4">
-                    <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
-                    <p>Chargement...</p>
-                  </div>
-                }
-              >
-                {children}
-              </Suspense>
+                <main id="content" className="flex-grow pt-10">
+                  <Suspense
+                    fallback={
+                      <div className="flex flex-col items-center justify-center min-h-[60vh] text-gray-400 gap-4">
+                        <div className="w-10 h-10 border-4 border-indigo-500 border-t-transparent rounded-full animate-spin"></div>
+                        <p>Chargement...</p>
+                      </div>
+                    }
+                  >
+                    {children}
+                  </Suspense>
 
-              <Toaster position="top-right" />
-            </main>
+                  <Toaster position="top-right" />
+                </main>
 
-            <Footer />
-          </AuthSync>
-        </NextIntlClientProvider>
-      </AuthProvider>
-    </ReduxProvider>
+                <Footer />
+              </AuthSync>
+            </NextIntlClientProvider>
+          </AuthProvider>
+        </ReduxProvider>
+      </body>
+    </html>
   );
 }

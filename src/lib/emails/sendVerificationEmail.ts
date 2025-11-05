@@ -1,6 +1,7 @@
 import { TransactionalEmailsApi, TransactionalEmailsApiApiKeys } from "@getbrevo/brevo";
 import fr from "@/app/[locale]/messages/fr.json";
 import en from "@/app/[locale]/messages/en.json";
+import logger from "../logger";
 
 export async function sendVerificationEmail(email: string, token: string, locale: string = "fr") {
   const verifyUrl = `${process.env.NEXT_PUBLIC_SITE_URL}/${locale}/verify-email/${token}`;
@@ -59,7 +60,11 @@ export async function sendVerificationEmail(email: string, token: string, locale
 
     console.log(`Email de vérification envoyé (${locale}) à`, email);
   } catch (error) {
-    console.error("Erreur lors de l’envoi de l’e-mail de vérification:", error);
+    logger.error({
+      route: "/api/auth/register",
+      message: error instanceof Error ? error.message : "Erreur inconnue",
+      stack: error instanceof Error ? error.stack : undefined,
+    });
     throw new Error("auth.register.errors.emailSendFailed");
   }
 }

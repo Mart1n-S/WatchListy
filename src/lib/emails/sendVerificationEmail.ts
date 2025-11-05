@@ -57,8 +57,6 @@ export async function sendVerificationEmail(email: string, token: string, locale
       subject: t.subject,
       htmlContent: html,
     });
-
-    console.log(`Email de vérification envoyé (${locale}) à`, email);
   } catch (error) {
     logger.error({
       route: "/api/auth/register",

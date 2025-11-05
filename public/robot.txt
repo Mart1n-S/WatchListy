@@ -1,0 +1,7 @@
+# robots.txt for WatchListy
+
+User-agent: *
+Allow: /
+
+# Sitemap (si tu en as un)
+Sitemap: https://watch-listy-one.vercel.app/sitemap.xml

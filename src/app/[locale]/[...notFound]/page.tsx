@@ -1,6 +1,5 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { headers } from "next/headers";
 import { getTranslations } from "next-intl/server";
 import { locales, type Locale, defaultLocale } from "@/i18n/locales";
 
@@ -10,23 +9,15 @@ import { locales, type Locale, defaultLocale } from "@/i18n/locales";
 export async function generateMetadata({
   params,
 }: {
-  params?: Promise<{ locale?: string }>;
+  params: Promise<{ locale: string; notFound: string[] }>;
 }): Promise<Metadata> {
-  const resolvedParams = params ? await params : undefined;
-  let locale = resolvedParams?.locale;
+  const { locale: rawLocale } = await params;
 
-  // fallback : déduire la locale depuis le referer ou l'URL
-  if (!locale) {
-    const hdrs = await headers();
-    const referer = hdrs.get("referer") || "";
-    const match = referer.match(/\/(fr|en)(\/|$)/);
-    locale = match?.[1] || defaultLocale;
-  }
+  const locale = locales.includes(rawLocale as Locale)
+    ? (rawLocale as Locale)
+    : defaultLocale;
 
-  const t = await getTranslations({
-    locale: locale as Locale,
-    namespace: "notFound",
-  });
+  const t = await getTranslations({ locale, namespace: "notFound" });
 
   return {
     title: `404 | ${t("title")}`,
@@ -36,6 +27,14 @@ export async function generateMetadata({
       title: `404 | ${t("title")}`,
       description: t("description"),
       type: "website",
+      locale: locale === "fr" ? "fr_FR" : "en_US",
+      images: ["/og-image.jpg"],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `404 | ${t("title")}`,
+      description: t("description"),
+      images: ["/og-image.jpg"],
     },
     icons: {
       icon: "/watchlisty-icon.svg",
@@ -46,29 +45,18 @@ export async function generateMetadata({
 /* -------------------------------------------------------------------------- */
 /*                                 PAGE 404                                   */
 /* -------------------------------------------------------------------------- */
-export default async function NotFoundPage({
+export default async function CatchAllNotFoundPage({
   params,
 }: {
-  params?: Promise<{ locale?: string }>;
+  params: Promise<{ locale: string; notFound: string[] }>;
 }) {
-  const resolvedParams = params ? await params : undefined;
-  let locale = resolvedParams?.locale;
+  const { locale: rawLocale } = await params;
 
-  if (!locale) {
-    const hdrs = await headers();
-    const referer = hdrs.get("referer") || "";
-    const match = referer.match(/\/(fr|en)(\/|$)/);
-    locale = match?.[1] || defaultLocale;
-  }
+  const locale = locales.includes(rawLocale as Locale)
+    ? (rawLocale as Locale)
+    : defaultLocale;
 
-  if (!locales.includes(locale as Locale)) {
-    locale = defaultLocale;
-  }
-
-  const t = await getTranslations({
-    locale: locale as Locale,
-    namespace: "notFound",
-  });
+  const t = await getTranslations({ locale, namespace: "notFound" });
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] text-center px-4">

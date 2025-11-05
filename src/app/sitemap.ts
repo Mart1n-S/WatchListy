@@ -16,6 +16,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
         { path: "/resend-verification", freq: "monthly", priority: 0.7 },
         { path: "/verify-email", freq: "monthly", priority: 0.7 },
         { path: "/profile", freq: "weekly", priority: 0.9 },
+        { path: "/movies", freq: "weekly", priority: 0.9 },
+        { path: "/series", freq: "weekly", priority: 0.9 },
+        { path: "/users", freq: "daily", priority: 0.9 },
     ] as const;
 
     // Locales supportées

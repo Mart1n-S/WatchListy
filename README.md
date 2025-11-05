@@ -1,188 +1,439 @@
-
 # 🎬 WatchListy
 
-**WatchListy** est une application web moderne permettant aux utilisateurs de **gérer leurs films et séries préférés**, de **suivre d’autres cinéphiles**, et de **recevoir des recommandations personnalisées** selon leurs goûts.
-L’application s’appuie sur l’API [TMDB (The Movie Database)](https://www.themoviedb.org/) pour les données des films et séries, et propose une interface élégante, rapide et responsive.
+<div align="center">
+
+<!-- **Tech Stack** -->
+> *Powered by modern web technologies* ⚡
+
+![Next.js](https://img.shields.io/badge/Next.js-15.5.4-00C853?style=for-the-badge&logo=next.js)
+![React](https://img.shields.io/badge/React-19.1.0-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.9.3-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+
+![MongoDB](https://img.shields.io/badge/MongoDB-5.9.2-47A248?style=for-the-badge&logo=mongodb)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-4.1.14-06B6D4?style=for-the-badge&logo=tailwindcss)
+
+<!-- **Deployment** -->
+> *Deployed with*
+
+![Vercel](https://img.shields.io/badge/Vercel-000000?style=for-the-badge&logo=vercel&logoColor=white)
 
 ---
 
-## 📖 Table des matières
+### **🌍 Découvrez WatchListy en ligne**
+**[👉 Accéder à l'app](https://watch-listy-one.vercel.app/)**
+*Ou scannez le QR code ci-dessous :*
 
-1. [Fonctionnalités principales](#-fonctionnalités-principales)
-2. [Technologies utilisées](#-technologies-utilisées)
-3. [Architecture du projet](#-architecture-du-projet)
-4. [Installation et lancement](#-installation-et-lancement)
-5. [Seeding des données](#-seeding-des-données)
-6. [Internationalisation (i18n)](#-internationalisation-i18n)
-7. [Tests](#-tests)
-8. [Liens utiles](#-liens-utiles)
+<div align="center">
 
----
+[![WatchListy QR Code](https://api.qrserver.com/v1/create-qr-code/?size=150x150&data=https://watch-listy-one.vercel.app/)](https://watch-listy-one.vercel.app/)
 
-## 🚀 Fonctionnalités principales
 
-### 🔐 **Authentification et gestion utilisateur**
+</div>
 
-* Inscription, connexion et déconnexion via **NextAuth**
-* Authentification sécurisée par **session**
-* Gestion complète du profil utilisateur :
-
-  * Pseudo, avatar, email, préférences de genres
-  * Historique d’inscription
-* Réinitialisation du mot de passe
-* Vérification du compte et gestion des utilisateurs bloqués
+</div>
 
 ---
 
-### 🎥 **Gestion des films et séries**
 
-* Ajout de contenu à différentes listes :
+## 📚 Sommaire
 
-  * **À regarder** 🕒
-  * **En cours** ▶️
-  * **Terminés** ✅
-* Possibilité d’ajouter une **note** et une **critique** personnelle
-* Affichage des notes moyennes globales
-* Suppression et gestion rapide via modales de confirmation
-* Synchronisation automatique entre **frontend et base MongoDB**
+- [🎬 WatchListy](#-watchlisty)
+    - [**🌍 Découvrez WatchListy en ligne**](#-découvrez-watchlisty-en-ligne)
+  - [📚 Sommaire](#-sommaire)
+  - [📖 Introduction](#-introduction)
+  - [🎬 Fonctionnalités](#-fonctionnalités)
+    - [🧑‍💻 Gestion des utilisateurs](#-gestion-des-utilisateurs)
+    - [🎥 Fonctionnalités principales](#-fonctionnalités-principales)
+      - [🔹 Page Films](#-page-films)
+      - [🔹 Page Séries](#-page-séries)
+    - [🎞️ Page de détail (film ou série)](#️-page-de-détail-film-ou-série)
+    - [📋 Gestion de la watchlist](#-gestion-de-la-watchlist)
+    - [👥 Interactions sociales](#-interactions-sociales)
+    - [🌍 Internationalisation](#-internationalisation)
+    - [📲 PWA](#-pwa)
+    - [⚙️ Gestion de l’état (Redux)](#️-gestion-de-létat-redux)
+    - [🧠 Données externes et performance](#-données-externes-et-performance)
+  - [🖼️ Prévisualisation](#️-prévisualisation)
+  - [🧰 Stack Technique](#-stack-technique)
+    - [🧩 Stack](#-stack)
+    - [⚙️ State Management \& Architecture](#️-state-management--architecture)
+    - [🎨 UI \& Animations](#-ui--animations)
+    - [🔒 Authentification \& Sécurité](#-authentification--sécurité)
+    - [🗄️ Backend \& Base de données](#️-backend--base-de-données)
+    - [🌍 Internationalisation \& PWA](#-internationalisation--pwa)
+    - [🎥 APIs Externes](#-apis-externes)
+    - [🧪 Tests \& Qualité](#-tests--qualité)
+    - [🛠️ Outils de développement](#️-outils-de-développement)
+- [🚀 **WatchListy - Installation \& Configuration**](#-watchlisty---installation--configuration)
+  - [📋 **Prérequis**](#-prérequis)
+  - [**1) Cloner le projet**](#1-cloner-le-projet)
+  - [**2) Installer les dépendances**](#2-installer-les-dépendances)
+  - [**3) Configurer MongoDB Atlas**](#3-configurer-mongodb-atlas)
+  - [**4) Configurer TMDB**](#4-configurer-tmdb)
+  - [**5) Configurer BREVO**](#5-configurer-brevo)
+  - [**6) Générer un `NEXTAUTH_SECRET` sécurisé**](#6-générer-un-nextauth_secret-sécurisé)
+    - [**Avec OpenSSL (recommandé)**](#avec-openssl-recommandé)
+  - [**7) Configurer `.env.local`**](#7-configurer-envlocal)
+  - [**8) Lancer l'application**](#8-lancer-lapplication)
+  - [**9) Injecter des données de test (Seed)**](#9-injecter-des-données-de-test-seed)
+  - [**10) Lancer les tests (Playwright)**](#10-lancer-les-tests-playwright)
+  - [**11) Build pour la production**](#11-build-pour-la-production)
+  - [🔧 **Dépannage**](#-dépannage)
+  - [🌐 Liens utiles](#-liens-utiles)
+  - [💙 Remerciements](#-remerciements)
 
----
 
-### 🔍 **Recherche et filtrage avancés**
+## 📖 Introduction
 
-* Recherche par **titre**
-* Filtres :
+**Watchlisty** est une application web moderne permettant de **gérer, explorer et partager vos films et séries** préférés.  
+Elle s’adresse aux cinéphiles et sériephiles souhaitant **organiser leur watchlist**, **suivre leur progression** et **découvrir de nouvelles recommandations** grâce à l’intégration de l’API **[TMDB](https://www.themoviedb.org/)**.
 
-  * Genre
-  * Popularité
-  * Date de sortie
-  * Note moyenne
-* Tri dynamique :
+L’objectif du projet est de proposer une expérience fluide, personnalisable et sociale autour du visionnage.
 
-  * Date d’ajout
-  * Popularité
-  * Note utilisateur
+> 💡 *Watchlisty combine l’efficacité d’un gestionnaire personnel avec la dimension communautaire du partage et des recommandations.*
 
----
+## 🎬 Fonctionnalités
 
-### 💬 **Avis et communauté**
+### 🧑‍💻 Gestion des utilisateurs
 
-* Lecture des **avis des autres utilisateurs** sur les films/séries
-* Affichage des **notes individuelles** et de la date de publication
-* Page de profil publique pour chaque utilisateur (`/users/[pseudo]`)
-
----
-
-### 🤝 **Interaction sociale**
-
-* Système de **follow / unfollow** entre utilisateurs
-* Liste de vos abonnements
-* Comptage dynamique du nombre d’abonnés
-* Accès aux profils publics des autres membres
-
----
-
-### ⚙️ **Préférences et recommandations**
-
-* Choix de vos genres favoris (films et séries)
-* Préférences stockées dans le profil utilisateur
----
-
-### 🌐 **Internationalisation (i18n)**
-
-* Application entièrement **multilingue (français / anglais)**
-* Gestion via **Next-Intl**
-* Traductions dynamiques côté serveur et client
-
----
-
-### 🔒 **Performance & sécurité**
-
-* API interne sécurisée (route handlers Next.js)
-* Stockage sécurisé des mots de passe via **bcrypt**
-* Sessions protégées via **NextAuth + cookies HTTPOnly**
-* **Caching intelligent** des requêtes TMDB pour limiter les appels
-* **Server Side Rendering (SSR)** et **préchargement** des pages critiques
-
----
-
-## 🛠️ Technologies utilisées
-
-| Catégorie                | Technologies                                                |
-| ------------------------ | ----------------------------------------------------------- |
-| **Frontend**             | Next.js  (App Router), React 19, TypeScript, Tailwind CSS |
-| **Backend**              | API Routes Next.js, MongoDB, Mongoose-like driver           |
-| **Auth & sécurité**      | NextAuth, bcrypt, JWT (sessions sécurisées)                 |
-| **State Management**     | Redux Toolkit + Thunks                                      |
-| **API externe**          | TMDB (The Movie Database)                                   |
-| **Internationalisation** | next-intl                                                   |
-| **Notifications**        | react-hot-toast                                             |
-| **Animations & UI**      | Framer Motion            |
-| **Tests**                | Playwright                                                  |
-| **Déploiement**          | Compatible Vercel ou Node.js                                |
+* **Authentification complète avec NextAuth (JWT)** :
+  * Connexion et inscription sécurisées.  
+  * **Validation d’email** lors de l’inscription.  
+  * **Renvoi d’email de validation** en cas de non-réception.  
+  * **Réinitialisation du mot de passe** via email.  
+  * **Édition du profil utilisateur** (pseudo, avatar, préférences, etc.).  
+* **Gestion des utilisateurs côté backend** avec **MongoDB** et **Next.js API Routes** :
+  * Création, mise à jour, suppression et récupération des profils.  
 
 ---
 
-## 🧩 Architecture du projet
+### 🎥 Fonctionnalités principales
 
-```
-src/
-├── app/                # Routes et pages Next.js (App Router)
-│   ├── api/            # API internes sécurisées
-│   ├── [locale]/       # Pages traduites (fr/en)
-│   └── layout.tsx      # Layout global
-│
-├── components/         # Composants UI & sections
-│   ├── profile/        # Composants liés au profil utilisateur
-│   ├── movies/         # Cartes & listes de films/séries
-│   ├── ui/             # Modales, backgrounds, boutons…
-│   └── layout/         # Header, footer, etc.
-│
-├── lib/                # Fonctions utilitaires et config
-│   ├── redux/          # Redux store, slices et thunks
-│   ├── tmdb.ts         # Fonctions d’appel à l’API TMDB
-│   └── auth.ts         # NextAuth config
-│
-├── models/             # Types et modèles MongoDB
-└── public/             # Images et assets statiques
-```
+#### 🔹 Page Films
+
+* Affichage des **films populaires** par défaut.  
+* **Recherche** par mot-clé pour retrouver un film précis.  
+* **Filtres avancés** :
+  * Genre  
+  * Langue d’origine  
+  * Note minimale  
+  * Tri par :
+    * Popularité (plus / moins populaire)  
+    * Note (croissante / décroissante)  
+    * Date de sortie (plus / moins récente)  
+* **Ajout à la watchlist** directement depuis la fiche d’un film.  
+
+#### 🔹 Page Séries
+
+* Fonctionnalités équivalentes à la page Films :
+  * Affichage des **séries populaires**.  
+  * Recherche et filtres identiques.  
+  * **Ajout à la watchlist** depuis la fiche d’une série.  
 
 ---
 
-## 📌 Installation et lancement
+### 🎞️ Page de détail (film ou série)
 
-### 1️⃣ Cloner le projet
+Chaque fiche affiche des informations complètes :
 
+* **Titre**, **synopsis**, **genre**, **durée** (ou nombre d’épisodes pour les séries).  
+* **Note TMDB** et/ou **note moyenne des utilisateurs Watchlisty**.  
+* **Bande-annonce intégrée** (si disponible).  
+* **Affichage du casting principal**.  
+* **Avis des utilisateurs de Watchlisty** (commentaires et notes).  
+* **Section de recommandations** :
+  * Films ou séries similaires / liés au contenu consulté.  
+
+---
+
+### 📋 Gestion de la watchlist
+
+Accessible depuis le **profil utilisateur**, la watchlist est organisée en **trois catégories** :
+
+1. **Ma Watchlist** – films et séries à regarder.  
+2. **En cours de visionnage** – contenu en cours.  
+3. **Terminés** – contenu déjà vu.  
+
+Fonctionnalités :
+
+* Changer l’état d’un film ou d’une série (à regarder ↔ en cours ↔ terminé).  
+* Supprimer un élément de la watchlist.  
+* Lorsqu’un contenu est **terminé** :
+  * Possibilité d’**ajouter une note**.  
+  * Possibilité de **laisser un commentaire**.  
+
+---
+
+### 👥 Interactions sociales
+
+* Depuis le **profil**, possibilité d’**ajouter un autre utilisateur** via son pseudo.  
+* Accès à leur **profil public** et à leur **watchlist**.  
+* Possibilité de **liker** la watchlist d’un autre utilisateur.  
+* **Page “Utilisateurs”** :
+  * Liste de tous les utilisateurs, triée selon les **watchlists les plus aimées**.  
+  * **Barre de recherche** pour trouver rapidement un utilisateur.  
+  * Accès à leur profil public et possibilité de **s’abonner**.  
+
+---
+
+### 🌍 Internationalisation
+
+* **Application multilingue** disponible en **français** 🇫🇷 et **anglais** 🇬🇧.  
+* Détection automatique de la langue et possibilité de bascule manuelle.  
+
+---
+
+### 📲 PWA
+
+* **PWA (Progressive Web App)** avec installation possible sur mobile et desktop.  
+* Fonctionnement **hors ligne** partiel grâce au cache et au service worker.  
+
+---
+
+### ⚙️ Gestion de l’état (Redux)
+
+* **Centralisation** de toutes les données clés :
+  * Informations utilisateur, préférences, authentification.  
+  * Watchlist et états associés.  
+* **Gestion fluide** des actions d’ajout, suppression, chargement et synchronisation backend/frontend.  
+
+---
+
+### 🧠 Données externes et performance
+
+* **Intégration complète avec TMDB** :
+  * Récupération des informations sur les films et séries (titres, synopsis, affiches, genres, etc.).  
+  * Données de casting et recommandations.  
+* **Gestion intelligente du cache** pour optimiser les appels API et améliorer les performances.  
+* **Suivi des logs** avec **Pino** pour une meilleure traçabilité des erreurs et requêtes serveur.  
+
+## 🖼️ Prévisualisation
+
+Voici un aperçu de l'application WatchListy :
+
+<div align="center">
+
+<table>
+  <tr>
+    <td><img src=".github/image1.png" alt="Image 1" width="200" /></td>
+    <td><img src=".github/image2.png" alt="Image 2" width="200" /></td>
+  </tr>
+  <tr>
+    <td><img src=".github/image3.png" alt="Image 3" width="200" /></td>
+    <td><img src=".github/image4.png" alt="Image 4" width="200" /></td>
+  </tr>
+</table>
+
+</div>
+
+---
+
+## 🧰 Stack Technique
+
+### 🧩 Stack
+
+**Next.js 15.5.4** – Framework React moderne avec **App Router** pour un rendu hybride (**SSR / SSG / ISR**).  
+**React 19.1.0** – Bibliothèque UI avec **Server Components** et gestion optimisée du rendu.  
+**TypeScript 5.9.3** – Typage statique et DX améliorée pour un code plus robuste.  
+**Tailwind CSS 4.1.14** – Framework CSS utilitaire moderne pour un design rapide et responsive.  
+
+
+### ⚙️ State Management & Architecture
+
+**Redux Toolkit 2.9.1** – Gestion d’état globale moderne et simplifiée.  
+**React Redux 9.2.0** – Intégration transparente entre React et Redux.  
+**Next Redux Wrapper 8.1.0** – Hydratation automatique serveur/client pour Next.js.  
+**Zod 4.1.12** – Validation et typage runtime des données (formulaires, API, etc.).  
+**React Hot Toast** – Notifications légères et réactives pour une meilleure UX.  
+
+---
+
+### 🎨 UI & Animations
+
+**Framer Motion 12.23.22** – Animations fluides et transitions avancées.  
+**React Icons 5.5.0** – Large collection d’icônes vectorielles.  
+**Tailwind CSS** – Utilisé pour la mise en page, les effets visuels et la réactivité et le responsive.  
+
+---
+
+### 🔒 Authentification & Sécurité
+
+**NextAuth.js 4.24.11** – Authentification complète via **JWT** et **MongoDB Adapter** :  
+- Validation d’email, renvoi de lien, réinitialisation du mot de passe.  
+- Gestion sécurisée des sessions et cookies.  
+
+**BcryptJS 3.0.2** – Hashage sécurisé des mots de passe côté serveur.  
+**Dotenv 17.2.3** – Gestion centralisée des variables d’environnement.  
+
+---
+
+### 🗄️ Backend & Base de données
+
+**MongoDB 5.9.2** – Base de données NoSQL hébergée (MongoDB Atlas).  
+**Next.js API Routes** – Endpoints serveur intégrés pour la gestion des utilisateurs, watchlists, etc.  
+**Pino + Pino Pretty** – Logging performant et lisible côté serveur.  
+
+---
+
+### 🌍 Internationalisation & PWA
+
+**Next-Intl 4.4.0** – Internationalisation complète (**Français 🇫🇷 / Anglais 🇬🇧**).  
+**Next-PWA 5.6.0** – Génération automatique du service worker.
+
+---
+
+### 🎥 APIs Externes
+
+**TMDB API** – Source principale des données (films, séries, genres, castings, recommandations).  
+**@getbrevo/brevo** – Envoi d’emails transactionnels (validation, mot de passe oublié).  
+
+---
+
+### 🧪 Tests & Qualité
+
+**Playwright 1.56.1** + **@playwright/test** – Tests end-to-end automatisés.  
+**TypeScript + ts-node** – Support pour les scripts backend et le **seeding typé**.  
+
+---
+
+### 🛠️ Outils de développement
+
+**Git** – Contrôle de version.  
+**PostCSS + Autoprefixer** – Optimisation et compatibilité CSS.  
+**Scripts personnalisés** (`seed:users`) – Injection de données utilisateurs dans la base MongoDB (test / démo).  
+
+---
+
+
+# 🚀 **WatchListy - Installation & Configuration**
+
+Ce guide explique comment installer et exécuter **WatchListy** en local, configurer **MongoDB Atlas**, **NextAuth.js**, et lancer les scripts de développement.
+
+---
+
+## 📋 **Prérequis**
+- Node.js (v18+)
+- npm / yarn / pnpm
+- Un compte [MongoDB Atlas](https://cloud.mongodb.com/)
+- Un compte [TMDB](https://www.themoviedb.org/) (pour l'API films)
+- Un compte [Brevo](https://www.brevo.com/) (pour l'envoi d'emails)
+
+---
+
+## **1) Cloner le projet**
 ```bash
 git clone https://github.com/Mart1n-S/WatchListy.git
-cd WatchListy
+cd watchlisty
 ```
 
-### 2️⃣ Installer les dépendances
+---
 
+## **2) Installer les dépendances**
 ```bash
 npm install
+# ou
+yarn install
+# ou
+pnpm install
 ```
 
-### 3️⃣ Configurer les variables d’environnement
+---
 
-Crée un fichier `.env.local` à la racine :
+## **3) Configurer MongoDB Atlas**
+1. Créez un compte gratuit sur [MongoDB Atlas](https://cloud.mongodb.com/).
+2. Créez un **cluster gratuit** (choisissez `M0`).
+3. Ajoutez votre **IP actuelle** dans la section *Network Access*.
+4. Créez un utilisateur avec des droits *Read/Write*.
+5. Copiez votre **URI de connexion** (format : `mongodb+srv://<user>:<password>@cluster.mongodb.net`).
+
+## **4) Configurer TMDB**
+1. Créez un compte gratuit sur [TMDB](https://www.themoviedb.org/).
+2. Allez dans la section *API* et créez une nouvelle clé API.
+3. Copiez votre **clé API**.
+
+## **5) Configurer BREVO**
+1. Créez un compte gratuit sur [Brevo](https://www.brevo.com/).
+2. Allez dans la section *API* et créez une nouvelle clé API.
+3. Copiez votre **clé API**.
+
+
+---
+
+## **6) Générer un `NEXTAUTH_SECRET` sécurisé**
+NextAuth.js nécessite une clé secrète pour signer les tokens JWT.
+Pour en générer une **sécurisée** (32+ caractères) :
+
+### **Avec OpenSSL (recommandé)**
+```bash
+openssl rand -base64 32
+```
+Copiez la sortie dans `.env.local`.
+
+
+---
+
+## **7) Configurer `.env.local`**
+Dupliquez `.env.example` en `.env.local` et complétez :
 
 ```bash
-MONGODB_URI=...
-NEXTAUTH_SECRET=...
-NEXTAUTH_URL=http://localhost:3000
-TMDB_API_KEY=...
+# MongoDB
+MONGODB_URI=mongodb+srv://<user>:<password>@cluster.mongodb.net/<dbname>?retryWrites=true&w=majority
+MONGODB_DATABASE=<votre_dbname>
+
+# NextAuth
+NEXTAUTH_SECRET=<votre_secret_généré>
+NEXTAUTH_URL="http://localhost:3000"
+
+# TMDB API (pour les films/séries)
+TMDB_API_BASE=https://api.themoviedb.org/3
+TMDB_ACCESS_TOKEN=<votre_token_tmdb>
+
+# Email (Brevo)
+BREVO_API_KEY=<votre_clé_brevo>
+# Email de votre compte Brevo
+BREVO_EMAIL_ADDRESS=
+
+# Autres
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+# Adresse email utilisée pour les communications de contact
+CONTACT_EMAIL=
+
+# Clé de vérification Google pour la Search Console (pas obligatoire utiliser pour la prod pour le SEO)
+NEXT_PUBLIC_GOOGLE_SITE_VERIFICATION=
 ```
 
-### 4️⃣ Lancer le serveur de développement
+---
 
+## **8) Lancer l'application**
 ```bash
 npm run dev
 ```
+Accédez à [http://localhost:3000](http://localhost:3000).
 
-### 5️⃣ Construire pour la production
+---
 
+## **9) Injecter des données de test (Seed)**
+Pour créer des utilisateurs et films de test :
+```bash
+npm run seed:users
+```
+
+---
+
+## **10) Lancer les tests (Playwright)**
+```bash
+npx playwright test
+
+# ou en mode UI
+npx playwright test --ui
+
+# pour voir le rapport
+npx playwright show-report
+```
+
+---
+
+## **11) Build pour la production**
 ```bash
 npm run build
 npm start
@@ -190,50 +441,17 @@ npm start
 
 ---
 
-## 🌱 Seeding des données
-
-Pour initialiser des utilisateurs de test dans la base de données :
-
-```bash
-npm run seed:users
-```
-
----
-
-## 🌍 Internationalisation (i18n)
-
-L’application gère plusieurs langues via **Next-Intl**.
-Les fichiers de traduction se trouvent dans :
-
-```
-src/messages/
-├── fr.json
-└── en.json
-```
-
-Les namespaces sont organisés par page (ex : `profile`, `layout`, `movies`, etc.).
-
----
-
-## 🧪 Tests
-
-Lancer les tests E2E avec **Playwright** :
-
-```bash
-npx playwright test
-```
-
-Générer un rapport interactif :
-
-```bash
-npx playwright show-report
-```
-
----
+## 🔧 **Dépannage**
+| Problème                    | Solution                                             |
+| --------------------------- | ---------------------------------------------------- |
+| Erreur de connexion MongoDB | Vérifiez `MONGODB_URI` et l'IP autorisée dans Atlas. |
+| Erreur NextAuth             | Vérifiez `NEXTAUTH_SECRET` et `NEXTAUTH_URL`.        |
+| API TMDB non accessible     | Vérifiez `TMDB_ACCESS_TOKEN`.                        |
 
 ## 🌐 Liens utiles
 
 * [TMDB API](https://developers.themoviedb.org/3)
+* [Brevo API](https://developers.brevo.com/docs/getting-started)
 * [Next.js Documentation](https://nextjs.org/docs)
 * [Tailwind CSS](https://tailwindcss.com/docs)
 * [Redux Toolkit](https://redux-toolkit.js.org/)

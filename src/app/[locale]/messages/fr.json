@@ -1265,6 +1265,7 @@
       "description": "Découvrez les listes et préférences de {pseudo}"
     },
     "loading": "Chargement du profil...",
+    "noPreferences": "Aucune préférence définie.",
     "errors": {
       "likeFailed": "Impossible de liker la Watchlist.",
       "selfLike": "Vous ne pouvez pas liker votre propre Watchlist.",

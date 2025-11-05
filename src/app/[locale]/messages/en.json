@@ -1264,6 +1264,7 @@
       "description": "Discover {pseudo}'s watchlist and preferences"
     },
     "loading": "Loading profile...",
+    "noPreferences": "No preferences set.",
     "errors": {
       "likeFailed": "Could not like the user's Watchlist.",
       "selfLike": "You cannot like your own Watchlist.",

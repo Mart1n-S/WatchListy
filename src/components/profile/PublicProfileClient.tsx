@@ -294,51 +294,55 @@ export default function PublicProfileClient({
       </div>
 
       {/* --- Préférences --- */}
-      {(user.preferences?.movies?.length || user.preferences?.tv?.length) && (
-        <div className="mb-8 space-y-6">
-          {user.preferences?.movies?.length ? (
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <FiFilm className="text-indigo-400 w-5 h-5" />
-                <h2 className="text-indigo-300 font-semibold">
-                  {t("preferences.movies")}
-                </h2>
+      <div className="mb-8 space-y-6">
+        {user.preferences?.movies?.length || user.preferences?.tv?.length ? (
+          <>
+            {user.preferences?.movies?.length ? (
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <FiFilm className="text-indigo-400 w-5 h-5" />
+                  <h2 className="text-indigo-300 font-semibold">
+                    {t("preferences.movies")}
+                  </h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {user.preferences.movies.map((id) => (
+                    <span
+                      key={id}
+                      className="px-3 py-1 rounded-full text-sm font-medium bg-indigo-600/30 border border-indigo-500/40 text-indigo-200 hover:bg-indigo-600/50 transition-colors"
+                    >
+                      {getGenreName(id, "movie")}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {user.preferences.movies.map((id) => (
-                  <span
-                    key={id}
-                    className="px-3 py-1 rounded-full text-sm font-medium bg-indigo-600/30 border border-indigo-500/40 text-indigo-200 hover:bg-indigo-600/50 transition-colors"
-                  >
-                    {getGenreName(id, "movie")}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ) : null}
+            ) : null}
 
-          {user.preferences?.tv?.length ? (
-            <div>
-              <div className="flex items-center gap-2 mb-2">
-                <FiTv className="text-purple-400 w-5 h-5" />
-                <h2 className="text-purple-300 font-semibold">
-                  {t("preferences.tv")}
-                </h2>
+            {user.preferences?.tv?.length ? (
+              <div>
+                <div className="flex items-center gap-2 mb-2">
+                  <FiTv className="text-purple-400 w-5 h-5" />
+                  <h2 className="text-purple-300 font-semibold">
+                    {t("preferences.tv")}
+                  </h2>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {user.preferences.tv.map((id) => (
+                    <span
+                      key={id}
+                      className="px-3 py-1 rounded-full text-sm font-medium bg-purple-600/30 border border-purple-500/40 text-purple-200 hover:bg-purple-600/50 transition-colors"
+                    >
+                      {getGenreName(id, "tv")}
+                    </span>
+                  ))}
+                </div>
               </div>
-              <div className="flex flex-wrap gap-2">
-                {user.preferences.tv.map((id) => (
-                  <span
-                    key={id}
-                    className="px-3 py-1 rounded-full text-sm font-medium bg-purple-600/30 border border-purple-500/40 text-purple-200 hover:bg-purple-600/50 transition-colors"
-                  >
-                    {getGenreName(id, "tv")}
-                  </span>
-                ))}
-              </div>
-            </div>
-          ) : null}
-        </div>
-      )}
+            ) : null}
+          </>
+        ) : (
+          <p className="text-gray-400 italic">{t("noPreferences")}</p>
+        )}
+      </div>
 
       {/* --- Listes Watchlist / Watching / Completed --- */}
       <div className="space-y-10">

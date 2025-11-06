@@ -187,8 +187,7 @@ Fonctionnalités :
 
 ### 📲 PWA
 
-* **PWA (Progressive Web App)** avec installation possible sur mobile et desktop.  
-* Fonctionnement **hors ligne** partiel grâce au cache et au service worker.  
+* **PWA (Progressive Web App)** avec installation possible sur mobile et desktop.
 
 ---
 
